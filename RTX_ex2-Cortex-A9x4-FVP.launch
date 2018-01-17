@@ -1,0 +1,334 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="com.arm.debugger.launcher2">
+<stringAttribute key="ANDROID_ACTIVITY_NAME" value=""/>
+<stringAttribute key="ANDROID_APPLICATION" value=""/>
+<stringAttribute key="ANDROID_APP_DIR" value=""/>
+<stringAttribute key="ANDROID_PROCESS_NAME" value=""/>
+<intAttribute key="DEBUG_TAB..RESOURCES.COUNT" value="0"/>
+<booleanAttribute key="EVENT_VIEWER_ENABLED" value="false"/>
+<stringAttribute key="EVENT_VIEWER_MAX_DEPTH" value="1Mb"/>
+<stringAttribute key="EVENT_VIEWER_MAX_DEPTH_NUMBER" value="1048576"/>
+<booleanAttribute key="EVENT_VIEWER_STM_ENABLED" value="false"/>
+<stringAttribute key="EVENT_VIEWER_STM_MAX_DEPTH" value="1Mb"/>
+<stringAttribute key="EVENT_VIEWER_STM_MAX_DEPTH_NUMBER" value="1048576"/>
+<intAttribute key="FILES.CONNECT_TO_GDB_SERVER.RESOURCES.COUNT" value="0"/>
+<intAttribute key="FILES.DEBUG_EXISTING_ANDROID.RESOURCES.COUNT" value="0"/>
+<listAttribute key="FILES.DEBUG_RESIDENT_ANDROID"/>
+<stringAttribute key="FILES.DEBUG_RESIDENT_ANDROID.RESOURCES.0.TYPE" value="TARGET_WORKING_DIR"/>
+<stringAttribute key="FILES.DEBUG_RESIDENT_ANDROID.RESOURCES.0.VALUE" value=""/>
+<intAttribute key="FILES.DEBUG_RESIDENT_ANDROID.RESOURCES.COUNT" value="1"/>
+<listAttribute key="FILES.DEBUG_RESIDENT_APP"/>
+<stringAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.0.TYPE" value="APPLICATION_ON_TARGET"/>
+<stringAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.0.VALUE" value=""/>
+<stringAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.1.TYPE" value="TARGET_WORKING_DIR"/>
+<stringAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.1.VALUE" value=""/>
+<intAttribute key="FILES.DEBUG_RESIDENT_APP.RESOURCES.COUNT" value="2"/>
+<listAttribute key="FILES.DOWNLOAD_AND_DEBUG"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.0.VALUE" value=""/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.TYPE" value="TARGET_DOWNLOAD_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.1.VALUE" value=""/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.TYPE" value="TARGET_WORKING_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.2.VALUE" value=""/>
+<intAttribute key="FILES.DOWNLOAD_AND_DEBUG.RESOURCES.COUNT" value="3"/>
+<listAttribute key="FILES.DOWNLOAD_DEBUG"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.0.VALUE" value=""/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.TYPE" value="TARGET_DOWNLOAD_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.1.VALUE" value=""/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.TYPE" value="TARGET_WORKING_DIR"/>
+<stringAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.2.VALUE" value=""/>
+<intAttribute key="FILES.DOWNLOAD_DEBUG.RESOURCES.COUNT" value="3"/>
+<intAttribute key="FILES.DOWNLOAD_DEBUG_ANDROID.RESOURCES.COUNT" value="0"/>
+<listAttribute key="FILES.ICE_DEBUG">
+<listEntry value="ON_DEMAND_LOAD"/>
+<listEntry value="ALSO_LOAD_SYMBOLS"/>
+</listAttribute>
+<stringAttribute key="FILES.ICE_DEBUG.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.ICE_DEBUG.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.ICE_DEBUG.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.ICE_DEBUG.RESOURCES.0.VALUE" value="${workspace_loc:/RTX_ARM_FVP_RTX_ex2/RTX_ARM_FVP_RTX_ex2.axf}"/>
+<intAttribute key="FILES.ICE_DEBUG.RESOURCES.COUNT" value="1"/>
+<listAttribute key="FILES.ICE_DEBUG_WITH_ETB_TRACE">
+<listEntry value="ON_DEMAND_LOAD"/>
+<listEntry value="ALSO_LOAD_SYMBOLS"/>
+</listAttribute>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_ETB_TRACE.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_ETB_TRACE.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_ETB_TRACE.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_ETB_TRACE.RESOURCES.0.VALUE" value=""/>
+<intAttribute key="FILES.ICE_DEBUG_WITH_ETB_TRACE.RESOURCES.COUNT" value="1"/>
+<listAttribute key="FILES.ICE_DEBUG_WITH_TRACE">
+<listEntry value="ON_DEMAND_LOAD"/>
+<listEntry value="ALSO_LOAD_SYMBOLS"/>
+</listAttribute>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_TRACE.RESOURCES.0.OPTION.ALSO_LOAD_SYMBOLS" value="true"/>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_TRACE.RESOURCES.0.OPTION.ON_DEMAND_LOAD" value="true"/>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_TRACE.RESOURCES.0.TYPE" value="APP_ON_HOST_TO_DOWNLOAD"/>
+<stringAttribute key="FILES.ICE_DEBUG_WITH_TRACE.RESOURCES.0.VALUE" value=""/>
+<intAttribute key="FILES.ICE_DEBUG_WITH_TRACE.RESOURCES.COUNT" value="1"/>
+<stringAttribute key="FILES.SELECTED_DEBUG_OPEATION" value="ICE_DEBUG"/>
+<stringAttribute key="HOST_WORKING_DIR" value="${workspace_loc}"/>
+<booleanAttribute key="HOST_WORKING_DIR_USE_DEFAULT" value="true"/>
+<booleanAttribute key="KEY_COMMANDS_AFTER_CONNECT" value="false"/>
+<stringAttribute key="KEY_COMMANDS_AFTER_CONNECT_TEXT" value=""/>
+<booleanAttribute key="RSE_USE_HOSTNAME" value="true"/>
+<stringAttribute key="TCP_DISABLE_EXTENDED_MODE" value="true"/>
+<booleanAttribute key="TCP_KILL_ON_EXIT" value="false"/>
+<listAttribute key="TREE_NODE_PROPERTIES:debugger.view.NewRegisterView">
+<listEntry value="NODE CACHE VERSION 1"/>
+<listEntry value="REGISTER_GROUP:Core"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="REGISTER_GROUP:SVC"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+</listAttribute>
+<listAttribute key="TREE_NODE_PROPERTIES:debugger.view.VariableTreeView">
+<listEntry value="NODE CACHE VERSION 1"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/system_VE_A9_MP.c::IRQTable[29]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/system_VE_A9_MP.c::IRQTable[75]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c::serialInterface::address"/>
+<listEntry value="1"/>
+<listEntry value="formatter"/>
+<listEntry value="Signed Decimal"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c::serialInterface::data"/>
+<listEntry value="1"/>
+<listEntry value="formatter"/>
+<listEntry value="Signed Decimal"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c::main::memory_test"/>
+<listEntry value="1"/>
+<listEntry value="formatter"/>
+<listEntry value="Unsigned Decimal"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/serial.c::SER_PutString::s"/>
+<listEntry value="1"/>
+<listEntry value="formatter"/>
+<listEntry value="Hexadecimal"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/message.c::messages[0]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/message.c::messages-&gt;subframes"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/message.c::messages-&gt;subframes[3]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/ephemeris.c::process_subframe2::sf-&gt;word"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/position.c::sat_position[1]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/position.c::sat_pos_by_ch[3]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/measure.c::meas[0]"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/position.c::receiver_pvt"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="COMPILATION_UNIT:message.c"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="COMPILATION_UNIT:time.c"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Desktop/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/time.c::time"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="COMPILATION_UNIT:pseudorange.c"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+<listEntry value="VALUE:C:/Users/joe/Desktop/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/pseudorange.c::pr_time"/>
+<listEntry value="1"/>
+<listEntry value="expanded"/>
+<listEntry value="true"/>
+</listAttribute>
+<booleanAttribute key="VFS_ENABLED" value="true"/>
+<stringAttribute key="VFS_LOCAL_DIR" value="${workspace_loc}"/>
+<stringAttribute key="VFS_REMOTE_MOUNT" value="/writeable"/>
+<stringAttribute key="breakpoints" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;US-ASCII&quot; ?&gt;&#13;&#10;&lt;breakpoints order=&quot;ALPHA&quot;&gt;&#13;&#10; &lt;breakpoint ignorecount=&quot;0&quot; ignorecountstart=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#13;&#10;  &lt;master_location index=&quot;0&quot; enabled=&quot;false&quot; version=&quot;2&quot; address=&quot;S:0x000009A6&quot; debugFile=&quot;C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c&quot; hostFile=&quot;C:\Users\joe\Dropbox\DS-5 workspace\RTX_ARM_FVP_RTX_ex2\RTX_ex2.c&quot; line=&quot;153&quot; function=&quot;job3&quot;&gt;&#13;&#10;  &lt;/master_location&gt;&#13;&#10;  &lt;location index=&quot;0&quot; enabled=&quot;false&quot; version=&quot;2&quot; address=&quot;S:0x000009A6&quot; debugFile=&quot;C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c&quot; hostFile=&quot;C:\Users\joe\Dropbox\DS-5 workspace\RTX_ARM_FVP_RTX_ex2\RTX_ex2.c&quot; line=&quot;153&quot; function=&quot;job3&quot;&gt;&#13;&#10;  &lt;/location&gt;&#13;&#10; &lt;/breakpoint&gt;&#13;&#10; &lt;breakpoint ignorecount=&quot;0&quot; ignorecountstart=&quot;0&quot; threadenabled=&quot;no&quot; list_all_threads=&quot;no&quot; core_list=&quot;{}&quot; continue=&quot;no&quot; verboseBreakpoints=&quot;yes&quot; kind=&quot;SOURCEPOSITION&quot;&gt;&#13;&#10;  &lt;master_location index=&quot;0&quot; enabled=&quot;false&quot; version=&quot;2&quot; address=&quot;S:0x00000A34&quot; debugFile=&quot;C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c&quot; hostFile=&quot;C:\Users\joe\Dropbox\DS-5 workspace\RTX_ARM_FVP_RTX_ex2\RTX_ex2.c&quot; line=&quot;110&quot; function=&quot;allocate_thread&quot;&gt;&#13;&#10;  &lt;/master_location&gt;&#13;&#10;  &lt;location index=&quot;0&quot; enabled=&quot;false&quot; version=&quot;2&quot; address=&quot;S:0x00000A34&quot; debugFile=&quot;C:/Users/joe/Dropbox/DS-5 workspace/RTX_ARM_FVP_RTX_ex2/RTX_ex2.c&quot; hostFile=&quot;C:\Users\joe\Dropbox\DS-5 workspace\RTX_ARM_FVP_RTX_ex2\RTX_ex2.c&quot; line=&quot;110&quot; function=&quot;allocate_thread&quot;&gt;&#13;&#10;  &lt;/location&gt;&#13;&#10; &lt;/breakpoint&gt;&#13;&#10;&lt;/breakpoints&gt;&#13;&#10;"/>
+<listAttribute key="com.arm.debugger.views.common.AddressTracker.debugger.view.DisassemblyView.addresses">
+<listEntry value="&lt;Next Instruction&gt;"/>
+<listEntry value="job1"/>
+<listEntry value="allocate_thread"/>
+<listEntry value="_alloc_box"/>
+<listEntry value="&lt;Next Instruction&gt;"/>
+<listEntry value="0xFF200380"/>
+<listEntry value="_main_cpp_init"/>
+</listAttribute>
+<listAttribute key="com.arm.debugger.views.common.AddressTracker.debugger.view.DisassemblyView.ranges">
+<listEntry value="100"/>
+<listEntry value="100"/>
+<listEntry value="100"/>
+<listEntry value="100"/>
+<listEntry value="1000"/>
+<listEntry value="16"/>
+<listEntry value="100"/>
+</listAttribute>
+<listAttribute key="com.arm.debugger.views.common.AddressTracker.debugger.view.MemoryView.addresses">
+<listEntry value="0xffc02070"/>
+<listEntry value="0xffc02070"/>
+<listEntry value="0xffc02070"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+<listEntry value="0xFF200000"/>
+</listAttribute>
+<listAttribute key="com.arm.debugger.views.common.AddressTracker.debugger.view.MemoryView.ranges">
+<listEntry value="48"/>
+<listEntry value="4"/>
+<listEntry value="1024"/>
+<listEntry value="128"/>
+<listEntry value="64"/>
+<listEntry value="32"/>
+<listEntry value="16"/>
+<listEntry value="1616"/>
+<listEntry value="48"/>
+<listEntry value="4"/>
+<listEntry value="3"/>
+<listEntry value="2"/>
+<listEntry value="1"/>
+<listEntry value="129"/>
+<listEntry value="127"/>
+<listEntry value="126"/>
+<listEntry value="124"/>
+<listEntry value="1247"/>
+<listEntry value="122"/>
+<listEntry value="1024"/>
+</listAttribute>
+<stringAttribute key="config_db_activity_name" value="Debug Cortex-A9x2 SMP"/>
+<stringAttribute key="config_db_connection_keys" value="eventviewer_tracesource target_initialization_script dtsl_tracecapture_option dtsl_config rvi_address config_file dtsl_config_script setup TCP_KILL_ON_EXIT TCP_DISABLE_EXTENDED_MODE"/>
+<stringAttribute key="config_db_connection_type" value="Bare Metal Debug"/>
+<stringAttribute key="config_db_platform_name" value="Altera - Cyclone V SoC (Dual Core)"/>
+<stringAttribute key="config_db_project_type" value="Bare Metal Debug"/>
+<stringAttribute key="config_db_project_type_id" value="BARE_METAL"/>
+<stringAttribute key="config_db_taxonomy_id" value="/platform/altera/cyclonevsoc_dualcore_"/>
+<stringAttribute key="config_file" value="CDB://Altera_DEV5XS1.rvc"/>
+<booleanAttribute key="connectOnly" value="false"/>
+<stringAttribute key="connection_type" value="USB-Blaster"/>
+<stringAttribute key="debugger.view.DataView.os:DataView" value="rO0ABXNyAC5jb20uYXJtLmRlYnVnZ2VyLnZpZXdzLmRhdGEuRGF0YVZpZXdQcm9wZXJ0aWVzAAAAAAAAAAECAAB4cgAoY29tLmFybS5kZWJ1Z2dlci52aWV3cy5kYXRhLlByb3BlcnR5VHJlZQAAAAAAAAABAwABTAAFbURhdGF0ABNMamF2YS91dGlsL0hhc2hNYXA7eHB3BAAAAAF0ABJkYXRhYmFzZVByb3BlcnRpZXNzcQB+AAF3BAAAAAF0AANydHhzcgAuY29tLmFybS5kZWJ1Z2dlci52aWV3cy5kYXRhLkRhdGFiYXNlUHJvcGVydGllcwAAAAAAAAABAgAAeHEAfgABdwQAAAADdAACaWRxAH4ABnQABnRhYmxlc3NxAH4AAXcEAAAAAXQABXRhc2tzc3IAK2NvbS5hcm0uZGVidWdnZXIudmlld3MuZGF0YS5UYWJsZVByb3BlcnRpZXMAAAAAAAAAAQIAAHhxAH4AAXcEAAAAA3QAAmlkcQB+AAx0AAZjb25maWd0ANxPdXRsaW5lQ29uZmlnMQkxMQktMQlmYWxzZQkyMwktMQl0cnVlCTAJdHJ1ZQk0NgktMQl0cnVlCTEJdHJ1ZQkxMjMJLTEJdHJ1ZQkyCXRydWUJNjAJLTEJdHJ1ZQkzCXRydWUJMTYxCS0xCXRydWUJNAl0cnVlCTUzCS0xCXRydWUJNQl0cnVlCTg1CS0xCXRydWUJNgl0cnVlCTc5CS0xCXRydWUJNwl0cnVlCTE3MwktMQl0cnVlCTgJdHJ1ZQk4MgktMQl0cnVlCTkJdHJ1ZQk4NQktMQl0cnVldAAMY29sdW1uV2lkdGhzc3EAfgABdwQAAAALdAABM3QAAzE2MXQAATJ0AAI2MHQAATF0AAMxMjN0AAEwdAACNDZ0AAE3dAADMTczdAACLTF0AAIyM3QAATZ0AAI3OXQAATV0AAI4NXQAATR0AAI1M3QAATl0AAI4NXQAATh0AAI4Mnh4eHQADGN1cnJlbnRUYWJsZXQABXRhc2tzeHh4"/>
+<mapAttribute key="debugger.view.DataView:DataView.ColumnWidthsMap">
+<mapEntry key="tasks" value="3,56;2,60;1,90;0,55;7,181;6,80;-1,24;5,84;4,51;9,83;8,82"/>
+</mapAttribute>
+<mapAttribute key="debugger.view.DataView:DataView.ColumnWidthsMap.mailboxes">
+<mapEntry key="-1" value="23"/>
+<mapEntry key="0" value="67"/>
+<mapEntry key="1" value="93"/>
+<mapEntry key="2" value="46"/>
+<mapEntry key="3" value="42"/>
+<mapEntry key="4" value="41"/>
+<mapEntry key="5" value="53"/>
+<mapEntry key="6" value="40"/>
+<mapEntry key="7" value="89"/>
+</mapAttribute>
+<mapAttribute key="debugger.view.DataView:DataView.ColumnWidthsMap.tasks">
+<mapEntry key="-1" value="24"/>
+<mapEntry key="0" value="55"/>
+<mapEntry key="1" value="83"/>
+<mapEntry key="2" value="60"/>
+<mapEntry key="3" value="57"/>
+<mapEntry key="4" value="51"/>
+<mapEntry key="5" value="84"/>
+<mapEntry key="6" value="80"/>
+<mapEntry key="7" value="151"/>
+<mapEntry key="8" value="82"/>
+<mapEntry key="9" value="83"/>
+</mapAttribute>
+<mapAttribute key="debugger.view.DataView:DataView.OutlineConfiguration">
+<mapEntry key="tasks" value="OutlineConfig1&#9;11&#9;-1&#9;false&#9;24&#9;-1&#9;true&#9;0&#9;true&#9;55&#9;-1&#9;true&#9;1&#9;true&#9;90&#9;-1&#9;true&#9;2&#9;true&#9;60&#9;-1&#9;true&#9;3&#9;true&#9;56&#9;-1&#9;true&#9;4&#9;true&#9;51&#9;-1&#9;true&#9;5&#9;true&#9;84&#9;-1&#9;true&#9;6&#9;true&#9;80&#9;-1&#9;true&#9;7&#9;true&#9;181&#9;-1&#9;true&#9;8&#9;true&#9;82&#9;-1&#9;true&#9;9&#9;true&#9;83&#9;-1&#9;true"/>
+</mapAttribute>
+<stringAttribute key="debugger.view.DataView:DataView.OutlineConfiguration.mailboxes" value="OutlineConfig1&#9;9&#9;-1&#9;false&#9;23&#9;-1&#9;true&#9;0&#9;true&#9;67&#9;-1&#9;true&#9;1&#9;true&#9;93&#9;-1&#9;true&#9;2&#9;true&#9;46&#9;-1&#9;true&#9;3&#9;true&#9;42&#9;-1&#9;true&#9;4&#9;true&#9;41&#9;-1&#9;true&#9;5&#9;true&#9;53&#9;-1&#9;true&#9;6&#9;true&#9;40&#9;-1&#9;true&#9;7&#9;true&#9;89&#9;-1&#9;true"/>
+<stringAttribute key="debugger.view.DataView:DataView.OutlineConfiguration.tasks" value="OutlineConfig1&#9;11&#9;-1&#9;false&#9;24&#9;-1&#9;true&#9;0&#9;true&#9;55&#9;-1&#9;true&#9;1&#9;true&#9;83&#9;-1&#9;true&#9;2&#9;true&#9;60&#9;-1&#9;true&#9;3&#9;true&#9;57&#9;-1&#9;true&#9;4&#9;true&#9;51&#9;-1&#9;true&#9;5&#9;true&#9;84&#9;-1&#9;true&#9;6&#9;true&#9;80&#9;-1&#9;true&#9;7&#9;true&#9;151&#9;-1&#9;true&#9;8&#9;true&#9;82&#9;-1&#9;true&#9;9&#9;true&#9;83&#9;-1&#9;true"/>
+<stringAttribute key="debugger.view.DataView:DataView.Table" value="tasks"/>
+<listAttribute key="debugger.view.DataView:DataView.Tables">
+<listEntry value="mailboxes"/>
+<listEntry value="tasks"/>
+</listAttribute>
+<listAttribute key="debugger.view.DisassemblyView:current">
+<listEntry value="&lt;Next Instruction&gt;"/>
+<listEntry value="100"/>
+</listAttribute>
+<listAttribute key="debugger.view.ExpressionsView">
+<listEntry value="Locals"/>
+</listAttribute>
+<listAttribute key="debugger.view.ExpressionsView.ExpressionTypes">
+<listEntry value="LOCALS"/>
+</listAttribute>
+<stringAttribute key="debugger.view.ExpressionsView:DebugOutlineColumnState" value="OutlineConfig1&#9;0"/>
+<stringAttribute key="debugger.view.MemoryView" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;US-ASCII&quot; ?&gt;&#13;&#10;&lt;memoryView displayWidthTag=&quot;BYTE_4&quot; autoAlign=&quot;false&quot; showTooltipTag=&quot;true&quot; mCompressedAddresses=&quot;true&quot; formatTag=&quot;Hexadecimal&quot;&gt;&#13;&#10;&lt;/memoryView&gt;&#13;&#10;"/>
+<listAttribute key="debugger.view.MemoryView:current">
+<listEntry value="0xffc02070"/>
+<listEntry value="48"/>
+</listAttribute>
+<stringAttribute key="debugger.view.NewRegisterView:DebugOutlineColumnState" value="OutlineConfig1&#9;0"/>
+<listAttribute key="debugger.view.TraceView:TRACE_EXPORT_FILTERS"/>
+<stringAttribute key="debugger.view.VariableTreeView:DebugOutlineColumnState" value="OutlineConfig1&#9;0"/>
+<stringAttribute key="debugger.view.symbols.FunctionsView:DebugOutlineColumnState" value="OutlineConfig1&#9;0"/>
+<stringAttribute key="ds5_launch_configuration_version" value="5.12"/>
+<stringAttribute key="dtsl_config" value="USBBlaster_DtslScript"/>
+<stringAttribute key="dtsl_config_script" value="CDB://dtsl_config_script.py"/>
+<stringAttribute key="dtsl_options_file" value="default"/>
+<stringAttribute key="dtsl_tracecapture_option" value="options.traceBuffer.traceCapture"/>
+<stringAttribute key="eventviewer_tracesource" value="STM"/>
+<booleanAttribute key="linuxOS" value="false"/>
+<stringAttribute key="model_params" value=""/>
+<stringAttribute key="os_extension_id" value="com.arm.debug.os.rtx"/>
+<stringAttribute key="rddi_type" value="rddi-debug-rvi"/>
+<booleanAttribute key="runAfterConnect" value="false"/>
+<stringAttribute key="runTargetInitializationScript" value="C:\Users\joe\Dropbox\de1_soc_GHRD\software\spl_bsp\preloader.ds"/>
+<stringAttribute key="rvi_address" value="DE-SoC on localhost [USB-1]:DE-SoC USB-1"/>
+<listAttribute key="setup">
+<listEntry value="CDB://debug_server.py"/>
+<listEntry value="CDB://rddi-dap_cfg-altera.txt rddi-dap_altera"/>
+</listAttribute>
+<stringAttribute key="stopAtExpression" value="main"/>
+<stringAttribute key="target_initialization_script" value="CDB://../../../Scripts/altera_target_check.py"/>
+<stringAttribute key="watchpoints" value="&lt;?xml version=&quot;1.0&quot; encoding=&quot;US-ASCII&quot; ?&gt;&#13;&#10;&lt;watchpoint&gt;&#13;&#10;&lt;/watchpoint&gt;&#13;&#10;"/>
+</launchConfiguration>

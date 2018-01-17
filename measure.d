@@ -1,0 +1,13 @@
+measure.o: measure.c
+measure.o: D:\correlation_de1_yao\de0_original_20171110\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX/RTOS/RTX/INC/cmsis_os.h
+measure.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdint.h
+measure.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stddef.h
+measure.o: measure.h
+measure.o: constants.h
+measure.o: time.h
+measure.o: namuru.h
+measure.o: message.h
+measure.o: pseudorange.h
+measure.o: tracking.h
+measure.o: position.h
+measure.o: ephemeris.h
