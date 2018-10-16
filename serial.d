@@ -6,3 +6,13 @@ serial.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\socal/s
 serial.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stddef.h
 serial.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdbool.h
 serial.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdint.h
+serial.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdio.h
+serial.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdarg.h
+serial.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\string.h
+serial.o: alt_16550_uart.h
+serial.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\hwlib.h
+serial.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\alt_hwlibs_ver.h
+serial.o: alt_clock_manager.h
+serial.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\alt_clock_group.h
+serial.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\socal/alt_clkmgr.h
+serial.o: uart0_support.h
