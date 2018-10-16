@@ -39,6 +39,12 @@ typedef struct
 
 typedef struct
 {
+    double x, y, z;
+} vxyz_t;
+
+
+typedef struct
+{
     double  x, y, z;
     double  tb;
 } xyzt_t;
@@ -67,7 +73,7 @@ typedef struct
 typedef struct
 {
     double x,y,z,b;
-//     double xv,yv,zv,df;
+    double vx,vy,vz,df;
     double error;           // Convergence error from position calculation
     unsigned short valid;   // if the error is valid or not.
     unsigned short n;       // number of satellites used in the solution
@@ -76,6 +82,8 @@ typedef struct
 void clear_position( void);
 llh_t ecef_to_llh( xyz_t pos);
 pvt_t calculate_position( unsigned short nsats_used);
+pvt_t calculate_velocity( unsigned short nsats_used);
+pvt_t calculate_velocity_test( unsigned short nsats_used);
 azel_t satellite_azel( xyzt_t satpos);
 satinfo_t SatPosEphemeris( unsigned short ch);
 
@@ -89,13 +97,19 @@ extern unsigned short position_busy;
 extern unsigned short positioning;
 
 extern pvt_t    receiver_pvt;
+extern pvt_t	receiver_pvt_velocity;
+extern pvt_t	receiver_pvt_velocity_test;
 extern llh_t    receiver_llh;
 
 extern azel_t   sat_azel[N_CHANNELS];
 extern xyzt_t	sat_pos_by_ch[N_CHANNELS];
+extern xyzt_t	sat_pos_by_ch_old[N_CHANNELS];
 extern vxyzt_t  sat_vel_by_ch[N_CHANNELS];
+extern vxyzt_t  sat_vel_by_ch_test[N_CHANNELS];
 
 extern satpos_t sat_position[N_CHANNELS];
 extern double   m_rho[N_CHANNELS];
+extern double 	m_rho_dot[N_CHANNELS];
+extern double 	m_rho_dot_test[N_CHANNELS];
 
 #endif // __POSITION_H

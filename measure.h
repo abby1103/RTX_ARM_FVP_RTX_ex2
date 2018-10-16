@@ -9,6 +9,7 @@
 #include "constants.h"
 #include "time.h"
 #include "namuru.h"
+#include "DOP.h"
 
 /*******************************************************************************
  * Definitions
@@ -50,6 +51,7 @@ void measure_thread(void const *argument);
 extern unsigned int channels_ready;
 extern measurement_t meas[N_CHANNELS];
 extern gpstime_t     meas_time;
+extern DOP			 	receiver_DOP;
 //extern cyg_sem_t     measure_semaphore;
 
 #endif // __MEASURE_H

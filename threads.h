@@ -26,6 +26,8 @@ extern osThreadId allocate_thread_id;
 extern osThreadId display_thread_id;
 extern osThreadId message_thread_id;
 extern osThreadId measure_thread_id;
+extern osThreadId ekf_position_thread_id;
+extern osThreadId uart_thread_id;
 
 // Not really a thread, but an interrupt
 

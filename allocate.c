@@ -2,17 +2,13 @@
 
 #include "allocate.h"
 #include "constants.h"
-//#include "ephemeris.h"
 #include "namuru.h"
-//#include "message.h"
 #include "time.h"
 #include "tracking.h"
 
 /*******************************************************************************
  * Global variables
  ******************************************************************************/
-
- //cyg_flag_t    allocate_flag;
 
 /*******************************************************************************
  * Static (module level) variables
@@ -46,85 +42,80 @@ void channel_locked( unsigned short ch)
  ******************************************************************************/
 static void initialize_channel( unsigned short ch, unsigned short prn)
 {
-	if(ch % 2 == 0) {
-	    /* Allocate the free satellite and get ready to check/allocate the next */
-	    CH[ch].prn = prn;
+    /* Allocate the free satellite and get ready to check/allocate the next */
+    CH[ch].prn = prn;
 
-	    /* Set SATCNTL register for C/A code, and LATE for dither arm */
-	    //namuru_ch_write(ch, PRN_KEY, PrnCode[prn]);
-	    ch_block->channels[ch].prn_key = PrnCode[prn];
-	    /* WAIT 300NS UNTIL NEXT ACCESS */
-	    /* Set carrier NCO */
-	    CH[ch].carrier_corr = 0;
-	    CH[ch].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
-	    CH[ch+1].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
-	    //namuru_ch_write(ch, CARR_NCO, CH[ch].carrier_freq);
-	    ch_block->channels[ch].carr_nco = CH[ch].carrier_freq;
-	    ch_block->channels[ch+1].carr_nco = CH[ch+1].carrier_freq;
-	    /* WAIT 300NS UNTIL NEXT ACCESS */
+    /* Set SATCNTL register for C/A code, and LATE for dither arm */
+    //namuru_ch_write(ch, PRN_KEY, PrnCode[prn]);
+    ch_block->channels[ch].prn_key = PrnCode[prn];
+    /* WAIT 300NS UNTIL NEXT ACCESS */
+    /* Set carrier NCO */ 
+    CH[ch].carrier_corr = 0;
+    CH[ch].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
+    CH[ch+1].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
+    //namuru_ch_write(ch, CARR_NCO, CH[ch].carrier_freq);
+    ch_block->channels[ch].carr_nco = CH[ch].carrier_freq;
+    ch_block->channels[ch+1].carr_nco = CH[ch+1].carrier_freq;
+    /* WAIT 300NS UNTIL NEXT ACCESS */
+    
+    /* Initialize the code and frequency search variables */
+    CH[ch].codes = 0;
 
-	    /* Initialize the code and frequency search variables */
-	    CH[ch].codes = 0;
+    // FIXME IS THIS RIGHT? Shouldn't it be chan[ch].n_freq=search_min_f like
+    // in Cliff's code?
+    CH[ch].n_freq   = 0;
+    CH[ch].del_freq = 1;
+    CH[ch].ms_count = 0;
+    /* Set code NCO */
+    CH[ch].code_freq = CODE_REF;
+    //namuru_ch_write(ch, CODE_NCO, CH[ch].code_freq);
+    ch_block->channels[ch].code_nco = CH[ch].code_freq;
+    /* WAIT 300NS UNTIL NEXT ACCESS */
 
-	    // FIXME IS THIS RIGHT? Shouldn't it be chan[ch].n_freq=search_min_f like
-	    // in Cliff's code?
-	    CH[ch].n_freq   = 0;
-	    CH[ch].del_freq = 1;
-	    CH[ch].ms_count = 0;
-	    /* Set code NCO */
-	    CH[ch].code_freq = CODE_REF;
-	    //namuru_ch_write(ch, CODE_NCO, CH[ch].code_freq);
-	    ch_block->channels[ch].code_nco = CH[ch].code_freq;
-	    /* WAIT 300NS UNTIL NEXT ACCESS */
+    /* Bit sync and frame sync flags */
+    CH[ch].bit_sync = 0;
 
-	    /* Bit sync and frame sync flags */
-	    CH[ch].bit_sync = 0;
+    /* Signal strength */
+    CH[ch].sum = 0.0;
+    CH[ch].avg = NOISE_FLOOR; /* 30 dBHz, noise floor */
 
-	    /* Signal strength */
-	    CH[ch].sum = 0.0;
-	    CH[ch].avg = NOISE_FLOOR; /* 30 dBHz, noise floor */
+    /* Turn on the channel */
+    //channel_power_control( ch, CHANNEL_ON);
+    /* WAIT 300NS UNTIL NEXT ACCESS */
 
-	    /* Turn on the channel */
-	    //channel_power_control( ch, CHANNEL_ON);
-	    /* WAIT 300NS UNTIL NEXT ACCESS */
+    /* Clear missed accumulation counter */
+//     CH[ch].missed = 0;
 
-	    /* Clear missed accumulation counter */
-	//     CH[ch].missed = 0;
-
-	    /* Clear prompt and dither vector magnitudes */
-	    CH[ch].early_mag  = 0;
-	    CH[ch].prompt_mag = 0;
-	    CH[ch].late_mag   = 0;
-	    /* Epoch counter set flags */
-	    CH[ch].load_1ms_epoch_count  = 0;
-	    CH[ch].sync_20ms_epoch_count = 0;
-
-	    /* Clear the number of bits since the week began */
-	    CH[ch].time_in_bits = 0;
-
-	    /* Clear the sat navigation message for this channel,
-	     * including the ephemeris since we're switching sats */
-	    clear_messages(ch);
-	    clear_ephemeris(ch);
-
-	    /* Update channel state */
-	    CH[ch].state = CHANNEL_ACQUISITION;
-	    CH[ch+1].state = CHANNEL_ACQUISITION;
-	}
-
+    /* Clear prompt and dither vector magnitudes */
+    CH[ch].early_mag  = 0;
+    CH[ch].prompt_mag = 0;
+    CH[ch].late_mag   = 0;
+    /* Epoch counter set flags */
+    CH[ch].load_1ms_epoch_count  = 0;
+    CH[ch].sync_20ms_epoch_count = 0;
+        
+    /* Clear the number of bits since the week began */
+    CH[ch].time_in_bits = 0;
+    
+    /* Clear the sat navigation message for this channel,
+     * including the ephemeris since we're switching sats */
+    clear_messages(ch);
+    clear_ephemeris(ch);
+    
+    /* Update channel state */
+    CH[ch].state = CHANNEL_ACQUISITION;
+    CH[ch+1].state = CHANNEL_ACQUISITION;
 }
 
 
 
 static void restart_channel( unsigned short ch)
 {
-    /* Set carrier NCO */
+    /* Set carrier NCO */                
     CH[ch].carrier_corr = 0;
     CH[ch].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
-    CH[ch+1].carrier_freq = CH[ch].carrier_freq;
     //namuru_ch_write(ch, CARR_NCO, CH[ch].carrier_freq);
     ch_block->channels[ch].carr_nco = CH[ch].carrier_freq;
-    ch_block->channels[ch+1].carr_nco = CH[ch+1].carrier_freq;
     /* WAIT 300NS UNTIL NEXT ACCESS */
 
     /* Initialize the code and frequency search variables */
@@ -161,15 +152,15 @@ static void restart_channel( unsigned short ch)
     /* Epoch counter set flags */
     CH[ch].load_1ms_epoch_count = 0;
     CH[ch].sync_20ms_epoch_count = 0;
-
+        
     /* Clear the number of bits since the week began */
     CH[ch].time_in_bits = 0;
-
-    /* Inform the message thread to start looking for a
+       
+    /* Inform the message thread to start looking for a 
     * frame sync again, and reset the epoch counter,
     * but don't reset the ephemeris */
     //clear_messages(ch);
-
+    
     /* Update channel state */
     CH[ch].state = CHANNEL_ACQUISITION;
 }
@@ -242,19 +233,36 @@ void cold_allocate_channel(unsigned short ch)
 void
 initialize_allocation( void)
 {
+
     initialize_channel(  0, 26);
     //initialize_channel(  1, 7);
     initialize_channel(  2, 7);
     //initialize_channel(  3,3);
-    initialize_channel(  4,3);
+    initialize_channel(  4,24);
     //initialize_channel(  5,22);
-    initialize_channel(  6,27);
+    initialize_channel(  6,3);
     //initialize_channel(  7,19);
     initialize_channel(  8,20);
     //initialize_channel(  9,21);
     initialize_channel( 10,23);
     //initialize_channel( 11,28);
     initialize_channel( 12, 22);
+
+
+	//Tainan
+	/*
+	initialize_channel(  0, 17);
+	initialize_channel(  1, 23);
+	initialize_channel(  2, 20);
+	initialize_channel(  3,11);
+	initialize_channel(  4,21);
+	initialize_channel(  5,24);
+	initialize_channel(  6,13);
+	initialize_channel(  7,14);
+	initialize_channel(  8,0);
+	initialize_channel(  9,1);
+	initialize_channel( 10,2);
+	initialize_channel( 11,3);*/
 }
 
 /******************************************************************************

@@ -3,7 +3,7 @@ tracking.o: E:\correlation_de1_yao\dual_attena\de0_dual_antenna\GPS_C_code_xdwah
 tracking.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdint.h
 tracking.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stddef.h
 tracking.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdlib.h
-tracking.o: gpio1.h
+tracking.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\math.h
 tracking.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\socal/socal.h
 tracking.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdbool.h
 tracking.o: constants.h
@@ -12,4 +12,5 @@ tracking.o: namuru.h
 tracking.o: threads.h
 tracking.o: measure.h
 tracking.o: time.h
+tracking.o: DOP.h
 tracking.o: message.h

@@ -31,14 +31,16 @@
 //#define NOISE_FLOOR     527
 #define NOISE_FLOOR     1055
 //#define LOCK_THRESHOLD  746
-#define LOCK_THRESHOLD  2110
-//#define AcqThresh       1200
+#define LOCK_THRESHOLD  2100
+//#define AcqThresh       2200
 #define AcqThresh       2500
 
 
 //Tracking parameter 
-#define CarrSrchWidth   24
-#define CarrSrchStep    10737//500Hz
+//#define CarrSrchWidth   24
+//#define CarrSrchStep    10737//500Hz
+#define CarrSrchWidth	96
+#define CarrSrchStep	2684
 //#define PullCodeK
 //#define PullCodeD
 //#define PullInTime
@@ -74,7 +76,7 @@ typedef struct
     int                 q_early, q_prompt, q_late; // Track arms (signed!)
     int                 i_prompt_old, q_prompt_old;//for FLL
     long                carrier_corr;//not used now
-    long                carrier_freq;       // in NCO hex units
+    long                carrier_freq,d_carrier_freq, carrier_freq_old, carrier_freq_old_old,carrier_freq_qq;       // in NCO hex units
     long                code_freq;          // in NCO hex units
     signed short        n_freq;             // Carrier frequency search bin
     signed short        del_freq;           // Frequency search delta
@@ -88,8 +90,8 @@ typedef struct
     long                sum;
     long                th_rms;
     long                delta_code_phase, delta_code_phase_old;
-    long                delta_carrier_phase, delta_carrier_phase_old;
-    long                delta_carrier_freq;   
+    long                delta_carrier_phase, delta_carrier_phase_old, delta_carrier_phase_old_old;
+    long                delta_carrier_freq, delta_carrier_freq_old;
     long                old_theta;
     unsigned long       ms_sign;
     unsigned short      ms_count;
@@ -112,9 +114,14 @@ typedef struct
 
     int                 sign_pos, prev_sign_pos;  // Expected bits edges: current and previous.
     int                 sign_count;               // How many times bit edges distance is more then 19 ms!
-	
-	int 				no_view;                // How many times the antenna lose lock
+    int ch_debug;
+    long				doppler_freq;
+
+
+    int 				no_view;                // How many times the antenna lose lock
     int                 phase_info;           // dual antenna: how two channel data coherency
+
+
 } chan_t;
 
 /*******************************************************************************

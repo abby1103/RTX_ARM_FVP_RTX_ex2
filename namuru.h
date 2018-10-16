@@ -8,7 +8,7 @@
 //control block
 #define CONTROL_BASE			0x3C0
 //channels
-#define N_CHANNELS        14
+#define N_CHANNELS        12
 //peripheral base address
 #define NAMURU_BASE				0xFF200000
 

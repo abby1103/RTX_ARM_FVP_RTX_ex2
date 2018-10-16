@@ -22,9 +22,9 @@ RTX_ex2.o: constants.h
 RTX_ex2.o: ephemeris.h
 RTX_ex2.o: measure.h
 RTX_ex2.o: time.h
+RTX_ex2.o: DOP.h
 RTX_ex2.o: position.h
+RTX_ex2.o: ekf_position.h
+RTX_ex2.o: uart_NMEA.h
 RTX_ex2.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\socal/socal.h
 RTX_ex2.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdbool.h
-RTX_ex2.o: uart0_support.h
-RTX_ex2.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\hwlib.h
-RTX_ex2.o: C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\alt_hwlibs_ver.h

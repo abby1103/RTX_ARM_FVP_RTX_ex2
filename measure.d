@@ -6,8 +6,10 @@ measure.o: measure.h
 measure.o: constants.h
 measure.o: time.h
 measure.o: namuru.h
+measure.o: DOP.h
 measure.o: message.h
 measure.o: pseudorange.h
 measure.o: tracking.h
 measure.o: position.h
 measure.o: ephemeris.h
+measure.o: threads.h

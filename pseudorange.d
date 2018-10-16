@@ -6,5 +6,6 @@ pseudorange.o: time.h
 pseudorange.o: namuru.h
 pseudorange.o: C:\altera\14.1\embedded\ds-5\sw\ARMCompiler5.05\bin\..\include\stdint.h
 pseudorange.o: measure.h
+pseudorange.o: DOP.h
 pseudorange.o: position.h
 pseudorange.o: tracking.h

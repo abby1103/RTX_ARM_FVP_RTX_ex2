@@ -15,6 +15,8 @@ typedef enum {
     DISPLAY_STOP        = 5,
     DISPLAY_DEBUG       = 6,
     DISPLAY_LOG         = 7,
+    DISPLAY_WHERE		= 8,
+	DISPLAY_EKFPa		=9,
     DISPLAY_NOT_USED,       // Used to force clear screen on startup
 } display_t;
 

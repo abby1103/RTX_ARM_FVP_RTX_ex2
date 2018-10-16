@@ -101,9 +101,12 @@ calculate_pseudorange( unsigned short ch)
      *
      * This part should be revisited to adopt the way we calculate the pseudorange.
      * Set a timer and check the NCO value in it.
+     *
+     * Please compensate for the loss during transmission
      */
-    pr[ch].delta_range = (double)(CARRIER_REF - CH[ch].carrier_freq) * (SPEED_OF_LIGHT / 1575420000) * 0.037252902;
-    pr[ch].delta_range_test = (pr[ch].range-pr[ch].range_old) * 1000;
+    pr[ch].delta_range = (double)(CH[ch].doppler_freq) * (SPEED_OF_LIGHT / L1) * 0.046566128730774 / 100;
+    CH[ch].doppler_freq = 0;
+    pr[ch].delta_range_test = (pr[ch].range-pr[ch].range_old) * 10;
 
     // Record the following information for debugging
     pr[ch].prn = meas[ch].prn;

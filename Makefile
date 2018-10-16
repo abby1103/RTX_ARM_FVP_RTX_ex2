@@ -34,13 +34,17 @@ LD = armlink
 
 ROOT = E:\correlation_de1_yao\dual_attena\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX
 
-CFLAGS = -D__CMSIS_RTOS -D__MICROLIB -D__EVAL -D__FPU_PRESENT --apcs=interwork --thumb --cpu Cortex-A9 -g -O0 --md --c99\
+CFLAGS = -D__CMSIS_RTOS -D__MICROLIB -D__EVAL -D__FPU_PRESENT --apcs=interwork --thumb --cpu Cortex-A9 -g -O0 --md --c99 \
+         -D SYSTEM_BUS_WIDTH=32\
          -I $(ROOT)/RTOS/RTX/SRC \
          -I $(ROOT)/RTOS/RTX/INC \
          -I $(ROOT)/Include \
          -I . \
          -I ../INC \
-         -I C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include 
+         -I C:\altera\14.1\embedded\ip\altera\hps\altera_hps\hwlib\include\
+         -I C:\altera\14.1\ip\altera\sopc_builder_ip\altera_avalon_uart\LWHAL\inc\
+         -I C:\altera\14.1\ip\altera\sopc_builder_ip\altera_avalon_uart\inc\
+         -I C:\altera\14.1\ip\altera\sopc_builder_ip\altera_mp32\HAL\inc
 CXXFLAGS = $(CFLAGS) --exceptions
 ASFLAGS = --pd "__CMSIS_RTOS SETA 1" --pd "__EVAL SETA 1" --pd "__MICROLIB SETA 1" --pd "__FPU_PRESENT SETA 1" \
 		  --apcs=interwork --cpu=Cortex-A9 -g --diag_suppress=1786

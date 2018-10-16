@@ -15,3 +15,6 @@ display.o: pseudorange.h
 display.o: time.h
 display.o: serial.h
 display.o: tracking.h
+display.o: measure.h
+display.o: DOP.h
+display.o: ekf_position.h
