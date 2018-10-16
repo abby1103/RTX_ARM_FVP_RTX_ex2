@@ -25,6 +25,9 @@ typedef struct
     unsigned short  prn;
     double          sat_time;        // Time of transmission
     double          range;
+    double			range_old;
+    double          delta_range;
+    double 			delta_range_test;
     double          residual;
     
     unsigned long   bit_time;       // for debugging epoch counter stuff

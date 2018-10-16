@@ -34,6 +34,8 @@
 #define F_RC -4.442807633E-10 // Relativistic correction: -2*sqrt(mu)/c^2
                               // (BB p133)
 
+#define N_DEBUG_LENGTH 100
+
 /******************************************************************************
  * Globals
  ******************************************************************************/
@@ -46,11 +48,20 @@ llh_t   receiver_llh;
 
 azel_t  sat_azel[N_CHANNELS];
 xyzt_t  sat_pos_by_ch[N_CHANNELS];
+vxyzt_t  sat_vel_by_ch[N_CHANNELS];
 
 // temporarily globals for debugging
 
 satpos_t sat_position[N_CHANNELS];
 double   m_rho[N_CHANNELS];
+
+struct sat_dot {
+	double r_dot;
+	double aol_dot;
+	double inc_dot;
+};
+
+struct sat_dot debug_sat_dot[N_DEBUG_LENGTH];
 
 /******************************************************************************
  * Statics (Module variables)
@@ -601,10 +612,10 @@ PURPOSE
 
 *******************************************************************************/
 
-xyzt_t
+satinfo_t
 SatPosEphemeris( unsigned short ch)
 {
-    xyzt_t result;
+	satinfo_t result;
 
     unsigned short i;
 
@@ -614,6 +625,9 @@ SatPosEphemeris( unsigned short ch)
     double tc;
     double ea,ei,diff,ta,aol,delr,delal,delinc,r,inc,la,xp,yp;
     double wm;
+
+    double n;
+    double ma_dot;
 
     /* Save some float math. */
     double s, c, sin_ea, cos_ea, e2, sqra2, s_la, c_la;
@@ -672,6 +686,9 @@ SatPosEphemeris( unsigned short ch)
     // calculate average sat.ang.vel.
     wm = SQRMU / pow( ephemeris[ch].sqra, 3.0);
 
+    n = wm + ephemeris[ch].dn;
+    ma_dot = n;
+
     // Prep the loop
     ei = ephemeris[ch].ma + del_toe * (wm + ephemeris[ch].dn);
     ea = ei;
@@ -693,21 +710,28 @@ SatPosEphemeris( unsigned short ch)
     /* ea may not converge. No error handling. */
     // It would be interesting to tag non-convergence, probably never happens.
 
-    // Now make the relativistic correction to the coarse time (BBp133)
+    double ea_dot = ma_dot / (1 - ephemeris[ch].ety * cos(ea));
+
+    // Now make the relativistic correction  to the coarse time (BBp133)
     del_tsv = del_tsv +
             (F_RC * ephemeris[ch].ety * ephemeris[ch].sqra * sin_ea);
 
     // Store the final clock corrections (Used for m_rho in position_thread.)
-    result.tb = del_tsv;
+    result.pos.tb = del_tsv;
 
     /* ta is the true anomaly (angle from perigee) */
     // This is clever because it magically gets the sign right
     e2 = ephemeris[ch].ety * ephemeris[ch].ety;
     ta = atan2( (sqrt( 1.0 - e2) * sin_ea), (cos_ea - ephemeris[ch].ety));
 
+    double ta_dot = sin(ea) * ea_dot * (1 + ephemeris[ch].ety * cos(ta)) / ((1 - cos(ea) * ephemeris[ch].ety) * sin(ta));
+
     /* aol is the argument of latitude of the satellite */
     // w is the argument of perigee (GBp59)
+    // aol is v
     aol = ta + ephemeris[ch].w;
+
+    double phi_dot = ta_dot;
 
     /* Calculate the second harmonic perturbations of the orbit */
     c = cos( aol + aol);
@@ -716,12 +740,21 @@ SatPosEphemeris( unsigned short ch)
     delal  = ephemeris[ch].cuc * c + ephemeris[ch].cus * s; // arg. of latitude
     delinc = ephemeris[ch].cic * c + ephemeris[ch].cis * s; // inclination
 
+    double delal_dot = 2 * (ephemeris[ch].cus * c - ephemeris[ch].cuc * s) * phi_dot;
+    double delr_dot = 2 * (ephemeris[ch].crs * c - ephemeris[ch].crc * s) * phi_dot;
+    double delinc_dot = 2 * (ephemeris[ch].cis * c - ephemeris[ch].cic * s) * phi_dot;
+
     /* r is the radius of satellite orbit at time pr2[ch].sat_time */
     // A = sqrt(Orbital major axis)^2
+    /* sqra??? */
     sqra2 = ephemeris[ch].sqra * ephemeris[ch].sqra;
     r = sqra2 * (1 - ephemeris[ch].ety * cos_ea) + delr;
     aol += delal;
     inc = ephemeris[ch].inc0 + delinc + ephemeris[ch].idot * del_toe;
+
+    double r_dot = sqra2 * ephemeris[ch].ety * sin(ea) * ea_dot + delr_dot;
+    double aol_dot = phi_dot + delal_dot;
+    double inc_dot = ephemeris[ch].idot + delinc_dot;
 
     /* la is the corrected longitude of the ascending node */
     la = ephemeris[ch].w0 + del_toe * (ephemeris[ch].omegadot - OMEGA_E) -
@@ -731,17 +764,53 @@ SatPosEphemeris( unsigned short ch)
     xp = r * cos(aol);
     yp = r * sin(aol);
 
+    double xp_dot = r_dot * cos(aol) - r * sin(aol) * aol_dot;
+    double yp_dot = r_dot * sin(aol) + r * cos(aol) * aol_dot;
+
+    double la_dot = ephemeris[ch].omegadot - OMEGA_E;
+
     // transform to ECEF
     s_la = sin(la);
     c_la = cos(la);
     s = sin(inc);
     c = cos(inc);
 
-    result.x = xp * c_la - yp * c * s_la;
-    result.y = xp * s_la + yp * c * c_la;
-    result.z = yp * s;
+    result.pos.x = xp * c_la - yp * c * s_la;
+    result.pos.y = xp * s_la + yp * c * c_la;
+    result.pos.z = yp * s;
+
+    result.vel.vx = xp_dot * c_la - yp_dot * c * s_la +
+    		yp * s * s_la * inc_dot - result.pos.y * la_dot;
+    result.vel.vy = xp_dot * s_la + yp_dot * c * c_la -
+    		yp * s * inc_dot * c_la + result.pos.x * la_dot;
+    result.vel.vz = yp_dot * s + yp * c * inc_dot;
+
+    static int index = 0;
+
+
+    if (1) {
+    	if (index < N_DEBUG_LENGTH) {
+        	debug_sat_dot[index].r_dot = phi_dot;
+        	debug_sat_dot[index].aol_dot = ea_dot;
+        	debug_sat_dot[index].inc_dot = ma_dot;
+        	index++;
+    	}
+    }
 
     return( result);
+}
+
+/*
+ * SatVelEphemeris
+ * Reimplement this function using different algorithm in SatPosEphemeris
+ * because the algorithm in SatPosEphemeris use orbital plane and I
+ * can't find the algorithm use orbital plane in velocity
+ */
+vxyzt_t SatVelEphemeris(unsigned short ch)
+{
+	vxyzt_t result;
+
+	return result;
 }
 
 

@@ -47,7 +47,7 @@ display_position( void)
 
     char string[120];
     char header[] = 
-    "\033[32mCh: PN C PrV EpV   Pseudorange\n\r\033[0m";
+    "\033[32mCh: PN C PrV EpV   Pseudorange\tDelta Pseudorange\tDelta Pseudorange Test\n\r\033[0m";
 // Ch: PN C PrV EpV U pseudorange   El. Az. ----x---- ----y---- ----z----\n\r";
 
     time_t          std_time;
@@ -147,13 +147,15 @@ State: positioning = %d, last position valid = %d\n\r\n\r",
                         
             sprintf( string,
 //                   "%2d: %2d %c   %d   %d  % e %3.f %3.f %.3e %.3e %.3e\033[K\n\r",
-                     "%2d: %2d %c   %d   %d  %e \033[K\n\r",
+                     "%2d: %2d %c   %d   %d  %e  %e  %e\033[K\n\r",
                      ch,
                      CH[ch].prn,
                      channel_state,
                      pr[ch].valid,
                      ephemeris[ch].valid,
-                     pr[ch].range
+                     pr[ch].range,
+                     pr[ch].delta_range,
+                     pr[ch].delta_range_test
             );
 //                      sat_pos_by_ch[ch].x,
 //                      sat_pos_by_ch[ch].y,
@@ -211,29 +213,19 @@ display_pseudorange( void)
                 break;
         }
 
-        if(pr[ch].valid)
-        {
-            sprintf( string,
-                    "%2d: %2d %c %6ld %2d %2d  %e %5ld\033[K\n\r",
-                    ch,
-                    pr[ch].prn,
-                    channel_state,
-                    pr[ch].bit_time,
-                    pr[ch].epoch_bits,
-                    pr[ch].epoch_ms,
-                    pr[ch].range,
-                    CH[ch].avg);
-            SER_PutString( string);
-        }
-        else
-        {
-            sprintf( string,
-                    "%2d: %2d %c\033[K\n\r",
-                    ch,
-                    pr[ch].prn,
-                    channel_state);
-            SER_PutString(string);
-        }
+		sprintf( string,
+				"%2d: %2d %c [%e, %e, %e]\t [%e, %e, %e]\033[K\n\r",
+				ch,
+				pr[ch].prn,
+				channel_state,
+				sat_position[ch].x,
+				sat_position[ch].y,
+				sat_position[ch].z,
+				sat_position[ch].vx,
+				sat_position[ch].vy,
+				sat_position[ch].vz
+	   );
+		SER_PutString( string);
     }
 }
 
@@ -544,8 +536,8 @@ display_tracking( void)
             "%2d: %2d %6d %6d %c(%c%c) %6ld  %d  %d %d\n\r",
             ch,
             CH[ch].prn + 1,
-            CH[ch].early_mag,
-            CH[ch].late_mag,
+            CH[ch].i_prompt,
+            CH[ch].q_prompt,
             channel_state,
             channel_bitsync,
             channel_framesync,

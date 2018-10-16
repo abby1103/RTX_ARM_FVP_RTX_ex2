@@ -34,7 +34,7 @@ LD = armlink
 
 ROOT = D:\correlation_de1_yao\de0_original_20171110\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX
 
-CFLAGS = -D__CMSIS_RTOS -D__MICROLIB -D__EVAL -D__FPU_PRESENT --apcs=interwork --thumb --cpu Cortex-A9 -g -O0 --md \
+CFLAGS = -D__CMSIS_RTOS -D__MICROLIB -D__EVAL -D__FPU_PRESENT --apcs=interwork --thumb --cpu Cortex-A9 -g -O0 --md --c99\
          -I $(ROOT)/RTOS/RTX/SRC \
          -I $(ROOT)/RTOS/RTX/INC \
          -I $(ROOT)/Include \

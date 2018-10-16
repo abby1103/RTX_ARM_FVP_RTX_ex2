@@ -14,11 +14,15 @@
 #include "position.h"
 #include "time.h"
 
+#include "tracking.h"
+
 /******************************************************************************
  * Globals
  ******************************************************************************/
 
 //cyg_flag_t    pseudorange_flag;
+
+extern chan_t CH[N_CHANNELS];
 
 pseudorange_t pr[N_CHANNELS];
 gpstime_t     pr_time;
@@ -40,6 +44,7 @@ clear_pseudoranges( void)
         pr[ch].valid = 0;  // need to clear this flag, why do anything else?
         pr[ch].prn   = 0;
         pr[ch].range = 0;
+        pr[ch].delta_range = 0;
     }
     // If there are no pseudoranges, we can't position, so clear the
     // position as well
@@ -88,7 +93,17 @@ calculate_pseudorange( unsigned short ch)
 
     // NO ionospheric corrections, no nuthin': mostly for debug
     // FIXME: What about GPS week for this calculation?!
+    pr[ch].range_old = pr[ch].range;
 	pr[ch].range = (pr_time.seconds - pr[ch].sat_time) * SPEED_OF_LIGHT;
+
+    /*
+     * Delta range measurement
+     *
+     * This part should be revisited to adopt the way we calculate the pseudorange.
+     * Set a timer and check the NCO value in it.
+     */
+    pr[ch].delta_range = (double)(CARRIER_REF - CH[ch].carrier_freq) * (SPEED_OF_LIGHT / 1575420000) * 0.037252902;
+    pr[ch].delta_range_test = (pr[ch].range-pr[ch].range_old) * 1000;
 
     // Record the following information for debugging
     pr[ch].prn = meas[ch].prn;

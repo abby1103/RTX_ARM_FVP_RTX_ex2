@@ -208,7 +208,8 @@ measure_thread(void const *argument) // input 'data' not used
 		            {
 		                // get the satellite ECEF XYZ + time (correction?) of the
 		                // satellite. Note that sat_position is ECEF*T* type.
-						sat_pos_by_ch[ch] = SatPosEphemeris(ch);
+						sat_pos_by_ch[ch] = SatPosEphemeris(ch).pos;
+						sat_vel_by_ch[ch] = SatPosEphemeris(ch).vel;
 						sat_azel[ch]      = satellite_azel(sat_pos_by_ch[ch]);
 
 		                // Pack the satellite positions into an array for efficiency
@@ -220,7 +221,9 @@ measure_thread(void const *argument) // input 'data' not used
 						sat_position[satnum].prn     = pr2[ch].prn;
 
 		                // Doppler measurement is not supported.
-		                // SHOCK!! SHOCK, I TELL YOU.
+						sat_position[satnum].vx       = sat_vel_by_ch[ch].vx;
+						sat_position[satnum].vy       = sat_vel_by_ch[ch].vy;
+						sat_position[satnum].vz       = sat_vel_by_ch[ch].vz;
 
 		                // Pseudorange measurement. No ionospheric delay correction.
 		                m_rho[satnum] = pr2[ch].range +
