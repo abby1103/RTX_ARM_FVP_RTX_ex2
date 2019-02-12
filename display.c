@@ -116,7 +116,7 @@ static void display_position( void)
         SER_PutString( string);
 
     /* print ekf */
-        /*sprintf( string,
+        sprintf( string,
                          "position  = x:%e y:%e z:%e b:%1.3e)\033[K\n\r\n\r",
                          ekf_pos.x,
                          ekf_pos.y,
@@ -137,7 +137,7 @@ static void display_position( void)
 						 ekf_pos.ax,
 						 ekf_pos.ay,
 						 ekf_pos.az);
-				SER_PutString( string);*/
+				SER_PutString( string);
 
     /* beep the bell if we just got busy in position. */
     if (positioning) {
@@ -662,13 +662,15 @@ static void display_where(void)
 	time_t std_time;
 	std_time = get_standard_time();
 		if (count < 1000 && positioning && receiver_pvt.valid) {
-		sprintf(string, "%e, %e, %e, %e, %e, %e,0,0,0;\n\r%e,%e,%e,%e,%e,%e,%e,%e,%e;\n\r",
+		sprintf(string, "%e, %e, %e, %e, %e, %e,%f,%f,0;\n\r%e,%e,%e,%e,%e,%e,%e,%e,%e;\n\r",
 				receiver_pvt.x,
 				receiver_pvt.y,
 				receiver_pvt.z,
 				receiver_pvt_velocity.vx,
 				receiver_pvt_velocity.vy,
 				receiver_pvt_velocity.vz,
+				receiver_pvt.b,
+				receiver_pvt_velocity.df,
 				ekf_pos.x,
 				ekf_pos.y,
 				ekf_pos.z,
@@ -691,7 +693,7 @@ static void display_ekfparameter(void)
 {
 	char string[1000];
 	static int count = 0;
-	if (count < 1000 && positioning && receiver_pvt.valid) {
+	if (count < 5000 && positioning && receiver_pvt.valid) {
 		sprintf(string, "%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r",
 
 				sat_position[0].prn,

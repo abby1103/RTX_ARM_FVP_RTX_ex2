@@ -31,7 +31,7 @@
 //#define NOISE_FLOOR     527
 #define NOISE_FLOOR     1055
 //#define LOCK_THRESHOLD  746
-#define LOCK_THRESHOLD  2100
+#define LOCK_THRESHOLD  3000
 //#define AcqThresh       2200
 #define AcqThresh       2500
 
