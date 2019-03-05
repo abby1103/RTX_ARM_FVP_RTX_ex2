@@ -177,13 +177,14 @@ static void display_position( void)
             el = sat_azel[ch].el * RADTODEG;
                         
             sprintf( string,
-                     "%2d: %2d %c   %d   %d  %e \033[K\n\r",
+                     "%2d: %2d %c   %d   %d  %e      %2d\033[K\n\r",
                      ch,
                      CH[ch].prn,
                      channel_state,
                      pr[ch].valid,
                      ephemeris[ch].valid,
-                     pr[ch].range
+                     pr[ch].range,
+                     CH[ch].ch_debug
             );
             SER_PutString( string);
         } else {
@@ -477,7 +478,7 @@ void log_ephemeris(unsigned short ch, unsigned short subframe)
 static void display_tracking( void)
 {
     char header[] =
-        "\033[32m\033[HCh: PN  Iprmt  Qprmt State    Avg\n\r\033[0m";
+        "\033[32m\033[HCh: PN  Ierly Iprmt Ilate  Qprmt State    Avg  ch01\n\r\033[0m";
     char string[80];
 
     unsigned short ch;
@@ -518,7 +519,7 @@ static void display_tracking( void)
             channel_framesync = '-';
 
         sprintf(string,
-            "%2d: %2d %6d %6d %6d %6d %c(%c%c) %6ld\n\r",
+            "%2d: %2d %6d %6d %6d %6d %c(%c%c) %6ld  %2d\n\r",
             ch,
             CH[ch].prn + 1,
             CH[ch].i_early,
@@ -528,7 +529,8 @@ static void display_tracking( void)
             channel_state,
             channel_bitsync,
             channel_framesync,
-            CH[ch].avg);
+            CH[ch].avg,
+            CH[ch].ch_debug);
 
         SER_PutString(string);
     }
@@ -588,7 +590,7 @@ static void display_debug( void)
 static void display_messages( void)
 {
     char header[] = 
-    	"\033[32m\033[HCh: PN Mi   TOW SF SF1V SF2V SF3V SF4V SF5V State   Avg  DBug\n\r\033[0m";
+    	"\033[32m\033[HCh: PN Mi   TOW SF SF1V SF2V SF3V SF4V SF5V State   Avg  debug\n\r\033[0m";
     char string[80];
 
     unsigned short ch;
@@ -634,7 +636,7 @@ static void display_messages( void)
             TOW = 0;
 
         sprintf( string, 
-        	"%2d: %2d %2d %5d %2d %4lx %4lx %4lx %4lx %4lx %c(%c%c) %5ld %2d\n\r",
+        	"%2d: %2d %2d %5d %2d %4lx %4lx %4lx %4lx %4lx %c(%c%c) %7ld  %1d %1d\n\r",
             ch,
             CH[ch].prn,
             CH[ch].missed_message_bit,
@@ -649,7 +651,9 @@ static void display_messages( void)
             channel_bitsync,
             channel_framesync,
             CH[ch].avg,
-            CH[ch].ch_debug);
+            messages[ch].ch_debug,
+            CH[ch].ch_debug2
+            );
 
         SER_PutString( string);
     }

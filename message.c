@@ -198,23 +198,37 @@ static void look_for_preamble( unsigned short ch)
         HOW ^= 0x3fffffc0;
 
     if( (TLM & 0x3fc00000) != PREAMBLE) // Test for preamble
-        return;
+    {
+    //	messages[ch].ch_debug = 1;
+    	return;
+    }
+
 
     current_subframe = (int)((HOW >> 8) & 7);             // Subframe ID
 
     if( (current_subframe < 1) || (current_subframe > 5)) // subframe range test
+    {
+        messages[ch].ch_debug = 2;
         return;
-
+    }
     if( HOW & 3) // Confirm zeros
+    {
+        messages[ch].ch_debug = 3;
         return;
+    }
 
     // The advantage of previous checks is saving time on false hits.
     // They do increase time on true hits though.
     if( !ParityCheck( TLM))
-        return;
-
+    {
+		messages[ch].ch_debug = 4;
+		return;
+	}
     if( !ParityCheck( HOW))
-        return;
+    {
+		messages[ch].ch_debug = 5;
+		return;
+	}
     
     // Hooray! We found a valid preamble and a sane HOW word, so for now
     // we'll assume we're synced. We won't really know until we get the next
@@ -330,7 +344,7 @@ void message_thread(void const *argument) // input 'data' not used
         gpio1_set(1);
         // Clear the flag IPC shadow (see below)
         channels_with_subframes = 0;
-        
+
         for(ch = 0; ch < N_CHANNELS; ++ch)
         {
             if(channels_with_bits & (1 << ch))
@@ -341,15 +355,18 @@ void message_thread(void const *argument) // input 'data' not used
 
                 // If the channel isn't sync'd to the message frame,
                 // look for the preamble
+                //messages[ch].ch_debug = 0;
                 if(!messages[ch].frame_sync)
                 {
                     look_for_preamble(ch);
-                    
+
                     // If we just found sync, then reset the counters
                     if(messages[ch].frame_sync)
                     {
                         messages[ch].bitcount = 0;
+                        messages[ch].ch_debug = 6;
                     }
+
                 }
                 // Frame is sync'd, so get bits and words.
                 else /* Frame is sync'd */

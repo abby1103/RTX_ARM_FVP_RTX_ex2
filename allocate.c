@@ -242,11 +242,11 @@ initialize_allocation( void)
     //initialize_channel(  5,22);
     initialize_channel(  6,13);
     //initialize_channel(  7,19);
-    initialize_channel(  8,9);
+    initialize_channel(  8,25);
     //initialize_channel(  9,21);
-    initialize_channel( 10,25);
+    initialize_channel( 10,9);
     //initialize_channel( 11,28);
-    initialize_channel( 12, 28);
+    //initialize_channel( 12, 30);
 
 
 	//Tainan

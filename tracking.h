@@ -31,7 +31,7 @@
 //#define NOISE_FLOOR     527
 #define NOISE_FLOOR     1055
 //#define LOCK_THRESHOLD  746
-#define LOCK_THRESHOLD  3000
+#define LOCK_THRESHOLD  2500
 //#define AcqThresh       2200
 #define AcqThresh       2500
 
@@ -114,12 +114,12 @@ typedef struct
 
     int                 sign_pos, prev_sign_pos;  // Expected bits edges: current and previous.
     int                 sign_count;               // How many times bit edges distance is more then 19 ms!
-    int ch_debug;
+    int ch_debug,ch_debug2;
     long				doppler_freq;
 
 
     int 				no_view;                // How many times the antenna lose lock
-    int                 phase_info;           // dual antenna: how two channel data coherency
+    int                 phase_info,phase_info_old;           // dual antenna: how two channel data coherency
 
 
 } chan_t;

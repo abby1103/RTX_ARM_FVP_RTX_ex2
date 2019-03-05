@@ -375,7 +375,7 @@ static void pull_in (unsigned short ch)
         CH[ch].delta_carrier_freq  = fix_atan2(cross, dot) ;
         CH[ch].delta_carrier_phase = fix_atan2((CH[ch].q_prompt * sign(CH[ch].i_prompt)), labs(CH[ch].i_prompt)) ;
     }
-    CH[ch].carrier_freq += ((904 * CH[ch].delta_carrier_phase - 798 * CH[ch].delta_carrier_phase_old + 200 * CH[ch].delta_carrier_freq) >> 14);
+    CH[ch].carrier_freq += ((455 * CH[ch].delta_carrier_phase - 426 * CH[ch].delta_carrier_phase_old + 50 * CH[ch].delta_carrier_freq) >> 14);
 
     CH[ch].delta_carrier_phase_old_old = CH[ch].delta_carrier_phase_old;
     CH[ch].delta_carrier_phase_old = CH[ch].delta_carrier_phase;
@@ -393,7 +393,7 @@ static void pull_in (unsigned short ch)
             CH[ch+1].delta_carrier_freq  = fix_atan2(cross, dot) ;
             CH[ch+1].delta_carrier_phase = fix_atan2((CH[ch+1].q_prompt * sign(CH[ch+1].i_prompt)), labs(CH[ch+1].i_prompt)) ;
         }
-	CH[ch+1].carrier_freq += ((904 * CH[ch].delta_carrier_phase - 798 * CH[ch].delta_carrier_phase_old + 200 * CH[ch].delta_carrier_freq) >> 14);
+	CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old + 50 * CH[ch+1].delta_carrier_freq) >> 14);
 
 	CH[ch+1].delta_carrier_phase_old_old = CH[ch+1].delta_carrier_phase_old;
 	CH[ch+1].delta_carrier_phase_old = CH[ch+1].delta_carrier_phase;
@@ -415,15 +415,34 @@ static void pull_in (unsigned short ch)
     }
     CH[ch].ch_time++;
 
-    if (CH[ch].sign_count > 30) {
+    if (sign(CH[ch+1].i_prompt) == -sign(CH[ch+1].i_prompt_old)) {
+		CH[ch+1].prev_sign_pos = CH[ch+1].sign_pos;
+		CH[ch+1].sign_pos      = CH[ch+1].ch_time;
+
+		// Bits edges always multiples of 20ms
+		if ((CH[ch+1].sign_pos - CH[ch+1].prev_sign_pos) > 19)
+			CH[ch+1].sign_count++;
+		else
+			CH[ch+1].sign_count = 0;
+	}
+        CH[ch+1].ch_time++;
+
+
+
+    if ((CH[ch].sign_count > 30)&& (CH[ch+1].sign_count > 10) ) {
         CH[ch].state = CHANNEL_LOCK;
         CH[ch].ms_count = 0;
         CH[ch].bit_sync = 1;
         CH[ch].load_1ms_epoch_count = 1;
         data_bit_coherency_init(ch);
+        CH[ch].phase_info_old = CH[ch].phase_info;
+        CH[ch+1].phase_info_old = CH[ch+1].phase_info;
+        CH[ch].ch_debug=66;
+        CH[ch+1].ch_debug=66;
+        CH[ch].ch_debug2=0;
     }
 
-    if (CH[ch].ch_time >= 3000) {
+    if (CH[ch].ch_time >= 3500) {
         CH[ch].state    = CHANNEL_ACQUISITION;
         ch_block->channels[ch].code_slew = 2;
     	CH[ch].codes += 2;
@@ -562,6 +581,8 @@ static void lock( unsigned long ch)
 			current_ch = ch + 1;
 			CH[ch].sum += CH[ch+1].prompt_mag;
 		}
+		CH[ch].ch_debug=current_ch - ch+1;
+		CH[ch+1].ch_debug=66;
 
 
         //CH[ch].code_freq += ((114 * CH[ch].delta_code_phase - 108 * CH[ch].delta_code_phase_old) >> 14);
@@ -574,6 +595,19 @@ static void lock( unsigned long ch)
 
         /* Data bit */
         data_bit_coherency(ch);
+
+        if ((CH[ch].phase_info == 0) && (CH[ch+1].phase_info == 0))
+        {
+        	CH[ch].ch_debug2=9;
+        	if (CH[current_ch].phase_info_old == 0)
+        		CH[current_ch].phase_info = 1;
+
+        	else
+        		CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+        }
+        CH[ch].phase_info_old = CH[ch].phase_info;
+        CH[ch+1].phase_info_old = CH[ch+1].phase_info;
+
         CH[ch].bit = ((CH[current_ch].i_prompt_20 * CH[current_ch].phase_info) > 0);
 
 
@@ -617,6 +651,7 @@ static void lock( unsigned long ch)
 			    CH[ch].ms_sign                 = 0x12345; /* Some garbage data */
 			    CH[ch].ms_count                = 0;
 			    CH[ch].sign_count = 0;
+			    CH[ch+1].sign_count = 0;
 			    CH[ch].code_freq = CODE_REF;
             }
         }
@@ -723,6 +758,7 @@ void tracking(void)
                         // TODO: assert an error here
                         break;
                 }
+                d_log_data(ch);
             }
             // If the channel is off, set a flag saying so
             if(CH[ch].state == CHANNEL_OFF)
@@ -745,18 +781,18 @@ void d_log_data(int ch) {
         Condition for logging data is defined by ?
         This first edition will log every data for one single channel (0) w/o condition
     */
-    if(ch == 3 && d_data_index < D_DATA_STORED - 1) {
+    if(ch == 2 && d_data_index < D_DATA_STORED - 1) {
     	d_data[d_data_index].state = CH[ch].state;
     	d_data[d_data_index].prn = CH[ch].prn;
-    	d_data[d_data_index].i_early = CH[ch].i_early;
-    	d_data[d_data_index].q_early = CH[ch].delta_code_phase;
+    	d_data[d_data_index].i_early = CH[ch+1].i_prompt;
+    	d_data[d_data_index].q_early = CH[ch+1].q_prompt;
     	d_data[d_data_index].i_prompt = CH[ch].i_prompt;
     	d_data[d_data_index].q_prompt = CH[ch].q_prompt;
-    	d_data[d_data_index].i_late = CH[ch].i_late;
-    	d_data[d_data_index].q_late = CH[ch].delta_carrier_phase;
+    	d_data[d_data_index].i_late = CH[ch].phase_info;
+    	d_data[d_data_index].q_late = CH[ch+1].phase_info;
     	d_data[d_data_index].carrier_freq = CH[ch].carrier_freq;
-    	d_data[d_data_index].code_freq = CH[ch].code_freq;
-    	d_data[d_data_index].del_carr_phase = CH[ch].delta_carrier_freq;
+    	d_data[d_data_index].code_freq = CH[ch].i_prompt_20;
+    	d_data[d_data_index].del_carr_phase = CH[ch+1].i_prompt_20;
         d_data_index++;
     }
 
@@ -771,19 +807,20 @@ static void data_bit_coherency(unsigned short ch)
     unsigned short i;
 
     for (i = ch; i < ch + 2; i++) {
-        if ((abs(CH[i].i_prompt_20) < (5 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
+        if ((abs(CH[i].i_prompt_20) < (10 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
             CH[i].phase_info = 0;
     }
 
     /* Dual antenna data coherency mode */
-    if ((abs(CH[ch].i_prompt) > LOCK_THRESHOLD) && (abs(CH[ch+1].i_prompt) > LOCK_THRESHOLD)) {
+    //if ((abs(CH[ch].i_prompt) > LOCK_THRESHOLD) && (abs(CH[ch+1].i_prompt) > LOCK_THRESHOLD)) {
+    if ((abs(CH[ch].i_prompt_20) > (10 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (10 * LOCK_THRESHOLD))) {
         if ((CH[ch].phase_info == 0) && (CH[ch+1].phase_info != 0)) {
-            if (sgn(CH[ch].i_prompt) == sgn(CH[ch+1].i_prompt))
+            if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
                 CH[ch].phase_info = CH[ch+1].phase_info;
             else
                 CH[ch].phase_info = CH[ch+1].phase_info * -1;
         } else if ((CH[ch+1].phase_info == 0) && (CH[ch].phase_info != 0)) {
-            if (sgn(CH[ch].i_prompt) == sgn(CH[ch+1].i_prompt))
+            if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
                 CH[ch+1].phase_info = CH[ch].phase_info;
             else
                 CH[ch+1].phase_info = CH[ch].phase_info * -1;
