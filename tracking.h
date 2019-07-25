@@ -24,16 +24,18 @@
 #define CARR_FREQ_RES (SAMPLE_CLOCK / (1 << 30)) // 0.037252902Hz [Hz] (Carrier NCO is 30 bits)                                              
 #define CODE_FREQ_RES (SAMPLE_CLOCK / (1 << 29)) // 0.074505805 [Hz] (Carrier NCO is 29 bits)                    
 
-#define CODE_REF      21968758//(unsigned int)(0.5 + 2 * CHIP_RATE / CODE_FREQ_RES)
+//#define CODE_REF      21968758//(unsigned int)(0.5 + 2 * CHIP_RATE / CODE_FREQ_RES)
+#define CODE_REF      21969724//(unsigned int)(0.5 + 2 * CHIP_RATE / CODE_FREQ_RES)(YYL)
+
 #define CARRIER_REF   87875031//(unsigned int)(0.5 + IF_FREQ / CARR_FREQ_RES)
 
 // Noise floor defines
 //#define NOISE_FLOOR     527
 #define NOISE_FLOOR     1055
 //#define LOCK_THRESHOLD  746
-#define LOCK_THRESHOLD  2500
+#define LOCK_THRESHOLD  2300
 //#define AcqThresh       2200
-#define AcqThresh       2500
+#define AcqThresh       1800
 
 
 //Tracking parameter 

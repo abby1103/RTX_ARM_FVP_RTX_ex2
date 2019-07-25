@@ -234,35 +234,38 @@ void
 initialize_allocation( void)
 {
 
-    initialize_channel(  0, 31);
+	// outside
+
+    initialize_channel(  0, 5);
     //initialize_channel(  1, 7);
-    initialize_channel(  2, 30);
+    initialize_channel(  2, 18);
     //initialize_channel(  3,3);
-    initialize_channel(  4,24);
+    initialize_channel(  4,16);
     //initialize_channel(  5,22);
-    initialize_channel(  6,13);
+    initialize_channel(  6,27);
     //initialize_channel(  7,19);
-    initialize_channel(  8,25);
+    initialize_channel(  8,8);
     //initialize_channel(  9,21);
-    initialize_channel( 10,9);
-    //initialize_channel( 11,28);
-    //initialize_channel( 12, 30);
+    initialize_channel( 10,22);
+    initialize_channel( 12,1);
+
+/*
+    //Lab249
+    initialize_channel(  0, 26);
+	//initialize_channel(  1, 7);
+	initialize_channel(  2, 7);
+	//initialize_channel(  3,3);
+	initialize_channel(  4,24);
+	//initialize_channel(  5,22);
+	initialize_channel(  6,3);
+	//initialize_channel(  7,19);
+	initialize_channel(  8,12);
+	//initialize_channel(  9,21);
+	initialize_channel( 10,19);
+	initialize_channel( 12,22);
+*/
 
 
-	//Tainan
-	/*
-	initialize_channel(  0, 17);
-	initialize_channel(  1, 23);
-	initialize_channel(  2, 20);
-	initialize_channel(  3,11);
-	initialize_channel(  4,21);
-	initialize_channel(  5,24);
-	initialize_channel(  6,13);
-	initialize_channel(  7,14);
-	initialize_channel(  8,0);
-	initialize_channel(  9,1);
-	initialize_channel( 10,2);
-	initialize_channel( 11,3);*/
 }
 
 /******************************************************************************

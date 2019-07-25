@@ -13,7 +13,7 @@
 #include "measure.h"
 #include "position.h"
 #include "ekf_position.h"
-#include "uart_NMEA.h"
+#include "uart_ARRC.h"
 
 #include "socal/socal.h"
 #define LWFPGASLAVES 0xFF200000

@@ -65,6 +65,7 @@ void altera_avalon_uart_lwhal_putchar(void *base, int character)
           IOWR_ALTERA_AVALON_UART_TXDATA(base, ((unsigned int)character & 0xff));
           return;
        }
+
     }while (1);
 }
 

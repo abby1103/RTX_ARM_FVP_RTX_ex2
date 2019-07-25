@@ -211,7 +211,7 @@ void measure_thread(void const *argument)
 						ecef_temp.z  = receiver_pvt.z;
 						receiver_llh = ecef_to_llh(ecef_temp);
 						receiver_DOP = CALCULATE_DOP(satnum);
-						osSignalSet(ekf_position_thread_id,  0x0005);
+						//osSignalSet(ekf_position_thread_id,  0x0005);
 		            }
 		        } else {
 		            positioning = 0;

@@ -19,7 +19,8 @@ struct buffer rmc_buf;
 struct buffer vtg_buf;
 
 
-void uart_thread(void const *argument)
+
+void uart_thread1(void const *argument)
 {
     while(1){
 
@@ -40,6 +41,7 @@ void uart_thread(void const *argument)
         height = receiver_llh.hgt;
 
         //*******           DD-->DMM            ***********//
+
         double a, b, c, d;
 
         a = (int) lat_DD;    //take Integer

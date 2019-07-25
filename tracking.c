@@ -359,7 +359,8 @@ static void pull_in (unsigned short ch)
     if(CH[ch].prompt_mag > CH[ch+1].prompt_mag) {
             CH[ch].code_freq += ((449 * (CH[ch].delta_code_phase - CH[ch].delta_code_phase_old) + 59 * CH[ch].delta_code_phase) >> 14);
     } else {
-            CH[ch].code_freq += ((449 * (CH[ch+1].delta_code_phase - CH[ch+1].delta_code_phase_old) + 59 * CH[ch+1].delta_code_phase) >> 14);
+            //CH[ch].code_freq += ((449 * (CH[ch+1].delta_code_phase - CH[ch+1].delta_code_phase_old) + 59 * CH[ch+1].delta_code_phase) >> 14);
+    		CH[ch].code_freq += ((449 * (CH[ch+1].delta_code_phase - CH[ch+1].delta_code_phase_old) + 59 * CH[ch+1].delta_code_phase) >> 14);
     }
 
     ch_block->channels[ch].code_nco = CH[ch].code_freq;
@@ -375,7 +376,7 @@ static void pull_in (unsigned short ch)
         CH[ch].delta_carrier_freq  = fix_atan2(cross, dot) ;
         CH[ch].delta_carrier_phase = fix_atan2((CH[ch].q_prompt * sign(CH[ch].i_prompt)), labs(CH[ch].i_prompt)) ;
     }
-    CH[ch].carrier_freq += ((455 * CH[ch].delta_carrier_phase - 426 * CH[ch].delta_carrier_phase_old + 50 * CH[ch].delta_carrier_freq) >> 14);
+    CH[ch].carrier_freq += ((904 * CH[ch].delta_carrier_phase - 798 * CH[ch].delta_carrier_phase_old + 50 * CH[ch].delta_carrier_freq) >> 14);
 
     CH[ch].delta_carrier_phase_old_old = CH[ch].delta_carrier_phase_old;
     CH[ch].delta_carrier_phase_old = CH[ch].delta_carrier_phase;
@@ -393,7 +394,7 @@ static void pull_in (unsigned short ch)
             CH[ch+1].delta_carrier_freq  = fix_atan2(cross, dot) ;
             CH[ch+1].delta_carrier_phase = fix_atan2((CH[ch+1].q_prompt * sign(CH[ch+1].i_prompt)), labs(CH[ch+1].i_prompt)) ;
         }
-	CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old + 50 * CH[ch+1].delta_carrier_freq) >> 14);
+	CH[ch+1].carrier_freq += ((904 * CH[ch+1].delta_carrier_phase - 798 * CH[ch+1].delta_carrier_phase_old + 50 * CH[ch+1].delta_carrier_freq) >> 14);
 
 	CH[ch+1].delta_carrier_phase_old_old = CH[ch+1].delta_carrier_phase_old;
 	CH[ch+1].delta_carrier_phase_old = CH[ch+1].delta_carrier_phase;
@@ -429,7 +430,7 @@ static void pull_in (unsigned short ch)
 
 
 
-    if ((CH[ch].sign_count > 30)&& (CH[ch+1].sign_count > 10) ) {
+    if ((CH[ch].sign_count > 30) || (CH[ch+1].sign_count > 10) ) {
         CH[ch].state = CHANNEL_LOCK;
         CH[ch].ms_count = 0;
         CH[ch].bit_sync = 1;
@@ -833,10 +834,24 @@ static void data_bit_coherency(unsigned short ch)
  */
 static void data_bit_coherency_init(unsigned short ch)
 {
-    CH[ch].phase_info = 1;
-    if (sgn(CH[ch].i_prompt) == sgn(CH[ch+1].i_prompt))
-    	CH[ch+1].phase_info = CH[ch].phase_info;
-    else
-    	CH[ch+1].phase_info = CH[ch].phase_info * -1;
+	if ((CH[ch].sign_count > 30) && (CH[ch+1].sign_count > 20))
+	{
+		CH[ch].phase_info = 1;
+		if (sgn(CH[ch].i_prompt) == sgn(CH[ch+1].i_prompt))
+			CH[ch+1].phase_info = CH[ch].phase_info;
+		else
+			CH[ch+1].phase_info = CH[ch].phase_info * -1;
+	}
+	else if((CH[ch].sign_count > 30))
+	{
+		CH[ch].phase_info = 1;
+		CH[ch+1].phase_info = 0;
+	}
+	else if((CH[ch+1].sign_count > 30))
+	{
+		CH[ch].phase_info = 0;
+		CH[ch+1].phase_info = 1;
+	}
+
 }
 

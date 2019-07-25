@@ -6,6 +6,6 @@ struct buffer {
   int index;
 };
 
-void uart_thread(void const *argument);
+void uart_thread1(void const *argument);
 
 #endif // __uart_NMEA_H
