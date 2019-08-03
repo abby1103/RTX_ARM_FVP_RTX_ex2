@@ -298,7 +298,13 @@ static void confirm(unsigned short ch)
             CH[ch].delta_carrier_freq_old  = 0;
             CH[ch].carrier_freq_old=CH[ch].carrier_freq;
             CH[ch].carrier_freq_old_old=CH[ch].carrier_freq;
-            CH[ch].carrier_freq_qq= CH[ch].carrier_freq;
+
+            CH[ch+1].delta_carrier_phase_old = 0;
+			CH[ch+1].delta_carrier_phase_old_old=0;
+			CH[ch+1].delta_carrier_freq_old  = 0;
+			CH[ch+1].carrier_freq_old=CH[ch].carrier_freq;
+			CH[ch+1].carrier_freq_old_old=CH[ch].carrier_freq;
+
             CH[ch].old_theta               = 0;
             CH[ch].delta_carrier_freq  =0 ;
             CH[ch].delta_carrier_phase = 0 ;

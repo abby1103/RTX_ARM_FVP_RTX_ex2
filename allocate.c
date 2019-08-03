@@ -236,18 +236,18 @@ initialize_allocation( void)
 
 	// outside
 
-    initialize_channel(  0, 5);
+    initialize_channel(  0, 1);
     //initialize_channel(  1, 7);
-    initialize_channel(  2, 18);
+    initialize_channel(  2, 4);
     //initialize_channel(  3,3);
-    initialize_channel(  4,16);
+    initialize_channel(  4,12);
     //initialize_channel(  5,22);
-    initialize_channel(  6,27);
+    initialize_channel(  6,5);
     //initialize_channel(  7,19);
-    initialize_channel(  8,8);
+    initialize_channel(  8,14);
     //initialize_channel(  9,21);
-    initialize_channel( 10,22);
-    initialize_channel( 12,1);
+    initialize_channel( 10,28);
+    initialize_channel( 12,29);
 
 /*
     //Lab249

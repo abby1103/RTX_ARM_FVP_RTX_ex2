@@ -35,7 +35,7 @@
 //#define LOCK_THRESHOLD  746
 #define LOCK_THRESHOLD  2300
 //#define AcqThresh       2200
-#define AcqThresh       1800
+#define AcqThresh       2300
 
 
 //Tracking parameter 
