@@ -208,12 +208,12 @@ static void look_for_preamble( unsigned short ch)
 
     if( (current_subframe < 1) || (current_subframe > 5)) // subframe range test
     {
-        messages[ch].ch_debug = 2;
+
         return;
     }
     if( HOW & 3) // Confirm zeros
     {
-        messages[ch].ch_debug = 3;
+
         return;
     }
 
@@ -221,12 +221,12 @@ static void look_for_preamble( unsigned short ch)
     // They do increase time on true hits though.
     if( !ParityCheck( TLM))
     {
-		messages[ch].ch_debug = 4;
+
 		return;
 	}
     if( !ParityCheck( HOW))
     {
-		messages[ch].ch_debug = 5;
+
 		return;
 	}
     
@@ -364,7 +364,7 @@ void message_thread(void const *argument) // input 'data' not used
                     if(messages[ch].frame_sync)
                     {
                         messages[ch].bitcount = 0;
-                        messages[ch].ch_debug = 6;
+
                     }
 
                 }

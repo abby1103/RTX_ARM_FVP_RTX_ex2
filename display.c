@@ -636,7 +636,7 @@ static void display_messages( void)
             TOW = 0;
 
         sprintf( string, 
-        	"%2d: %2d %2d %5d %2d %4lx %4lx %4lx %4lx %4lx %c(%c%c) %7ld  %1d %1d\n\r",
+        	"%2d: %2d %2d %5d %2d %4lx %4lx %4lx %4lx %4lx %c(%c%c) %7ld %1d %1d\n\r",
             ch,
             CH[ch].prn,
             CH[ch].missed_message_bit,
@@ -651,7 +651,7 @@ static void display_messages( void)
             channel_bitsync,
             channel_framesync,
             CH[ch].avg,
-            messages[ch].ch_debug,
+            CH[ch].ch_debug,
             CH[ch].ch_debug2
             );
 

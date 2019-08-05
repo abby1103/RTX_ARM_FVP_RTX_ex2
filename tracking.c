@@ -53,7 +53,7 @@ int d_data_index = 0;
 void d_log_data(int ch);
 // debug end
 
-static void data_bit_coherency(unsigned short ch);
+static void data_bit_coherency(unsigned short ch, unsigned short current_ch);
 static void data_bit_coherency_init(unsigned short ch);
 
 int signExtension(int instr) {
@@ -447,6 +447,7 @@ static void pull_in (unsigned short ch)
         CH[ch].ch_debug=66;
         CH[ch+1].ch_debug=66;
         CH[ch].ch_debug2=0;
+        CH[ch].debug_count=10;
     }
 
     if (CH[ch].ch_time >= 3500) {
@@ -504,7 +505,8 @@ static void lock( unsigned long ch)
     /*double delta_freq = ((double)264.04465*(double)CH[ch].delta_carrier_phase-517.87888*(double)CH[ch].delta_carrier_phase_old+253.88705*(double)CH[ch].delta_carrier_phase_old_old)/16384.0;
     CH[ch].carrier_freq = 2 * CH[ch].carrier_freq_old - CH[ch].carrier_freq_old_old + ((long)delta_freq);*/
 
-    CH[ch].carrier_freq += ((273 * CH[ch].delta_carrier_phase - 263 * CH[ch].delta_carrier_phase_old) >> 14);
+    //CH[ch].carrier_freq += ((273 * CH[ch].delta_carrier_phase - 263 * CH[ch].delta_carrier_phase_old) >> 14);
+    CH[ch].carrier_freq += ((455 * CH[ch].delta_carrier_phase - 426 * CH[ch].delta_carrier_phase_old) >> 14);
 
     CH[ch].delta_carrier_phase_old_old = CH[ch].delta_carrier_phase_old;
 	CH[ch].delta_carrier_phase_old = CH[ch].delta_carrier_phase;
@@ -530,7 +532,8 @@ static void lock( unsigned long ch)
 		   CH[ch+1].delta_carrier_phase = fix_atan2((CH[ch+1].q_prompt * sign(CH[ch+1].i_prompt)), labs(CH[ch+1].i_prompt));
 	}
 
-	CH[ch+1].carrier_freq += ((273 * CH[ch+1].delta_carrier_phase - 263 * CH[ch+1].delta_carrier_phase_old) >> 14);
+	//CH[ch+1].carrier_freq += ((273 * CH[ch+1].delta_carrier_phase - 263 * CH[ch+1].delta_carrier_phase_old) >> 14);
+	CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old) >> 14);
 
 	CH[ch+1].delta_carrier_phase_old_old = CH[ch+1].delta_carrier_phase_old;
 	CH[ch+1].delta_carrier_phase_old = CH[ch+1].delta_carrier_phase;
@@ -593,7 +596,8 @@ static void lock( unsigned long ch)
 
 
         //CH[ch].code_freq += ((114 * CH[ch].delta_code_phase - 108 * CH[ch].delta_code_phase_old) >> 14);
-        CH[ch].code_freq += ((284 * CH[current_ch].delta_code_phase - 251 * CH[current_ch].delta_code_phase_old) >> 14);
+        //CH[ch].code_freq += ((284 * CH[current_ch].delta_code_phase - 251 * CH[current_ch].delta_code_phase_old) >> 14);
+		CH[ch].code_freq += ((406 * CH[current_ch].delta_code_phase - 290 * CH[current_ch].delta_code_phase_old) >> 14);
 
         CH[ch].delta_code_phase_old = CH[ch].delta_code_phase;
         CH[ch+1].delta_code_phase_old = CH[ch+1].delta_code_phase;
@@ -601,20 +605,37 @@ static void lock( unsigned long ch)
         ch_block->channels[ch].code_nco = CH[ch].code_freq;
 
         /* Data bit */
-        data_bit_coherency(ch);
-
+        data_bit_coherency(ch, current_ch);
+        if (CH[ch].debug_count == 20){
+        	if (CH[ch].ch_debug2 == 9 || CH[ch].ch_debug2 == 6)
+        		CH[ch].ch_debug2=0;
+        }
+        else
+        {
+        	CH[ch].debug_count+=1;
+        }
         if ((CH[ch].phase_info == 0) && (CH[ch+1].phase_info == 0))
         {
-        	CH[ch].ch_debug2=9;
-        	if (CH[current_ch].phase_info_old == 0)
-        		CH[current_ch].phase_info = 1;
+        	//CH[ch].ch_debug2=9;
+        	CH[ch].debug_count=0;
+        	if (CH[current_ch].phase_info_old == 0){
 
-        	else
+        		CH[ch].phase_info_old = CH[ch].phase_info;
+        		CH[ch+1].phase_info_old = CH[ch+1].phase_info;
+        		CH[current_ch].phase_info = 1;
+        		CH[ch].ch_debug2=9;
+        	}
+        	else{
+        		CH[ch].phase_info_old = CH[ch].phase_info;
+        		CH[ch+1].phase_info_old = CH[ch+1].phase_info;
         		CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+        		CH[ch].ch_debug2=6;
+        	}
         }
+        else{
         CH[ch].phase_info_old = CH[ch].phase_info;
         CH[ch+1].phase_info_old = CH[ch+1].phase_info;
-
+        }
         CH[ch].bit = ((CH[current_ch].i_prompt_20 * CH[current_ch].phase_info) > 0);
 
 
@@ -809,28 +830,71 @@ void d_log_data(int ch) {
     }
 }
 
-static void data_bit_coherency(unsigned short ch)
+static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
 {
     unsigned short i;
 
     for (i = ch; i < ch + 2; i++) {
-        if ((abs(CH[i].i_prompt_20) < (10 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
+        if ((abs(CH[i].i_prompt_20) < (3 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
             CH[i].phase_info = 0;
     }
 
     /* Dual antenna data coherency mode */
     //if ((abs(CH[ch].i_prompt) > LOCK_THRESHOLD) && (abs(CH[ch+1].i_prompt) > LOCK_THRESHOLD)) {
-    if ((abs(CH[ch].i_prompt_20) > (10 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (10 * LOCK_THRESHOLD))) {
+    //if ((abs(CH[ch].i_prompt_20) > (10 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (10 * LOCK_THRESHOLD))) {
+    if ((abs(CH[ch].i_prompt_20) > (7 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (7 * LOCK_THRESHOLD))) {
+
         if ((CH[ch].phase_info == 0) && (CH[ch+1].phase_info != 0)) {
             if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
                 CH[ch].phase_info = CH[ch+1].phase_info;
             else
                 CH[ch].phase_info = CH[ch+1].phase_info * -1;
+
         } else if ((CH[ch+1].phase_info == 0) && (CH[ch].phase_info != 0)) {
             if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
                 CH[ch+1].phase_info = CH[ch].phase_info;
             else
                 CH[ch+1].phase_info = CH[ch].phase_info * -1;
+
+        }else if ((CH[ch+1].phase_info != 0) && (CH[ch].phase_info != 0)) {
+        	if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20) && (CH[ch+1].phase_info != CH[ch].phase_info)){
+				CH[ch+1].phase_info = CH[ch].phase_info;
+				if (CH[ch].ch_debug2 == 9){
+					CH[ch].ch_debug2=8;
+					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+					if (current_ch == ch)
+						CH[ch+1].phase_info = CH[ch].phase_info;
+					else
+						CH[ch].phase_info = CH[ch+1].phase_info;
+				}
+				else{
+					CH[ch].ch_debug2=7;
+					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+					if (current_ch == ch)
+						CH[ch+1].phase_info = CH[ch].phase_info;
+					else
+						CH[ch].phase_info = CH[ch+1].phase_info;
+				}
+        	}
+			else if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20) && (CH[ch+1].phase_info == CH[ch].phase_info)){
+				CH[ch+1].phase_info = CH[ch].phase_info * -1;
+				if (CH[ch].ch_debug2 == 9){
+					CH[ch].ch_debug2=8;
+					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+					if (current_ch == ch)
+						CH[ch+1].phase_info = CH[ch].phase_info * (-1);
+					else
+						CH[ch].phase_info = CH[ch+1].phase_info * (-1);
+				}
+				else{
+					CH[ch].ch_debug2=7;
+					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+					if (current_ch == ch)
+						CH[ch+1].phase_info = CH[ch].phase_info * (-1);
+					else
+						CH[ch].phase_info = CH[ch+1].phase_info * (-1);
+				}
+			}
         }
     }
 }

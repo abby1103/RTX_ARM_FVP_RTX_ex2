@@ -43,7 +43,7 @@ typedef struct {
     
     unsigned short      subframe;       // Current subframe #
     subframe_t          subframes[5];   // Array of 5 subframes (1 frame)
-    int ch_debug;
+
 } message_t;
  
 void message_thread(void const *argument);

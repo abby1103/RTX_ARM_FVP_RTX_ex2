@@ -35,7 +35,7 @@
 //#define LOCK_THRESHOLD  746
 #define LOCK_THRESHOLD  2300
 //#define AcqThresh       2200
-#define AcqThresh       2300
+#define AcqThresh       2200
 
 
 //Tracking parameter 
@@ -100,8 +100,9 @@ typedef struct
     long                avg;
     unsigned short      check_average;
 
-    long                i_early_20 ,i_prompt_20, i_late_20;
+    long                i_early_20 ,i_prompt_20,i_prompt_20_old, i_late_20;
     long                q_early_20 ,q_prompt_20, q_late_20;
+    long 				i_prompt_tempt;
 
     unsigned short      bit_sync;
     unsigned short      bit;
@@ -116,7 +117,7 @@ typedef struct
 
     int                 sign_pos, prev_sign_pos;  // Expected bits edges: current and previous.
     int                 sign_count;               // How many times bit edges distance is more then 19 ms!
-    int ch_debug,ch_debug2;
+    int 				ch_debug,ch_debug2,debug_count;
     long				doppler_freq;
 
 
