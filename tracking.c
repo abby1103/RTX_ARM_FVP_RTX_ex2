@@ -542,7 +542,7 @@ static void lock( unsigned long ch)
 	CH[ch+1].carrier_freq_old = CH[ch+1].carrier_freq;
 
 	for (i = ch; i < ch + 2; i++) {
-		if (abs(CH[i].i_prompt) < LOCK_THRESHOLD) {
+		if (CH[i].phase_info == 0) {
 			CH[i].no_view++;
 		} else {
 			CH[i].no_view = 0;
