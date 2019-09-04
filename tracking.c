@@ -450,7 +450,7 @@ static void pull_in (unsigned short ch)
         CH[ch].ch_debug=66;
         CH[ch+1].ch_debug=66;
         CH[ch].ch_debug2=0;
-        CH[ch].debug_count=10;
+        CH[ch].debug_count=0;
     }
 
     if (CH[ch].ch_time >= 3500) {
@@ -615,14 +615,7 @@ static void lock( unsigned long ch)
 
         /* Data bit */
         data_bit_coherency(ch, current_ch);
-        if (CH[ch].debug_count == 20){
-        	if (CH[ch].ch_debug2 == 1 || CH[ch].ch_debug2 == 2)
-        		CH[ch].ch_debug2=0;
-        }
-        else
-        {
-        	CH[ch].debug_count+=1;
-        }
+
         if ((CH[ch].phase_info == 0) && (CH[ch+1].phase_info == 0))
         {
         	//CH[ch].ch_debug2=9;
@@ -635,9 +628,10 @@ static void lock( unsigned long ch)
         		CH[ch].ch_debug2=1;
         	}
         	else{
-        		CH[ch].phase_info_old = CH[ch].phase_info;
-        		CH[ch+1].phase_info_old = CH[ch+1].phase_info;
+
         		CH[current_ch].phase_info = CH[current_ch].phase_info_old;
+        		CH[ch].phase_info_old = 0;
+        		CH[ch+1].phase_info_old = 0;
         		CH[ch].ch_debug2=2;
         	}
         }
@@ -647,6 +641,12 @@ static void lock( unsigned long ch)
         }
         CH[ch].bit = ((CH[current_ch].i_prompt_20 * CH[current_ch].phase_info) > 0);
 
+
+        if (CH[ch].debug_count == 1){
+				CH[ch].ch_debug2=0;
+		} else {
+			CH[ch].debug_count+=1;
+		}
 
         /*
          * Flag that this bit is ready to process (written to the message_flag
@@ -869,6 +869,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
         }else if ((CH[ch+1].phase_info != 0) && (CH[ch].phase_info != 0)) {
         	if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20) && (CH[ch+1].phase_info != CH[ch].phase_info)){
 				CH[ch+1].phase_info = CH[ch].phase_info;
+				CH[ch].debug_count=0;
 				if (CH[ch].ch_debug2 == 1){
 					CH[ch].ch_debug2=3;
 					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
@@ -888,6 +889,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
         	}
 			else if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20) && (CH[ch+1].phase_info == CH[ch].phase_info)){
 				CH[ch+1].phase_info = CH[ch].phase_info * -1;
+				CH[ch].debug_count=0;
 				if (CH[ch].ch_debug2 == 1){
 					CH[ch].ch_debug2=3;
 					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
