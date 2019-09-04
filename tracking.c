@@ -37,6 +37,7 @@ unsigned int d_pull_in_monitor[32];
 // debug global variables
 typedef struct {
     TRACKING_ENUM       state;
+    unsigned char       debug2;
     unsigned short      prn;
     int                 i_early, i_prompt, i_late;
     int                 q_early, q_prompt, q_late;
@@ -387,6 +388,7 @@ static void pull_in (unsigned short ch)
     CH[ch].delta_carrier_phase_old_old = CH[ch].delta_carrier_phase_old;
     CH[ch].delta_carrier_phase_old = CH[ch].delta_carrier_phase;
     CH[ch].delta_carrier_freq_old=CH[ch].delta_carrier_freq;
+    CH[ch].carrier_freq_old_old_old=CH[ch].carrier_freq_old_old;
     CH[ch].carrier_freq_old_old = CH[ch].carrier_freq_old;
     CH[ch].carrier_freq_old = CH[ch].carrier_freq;
     ch_block->channels[ch].carr_nco = CH[ch].carrier_freq;
@@ -405,6 +407,7 @@ static void pull_in (unsigned short ch)
 	CH[ch+1].delta_carrier_phase_old_old = CH[ch+1].delta_carrier_phase_old;
 	CH[ch+1].delta_carrier_phase_old = CH[ch+1].delta_carrier_phase;
 	CH[ch+1].delta_carrier_freq_old=CH[ch+1].delta_carrier_freq;
+	CH[ch+1].carrier_freq_old_old_old=CH[ch+1].carrier_freq_old_old;
 	CH[ch+1].carrier_freq_old_old = CH[ch+1].carrier_freq_old;
 	CH[ch+1].carrier_freq_old = CH[ch+1].carrier_freq;
 	ch_block->channels[ch+1].carr_nco = CH[ch+1].carrier_freq;
@@ -479,7 +482,7 @@ static void lock( unsigned long ch)
 	unsigned int current_ch;
 
 	int i;
-
+	double delta_freq;
     long cross, dot;
     CH[ch].ms_count++;
 
@@ -505,12 +508,15 @@ static void lock( unsigned long ch)
     /*double delta_freq = ((double)264.04465*(double)CH[ch].delta_carrier_phase-517.87888*(double)CH[ch].delta_carrier_phase_old+253.88705*(double)CH[ch].delta_carrier_phase_old_old)/16384.0;
     CH[ch].carrier_freq = 2 * CH[ch].carrier_freq_old - CH[ch].carrier_freq_old_old + ((long)delta_freq);*/
 
-    //CH[ch].carrier_freq += ((273 * CH[ch].delta_carrier_phase - 263 * CH[ch].delta_carrier_phase_old) >> 14);
-    CH[ch].carrier_freq += ((455 * CH[ch].delta_carrier_phase - 426 * CH[ch].delta_carrier_phase_old) >> 14);
-
+    CH[ch].carrier_freq += ((273 * CH[ch].delta_carrier_phase - 263 * CH[ch].delta_carrier_phase_old) >> 14);
+    //CH[ch].carrier_freq += ((455 * CH[ch].delta_carrier_phase - 426 * CH[ch].delta_carrier_phase_old) >> 14);
+    /* delta_freq = ((double)1061.435*(double)CH[ch].delta_carrier_phase-2090.55*(double)CH[ch].delta_carrier_phase_old+1030.885*(double)CH[ch].delta_carrier_phase_old_old)/16384.0;
+    CH[ch].carrier_freq = CH[ch].carrier_freq_old + CH[ch].carrier_freq_old_old - CH[ch].carrier_freq_old_old_old +(long)delta_freq;
+*/
     CH[ch].delta_carrier_phase_old_old = CH[ch].delta_carrier_phase_old;
 	CH[ch].delta_carrier_phase_old = CH[ch].delta_carrier_phase;
 	CH[ch].delta_carrier_freq_old=CH[ch].delta_carrier_freq;
+	CH[ch].carrier_freq_old_old_old=CH[ch].carrier_freq_old_old;
 	CH[ch].carrier_freq_old_old = CH[ch].carrier_freq_old;
 	CH[ch].carrier_freq_old = CH[ch].carrier_freq;
 
@@ -532,12 +538,15 @@ static void lock( unsigned long ch)
 		   CH[ch+1].delta_carrier_phase = fix_atan2((CH[ch+1].q_prompt * sign(CH[ch+1].i_prompt)), labs(CH[ch+1].i_prompt));
 	}
 
-	//CH[ch+1].carrier_freq += ((273 * CH[ch+1].delta_carrier_phase - 263 * CH[ch+1].delta_carrier_phase_old) >> 14);
-	CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old) >> 14);
+	CH[ch+1].carrier_freq += ((273 * CH[ch+1].delta_carrier_phase - 263 * CH[ch+1].delta_carrier_phase_old) >> 14);
+	//CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old) >> 14);
+	//    CH[ch+1].carrier_freq = CH[ch+1].carrier_freq_old + CH[ch+1].carrier_freq_old_old - CH[ch+1].carrier_freq_old_old_old +(long)delta_freq;
+
 
 	CH[ch+1].delta_carrier_phase_old_old = CH[ch+1].delta_carrier_phase_old;
 	CH[ch+1].delta_carrier_phase_old = CH[ch+1].delta_carrier_phase;
 	CH[ch+1].delta_carrier_freq_old=CH[ch+1].delta_carrier_freq;
+	CH[ch+1].carrier_freq_old_old_old =CH[ch+1].carrier_freq_old_old;
 	CH[ch+1].carrier_freq_old_old = CH[ch+1].carrier_freq_old;
 	CH[ch+1].carrier_freq_old = CH[ch+1].carrier_freq;
 
@@ -607,7 +616,7 @@ static void lock( unsigned long ch)
         /* Data bit */
         data_bit_coherency(ch, current_ch);
         if (CH[ch].debug_count == 20){
-        	if (CH[ch].ch_debug2 == 9 || CH[ch].ch_debug2 == 6)
+        	if (CH[ch].ch_debug2 == 1 || CH[ch].ch_debug2 == 2)
         		CH[ch].ch_debug2=0;
         }
         else
@@ -623,13 +632,13 @@ static void lock( unsigned long ch)
         		CH[ch].phase_info_old = CH[ch].phase_info;
         		CH[ch+1].phase_info_old = CH[ch+1].phase_info;
         		CH[current_ch].phase_info = 1;
-        		CH[ch].ch_debug2=9;
+        		CH[ch].ch_debug2=1;
         	}
         	else{
         		CH[ch].phase_info_old = CH[ch].phase_info;
         		CH[ch+1].phase_info_old = CH[ch+1].phase_info;
         		CH[current_ch].phase_info = CH[current_ch].phase_info_old;
-        		CH[ch].ch_debug2=6;
+        		CH[ch].ch_debug2=2;
         	}
         }
         else{
@@ -809,8 +818,9 @@ void d_log_data(int ch) {
         Condition for logging data is defined by ?
         This first edition will log every data for one single channel (0) w/o condition
     */
-    if(ch == 2 && d_data_index < D_DATA_STORED - 1) {
+    if(ch == 0 && d_data_index < D_DATA_STORED - 1) {
     	d_data[d_data_index].state = CH[ch].state;
+    	d_data[d_data_index].debug2 = CH[ch].ch_debug2;
     	d_data[d_data_index].prn = CH[ch].prn;
     	d_data[d_data_index].i_early = CH[ch+1].i_prompt;
     	d_data[d_data_index].q_early = CH[ch+1].q_prompt;
@@ -859,8 +869,8 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
         }else if ((CH[ch+1].phase_info != 0) && (CH[ch].phase_info != 0)) {
         	if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20) && (CH[ch+1].phase_info != CH[ch].phase_info)){
 				CH[ch+1].phase_info = CH[ch].phase_info;
-				if (CH[ch].ch_debug2 == 9){
-					CH[ch].ch_debug2=8;
+				if (CH[ch].ch_debug2 == 1){
+					CH[ch].ch_debug2=3;
 					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
 					if (current_ch == ch)
 						CH[ch+1].phase_info = CH[ch].phase_info;
@@ -868,7 +878,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
 						CH[ch].phase_info = CH[ch+1].phase_info;
 				}
 				else{
-					CH[ch].ch_debug2=7;
+					CH[ch].ch_debug2=4;
 					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
 					if (current_ch == ch)
 						CH[ch+1].phase_info = CH[ch].phase_info;
@@ -878,8 +888,8 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
         	}
 			else if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20) && (CH[ch+1].phase_info == CH[ch].phase_info)){
 				CH[ch+1].phase_info = CH[ch].phase_info * -1;
-				if (CH[ch].ch_debug2 == 9){
-					CH[ch].ch_debug2=8;
+				if (CH[ch].ch_debug2 == 1){
+					CH[ch].ch_debug2=3;
 					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
 					if (current_ch == ch)
 						CH[ch+1].phase_info = CH[ch].phase_info * (-1);
@@ -887,7 +897,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
 						CH[ch].phase_info = CH[ch+1].phase_info * (-1);
 				}
 				else{
-					CH[ch].ch_debug2=7;
+					CH[ch].ch_debug2=4;
 					CH[current_ch].phase_info = CH[current_ch].phase_info_old;
 					if (current_ch == ch)
 						CH[ch+1].phase_info = CH[ch].phase_info * (-1);

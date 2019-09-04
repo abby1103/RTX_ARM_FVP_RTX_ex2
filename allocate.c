@@ -235,21 +235,21 @@ initialize_allocation( void)
 {
 
 	// outside
-
+/*
     initialize_channel(  0, 1);
     //initialize_channel(  1, 7);
     initialize_channel(  2, 4);
     //initialize_channel(  3,3);
-    initialize_channel(  4,12);
+    initialize_channel(  4,23);
     //initialize_channel(  5,22);
-    initialize_channel(  6,14);
+    initialize_channel(  6,12);
     //initialize_channel(  7,19);
-    initialize_channel(  8,20);
+    initialize_channel(  8,14);
     //initialize_channel(  9,21);
-    initialize_channel( 10,23);
+    initialize_channel( 10,20);
     initialize_channel( 12,28);
+*/
 
-/*
     //Lab249
     initialize_channel(  0, 26);
 	//initialize_channel(  1, 7);
@@ -263,7 +263,7 @@ initialize_allocation( void)
 	//initialize_channel(  9,21);
 	initialize_channel( 10,19);
 	initialize_channel( 12,22);
-*/
+
 
 
 }

@@ -666,27 +666,23 @@ static void display_where(void)
 	time_t std_time;
 	std_time = get_standard_time();
 		if (count < 1000 && positioning && receiver_pvt.valid) {
-		sprintf(string, "%e, %e, %e, %e, %e, %e,%f,%f,0;\n\r%e,%e,%e,%e,%e,%e,%e,%e,%e;\n\r",
-				receiver_pvt.x,
-				receiver_pvt.y,
-				receiver_pvt.z,
-				receiver_pvt_velocity.vx,
-				receiver_pvt_velocity.vy,
-				receiver_pvt_velocity.vz,
-				receiver_pvt.b,
-				receiver_pvt_velocity.df,
-				ekf_pos.x,
-				ekf_pos.y,
-				ekf_pos.z,
-				ekf_pos.vx,
-				ekf_pos.vy,
-				ekf_pos.vz,
-				ekf_pos.ax,
-				ekf_pos.ay,
-				ekf_pos.az
-
-
-	            );
+			sprintf(string, "%e, %e, %e, %e, %e, %e, %d, %d, %d, %d, %d, %2.3f, %.4f, %.4f, %.4f;\n\r",
+							receiver_pvt.x,
+							receiver_pvt.y,
+							receiver_pvt.z,
+							receiver_pvt_velocity.vx,
+							receiver_pvt_velocity.vy,
+							receiver_pvt_velocity.vz,
+				            std_time.years,
+				            std_time.months,
+				            std_time.days,
+				            std_time.hours,
+				            std_time.minutes,
+				            std_time.seconds,
+				            receiver_DOP.HDOP,
+							receiver_DOP.PDOP,
+							receiver_DOP.GDOP
+				            );
 		SER_PutString(string);
 		count++;
 	}

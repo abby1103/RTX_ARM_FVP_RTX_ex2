@@ -78,7 +78,7 @@ typedef struct
     int                 q_early, q_prompt, q_late; // Track arms (signed!)
     int                 i_prompt_old, q_prompt_old;//for FLL
     long                carrier_corr;//not used now
-    long                carrier_freq,d_carrier_freq, carrier_freq_old, carrier_freq_old_old,carrier_freq_qq;       // in NCO hex units
+    long                carrier_freq,d_carrier_freq, carrier_freq_old, carrier_freq_old_old,carrier_freq_qq,carrier_freq_old_old_old;       // in NCO hex units
     long                code_freq;          // in NCO hex units
     signed short        n_freq;             // Carrier frequency search bin
     signed short        del_freq;           // Frequency search delta
@@ -117,9 +117,9 @@ typedef struct
 
     int                 sign_pos, prev_sign_pos;  // Expected bits edges: current and previous.
     int                 sign_count;               // How many times bit edges distance is more then 19 ms!
-    int 				ch_debug,ch_debug2,debug_count;
+    int 				ch_debug,debug_count;
     long				doppler_freq;
-
+    unsigned char       ch_debug2;
 
     int 				no_view;                // How many times the antenna lose lock
     int                 phase_info,phase_info_old;           // dual antenna: how two channel data coherency
