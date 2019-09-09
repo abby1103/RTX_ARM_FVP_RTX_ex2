@@ -46,6 +46,7 @@ typedef struct {
  //   signed short        del_freq;           // Frequency search delta
  //   unsigned short      codes;              // Current code phase
     int 				del_carr_phase;
+    long				subf1,subf2,subf3,subf4,subf5;
 } d_ch_log_t;
 
 d_ch_log_t d_data[D_DATA_STORED];
@@ -831,6 +832,11 @@ void d_log_data(int ch) {
     	d_data[d_data_index].carrier_freq = CH[ch].carrier_freq;
     	d_data[d_data_index].code_freq = CH[ch].i_prompt_20;
     	d_data[d_data_index].del_carr_phase = CH[ch+1].i_prompt_20;
+    	d_data[d_data_index].subf1 = messages[ch].subframes[0].valid;
+    	d_data[d_data_index].subf2 = messages[ch].subframes[1].valid,
+		d_data[d_data_index].subf3 = messages[ch].subframes[2].valid,
+		d_data[d_data_index].subf4 = messages[ch].subframes[3].valid,
+		d_data[d_data_index].subf5 = messages[ch].subframes[4].valid,
         d_data_index++;
     }
 
@@ -845,14 +851,15 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     unsigned short i;
 
     for (i = ch; i < ch + 2; i++) {
-        if ((abs(CH[i].i_prompt_20) < (3 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
+        //if ((abs(CH[i].i_prompt_20) < (3 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
+    	if ((abs(CH[i].i_prompt_20) < (4 * LOCK_THRESHOLD)) )
             CH[i].phase_info = 0;
     }
 
     /* Dual antenna data coherency mode */
     //if ((abs(CH[ch].i_prompt) > LOCK_THRESHOLD) && (abs(CH[ch+1].i_prompt) > LOCK_THRESHOLD)) {
     //if ((abs(CH[ch].i_prompt_20) > (10 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (10 * LOCK_THRESHOLD))) {
-    if ((abs(CH[ch].i_prompt_20) > (7 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (7 * LOCK_THRESHOLD))) {
+    if ((abs(CH[ch].i_prompt_20) >=(4 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) >= (4 * LOCK_THRESHOLD))) {
 
         if ((CH[ch].phase_info == 0) && (CH[ch+1].phase_info != 0)) {
             if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
