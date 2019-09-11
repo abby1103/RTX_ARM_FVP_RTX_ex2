@@ -117,10 +117,10 @@ typedef struct
 
     int                 sign_pos, prev_sign_pos;  // Expected bits edges: current and previous.
     int                 sign_count;               // How many times bit edges distance is more then 19 ms!
-    int 				ch_debug,debug_count;
+    int 				ch_debug;
     long				doppler_freq;
     unsigned char       ch_debug2;
-
+    int 				current_ch;
     int 				no_view;                // How many times the antenna lose lock
     int                 phase_info,phase_info_old;           // dual antenna: how two channel data coherency
 
