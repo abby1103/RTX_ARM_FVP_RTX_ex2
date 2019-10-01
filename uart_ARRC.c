@@ -85,9 +85,9 @@ void uart_thread(void const *argument)
         /*print GPVTG*/
       //  altera_avalon_uart_lwhal_putstring(&vtg_buf,(void*)(0xFF200400));	/*print*/
         /*print GPVTG*/
-		altera_avalon_uart_lwhal_putstring(&arrc1_buf,(void*)(0xFF200400));	/*print*/
+		altera_avalon_uart_lwhal_putstring(&arrc1_buf,(void*)(0xFF200800));	/*print*/
 		/*print GPVTG*/
-		altera_avalon_uart_lwhal_putstring(&arrc2_buf,(void*)(0xFF200400));	/*print*/
+		altera_avalon_uart_lwhal_putstring(&arrc2_buf,(void*)(0xFF200800));	/*print*/
 
 
     }

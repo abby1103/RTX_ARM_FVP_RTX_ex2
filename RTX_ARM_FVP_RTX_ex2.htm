@@ -1,9 +1,9 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html><head>
-<title>Static Call Graph - [E:\correlation_de1_yao\dual_attena_20190327\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf]</title></head>
+<title>Static Call Graph - [E:\correlation_de1_yao\triple_anttena_20190923\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf]</title></head>
 <body><HR>
-<H1>Static Call Graph for image E:\correlation_de1_yao\dual_attena_20190327\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050041: Last Updated: Wed Sep 11 22:49:53 2019
+<H1>Static Call Graph for image E:\correlation_de1_yao\triple_anttena_20190923\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf</H1><HR>
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050041: Last Updated: Tue Oct 01 12:26:49 2019
 <BR><P>
 <H3>Maximum Stack Usage =       2616 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -237,7 +237,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;$Super$$main
 </UL>
 
-<P><STRONG><a name="[3e]"></a>$Super$$main</STRONG> (Thumb, 150 bytes, Stack size 0 bytes, RTX_ex2.o(.text))
+<P><STRONG><a name="[3e]"></a>$Super$$main</STRONG> (Thumb, 148 bytes, Stack size 0 bytes, RTX_ex2.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 104<LI>Call Chain = $Super$$main &rArr; osThreadCreate &rArr; svcThreadCreate &rArr; rt_tsk_create &rArr; rt_init_context &rArr; rt_init_stack
 </UL>
 <BR>[Calls]<UL><LI><a href="#[40]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;initialize_allocation
@@ -567,8 +567,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;measure_thread
 </UL>
 
-<P><STRONG><a name="[75]"></a>calculate_position</STRONG> (Thumb, 2478 bytes, Stack size 1288 bytes, position.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1312<LI>Call Chain = calculate_position &rArr; __hardfp_sqrt
+<P><STRONG><a name="[75]"></a>calculate_position</STRONG> (Thumb, 2484 bytes, Stack size 1680 bytes, position.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 1704<LI>Call Chain = calculate_position &rArr; __hardfp_sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 <LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
@@ -576,8 +576,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;measure_thread
 </UL>
 
-<P><STRONG><a name="[76]"></a>calculate_velocity</STRONG> (Thumb, 2780 bytes, Stack size 1656 bytes, position.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1680<LI>Call Chain = calculate_velocity &rArr; __hardfp_sqrt
+<P><STRONG><a name="[76]"></a>calculate_velocity</STRONG> (Thumb, 2956 bytes, Stack size 2216 bytes, position.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 2240<LI>Call Chain = calculate_velocity &rArr; __hardfp_sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 <LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
@@ -585,8 +585,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;measure_thread
 </UL>
 
-<P><STRONG><a name="[77]"></a>calculate_velocity_test</STRONG> (Thumb, 2780 bytes, Stack size 1656 bytes, position.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 1680<LI>Call Chain = calculate_velocity_test &rArr; __hardfp_sqrt
+<P><STRONG><a name="[77]"></a>calculate_velocity_test</STRONG> (Thumb, 2966 bytes, Stack size 2216 bytes, position.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 2240<LI>Call Chain = calculate_velocity_test &rArr; __hardfp_sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
 <LI><a href="#[37]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
@@ -604,7 +604,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[20]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;measure_thread
 </UL>
 
-<P><STRONG><a name="[73]"></a>SatPosEphemeris</STRONG> (Thumb, 2362 bytes, Stack size 416 bytes, position.o(.text))
+<P><STRONG><a name="[73]"></a>SatPosEphemeris</STRONG> (Thumb, 2350 bytes, Stack size 416 bytes, position.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 616<LI>Call Chain = SatPosEphemeris &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy4
@@ -798,7 +798,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tracking
 </UL>
 
-<P><STRONG><a name="[10]"></a>tracking</STRONG> (Thumb, 572 bytes, Stack size 24 bytes, tracking.o(.text))
+<P><STRONG><a name="[10]"></a>tracking</STRONG> (Thumb, 578 bytes, Stack size 24 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = tracking &rArr; lock &rArr; fix_atan2 &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[c0]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalSet
@@ -811,8 +811,8 @@ Global Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> system_VE_A9_MP.o(.text)
 </UL>
-<P><STRONG><a name="[22]"></a>uart_thread</STRONG> (Thumb, 322 bytes, Stack size 168 bytes, uart_ARRC.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 276<LI>Call Chain = uart_thread &rArr; get_standard_time &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
+<P><STRONG><a name="[22]"></a>uart_thread</STRONG> (Thumb, 322 bytes, Stack size 184 bytes, uart_ARRC.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 292<LI>Call Chain = uart_thread &rArr; get_standard_time &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_standard_time
 <LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
@@ -2178,7 +2178,8 @@ Local Symbols
 </UL>
 
 <P><STRONG><a name="[b9]"></a>sgn</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, tracking.o(.text))
-<BR><BR>[Called By]<UL><LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_bit_coherency
+<BR><BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lock
+<LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_bit_coherency
 <LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_bit_coherency_init
 </UL>
 
@@ -2196,7 +2197,7 @@ Local Symbols
 <LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pull_in
 </UL>
 
-<P><STRONG><a name="[b5]"></a>acquire</STRONG> (Thumb, 790 bytes, Stack size 8 bytes, tracking.o(.text))
+<P><STRONG><a name="[b5]"></a>acquire</STRONG> (Thumb, 1064 bytes, Stack size 8 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = acquire
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;smag
@@ -2204,7 +2205,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tracking
 </UL>
 
-<P><STRONG><a name="[b7]"></a>confirm</STRONG> (Thumb, 872 bytes, Stack size 8 bytes, tracking.o(.text))
+<P><STRONG><a name="[b7]"></a>confirm</STRONG> (Thumb, 1204 bytes, Stack size 8 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 8<LI>Call Chain = confirm
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;smag
@@ -2212,7 +2213,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tracking
 </UL>
 
-<P><STRONG><a name="[b8]"></a>data_bit_coherency_init</STRONG> (Thumb, 266 bytes, Stack size 16 bytes, tracking.o(.text))
+<P><STRONG><a name="[b8]"></a>data_bit_coherency_init</STRONG> (Thumb, 580 bytes, Stack size 16 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 16<LI>Call Chain = data_bit_coherency_init
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sgn
@@ -2220,7 +2221,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[ba]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pull_in
 </UL>
 
-<P><STRONG><a name="[ba]"></a>pull_in</STRONG> (Thumb, 2896 bytes, Stack size 24 bytes, tracking.o(.text))
+<P><STRONG><a name="[ba]"></a>pull_in</STRONG> (Thumb, 4240 bytes, Stack size 24 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = pull_in &rArr; fix_atan2 &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b8]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_bit_coherency_init
@@ -2231,7 +2232,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tracking
 </UL>
 
-<P><STRONG><a name="[bc]"></a>data_bit_coherency</STRONG> (Thumb, 800 bytes, Stack size 24 bytes, tracking.o(.text))
+<P><STRONG><a name="[bc]"></a>data_bit_coherency</STRONG> (Thumb, 4056 bytes, Stack size 24 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = data_bit_coherency
 </UL>
 <BR>[Calls]<UL><LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sgn
@@ -2239,12 +2240,13 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[bd]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lock
 </UL>
 
-<P><STRONG><a name="[bd]"></a>lock</STRONG> (Thumb, 3892 bytes, Stack size 32 bytes, tracking.o(.text))
+<P><STRONG><a name="[bd]"></a>lock</STRONG> (Thumb, 7452 bytes, Stack size 32 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 84<LI>Call Chain = lock &rArr; fix_atan2 &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_messages
 <LI><a href="#[bc]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_bit_coherency
 <LI><a href="#[b4]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;fix_atan2
+<LI><a href="#[b9]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;sgn
 <LI><a href="#[bb]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;lmag
 <LI><a href="#[a3]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_idivmod
 </UL>

@@ -4,11 +4,11 @@
 #include <stdint.h>
 #define NAMURU_BASE       0xFF200000
 //status block
-#define STATUS_BASE				0x380
+#define STATUS_BASE				0x540
 //control block
-#define CONTROL_BASE			0x3C0
+#define CONTROL_BASE			0x580
 //channels
-#define N_CHANNELS        14
+#define N_CHANNELS        21
 //peripheral base address
 #define NAMURU_BASE				0xFF200000
 
