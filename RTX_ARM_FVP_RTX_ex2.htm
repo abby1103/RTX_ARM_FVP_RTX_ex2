@@ -3,7 +3,7 @@
 <title>Static Call Graph - [E:\correlation_de1_yao\triple_anttena_20190923\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf]</title></head>
 <body><HR>
 <H1>Static Call Graph for image E:\correlation_de1_yao\triple_anttena_20190923\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050041: Last Updated: Tue Oct 01 12:26:49 2019
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050041: Last Updated: Wed Oct 02 11:56:09 2019
 <BR><P>
 <H3>Maximum Stack Usage =       2616 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
@@ -269,7 +269,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[3e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;$Super$$main
 </UL>
 
-<P><STRONG><a name="[1d]"></a>allocate_thread</STRONG> (Thumb, 158 bytes, Stack size 24 bytes, allocate.o(.text))
+<P><STRONG><a name="[1d]"></a>allocate_thread</STRONG> (Thumb, 196 bytes, Stack size 24 bytes, allocate.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 80<LI>Call Chain = allocate_thread &rArr; osSignalWait &rArr; __exceptional_mode
 </UL>
 <BR>[Calls]<UL><LI><a href="#[49]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
@@ -1810,7 +1810,7 @@ Global Symbols
 <H3>
 Local Symbols
 </H3>
-<P><STRONG><a name="[45]"></a>initialize_channel</STRONG> (Thumb, 378 bytes, Stack size 16 bytes, allocate.o(.text))
+<P><STRONG><a name="[45]"></a>initialize_channel</STRONG> (Thumb, 438 bytes, Stack size 16 bytes, allocate.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = initialize_channel &rArr; clear_messages
 </UL>
 <BR>[Calls]<UL><LI><a href="#[46]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;clear_messages
@@ -2011,14 +2011,14 @@ Local Symbols
 <P><STRONG><a name="[8b]"></a>__get_page_descriptor</STRONG> (Thumb, 316 bytes, Stack size 32 bytes, mmu_VE_A9_MP.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 68<LI>Call Chain = __get_page_descriptor &rArr; __memory_page &rArr; __memory_section
 </UL>
-<BR>[Calls]<UL><LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__secure_page
-<LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__global_page
+<BR>[Calls]<UL><LI><a href="#[91]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__global_page
 <LI><a href="#[90]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__shared_page
 <LI><a href="#[8e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__p_page
 <LI><a href="#[8d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__domain_page
 <LI><a href="#[87]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__memory_page
 <LI><a href="#[8f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__ap_page
 <LI><a href="#[8c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__xn_page
+<LI><a href="#[92]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__secure_page
 </UL>
 <BR>[Called By]<UL><LI><a href="#[31]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;create_translation_table
 </UL>

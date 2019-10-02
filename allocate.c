@@ -53,9 +53,11 @@ static void initialize_channel( unsigned short ch, unsigned short prn)
     CH[ch].carrier_corr = 0;
     CH[ch].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
     CH[ch+1].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
+    CH[ch+2].carrier_freq = CARRIER_REF + CH[ch].carrier_corr;
     //namuru_ch_write(ch, CARR_NCO, CH[ch].carrier_freq);
     ch_block->channels[ch].carr_nco = CH[ch].carrier_freq;
     ch_block->channels[ch+1].carr_nco = CH[ch+1].carrier_freq;
+    ch_block->channels[ch+2].carr_nco = CH[ch+2].carrier_freq;
     /* WAIT 300NS UNTIL NEXT ACCESS */
     
     /* Initialize the code and frequency search variables */
@@ -105,6 +107,7 @@ static void initialize_channel( unsigned short ch, unsigned short prn)
     /* Update channel state */
     CH[ch].state = CHANNEL_ACQUISITION;
     CH[ch+1].state = CHANNEL_ACQUISITION;
+    CH[ch+2].state = CHANNEL_ACQUISITION;
 }
 
 

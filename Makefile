@@ -32,7 +32,7 @@ CXX = armcc
 AS = armasm
 LD = armlink
 
-ROOT = E:\correlation_de1_yao\dual_attena_20190327\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX
+ROOT = E:\correlation_de1_yao\triple_anttena_20190923\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX
 
 CFLAGS = -D__CMSIS_RTOS -D__MICROLIB -D__EVAL -D__FPU_PRESENT --apcs=interwork --thumb --cpu Cortex-A9 -g -O0 --md --c99 \
          -D SYSTEM_BUS_WIDTH=32\
