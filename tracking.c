@@ -46,6 +46,8 @@ typedef struct {
     long                code_freq;          // in NCO hex units
     long 			    ch_del_carr_phase, ch1_del_carr_phase, ch_del_code_phase, ch1_del_code_phase;
     int 				current_ch;
+    int 				ch2_ip, ch2_qp, ch2_phase_info;
+    long 				ch2_del_carr_phase;
 } d_ch_log_t;
 
 d_ch_log_t d_data[D_DATA_STORED];
@@ -98,7 +100,7 @@ static long lmag( long a, long b)
 /******************************************************************************
  * classic signum function written for the short datatype
  ******************************************************************************/
-static short sgn(long data)
+static int sgn(long data)
 {
     return( data < 0 ? -1: data != 0);
 }
@@ -746,7 +748,7 @@ static void lock( unsigned long ch)
         ch_block->channels[ch].code_nco = CH[ch].code_freq;
 
         /* Data bit */
-        CH[ch].ch_debug2=0;
+        //CH[ch].ch_debug2=0;
         data_bit_coherency(ch, current_ch);
 
         if ((CH[ch].phase_info != 0) || (CH[ch+1].phase_info != 0) || (CH[ch+2].phase_info != 0)){
@@ -853,7 +855,7 @@ static void lock( unsigned long ch)
         }
         else{
         	CH[ch].bit = ((CH[ch].i_prompt_20 * CH[ch].phase_info_old + CH[ch+1].i_prompt_20 * CH[ch+1].phase_info_old + CH[ch+2].i_prompt_20 * CH[ch+2].phase_info_old) > 0);
-			CH[ch].ch_debug2=1;
+			//CH[ch].ch_debug2=1;
 			CH[current_ch].phase_info = CH[current_ch].phase_info_old;
         }
 
@@ -882,7 +884,7 @@ static void lock( unsigned long ch)
             CH[ch].avg = CH[ch].sum / 5;
             CH[ch].sum = 0;
 
-            if((CH[ch].bit_sync) && (CH[ch].avg < LOCK_THRESHOLD)) {
+            if((CH[ch].bit_sync) && (CH[ch].avg < 2*LOCK_THRESHOLD)) {
                 /* Signal loss. Clear channel. */
 				clear_messages(ch);
 				CH[ch].state                   = CHANNEL_PULL_IN;
@@ -951,45 +953,43 @@ void tracking(void)
     
     for (ch = 0; ch < N_CHANNELS; ch++) {
     	if((new_data & (1 << ch)) || (new_data & (1 << (ch-1))) || (new_data & (1 << (ch-2))))
-    	        {
-    	            CH[ch].i_prompt_old = CH[ch].i_prompt;
-    	            CH[ch].q_prompt_old = CH[ch].q_prompt;
+		{
+			CH[ch].i_prompt_old = CH[ch].i_prompt;
+			CH[ch].q_prompt_old = CH[ch].q_prompt;
 
-    	            /* Collect channel data accumulation. */
-    	            CH[ch].i_early  = signExtension(ch_block->channels[ch].i_early);
-    	            CH[ch].q_early  = signExtension(ch_block->channels[ch].q_early);
-    	            CH[ch].i_prompt = signExtension(ch_block->channels[ch].i_prompt);
-    	            CH[ch].q_prompt = signExtension(ch_block->channels[ch].q_prompt);
-    	            CH[ch].i_late   = signExtension(ch_block->channels[ch].i_late);
-    	            CH[ch].q_late   = signExtension(ch_block->channels[ch].q_late);
+			/* Collect channel data accumulation. */
+			CH[ch].i_early  = signExtension(ch_block->channels[ch].i_early);
+			CH[ch].q_early  = signExtension(ch_block->channels[ch].q_early);
+			CH[ch].i_prompt = signExtension(ch_block->channels[ch].i_prompt);
+			CH[ch].q_prompt = signExtension(ch_block->channels[ch].q_prompt);
+			CH[ch].i_late   = signExtension(ch_block->channels[ch].i_late);
+			CH[ch].q_late   = signExtension(ch_block->channels[ch].q_late);
 
-    	            // If the last dump was the first dump in a new satellite
-    	            // message data bit, then lock() sets the load_1ms_epoch_flag
-    	            // so that we can set the 1m epoch counter here. Why here?
-    	            // GP4020 Baseband Processor Design Manual, pg 60: "Ideally,
-    	            // epoch counter accesses should occur following the reading of
-    	            // the accumulation register at each DUMP." Great, thanks for
-    	            // the tip, now how 'bout you tell us WHY?!
-    	            if(CH[ch].load_1ms_epoch_count)
-    	            {
-    	            	ch_block->channels[ch].epoch_load = 1;
-    	                CH[ch].load_1ms_epoch_count = 0;
-    	            }
+			// If the last dump was the first dump in a new satellite
+			// message data bit, then lock() sets the load_1ms_epoch_flag
+			// so that we can set the 1m epoch counter here. Why here?
+			// GP4020 Baseband Processor Design Manual, pg 60: "Ideally,
+			// epoch counter accesses should occur following the reading of
+			// the accumulation register at each DUMP." Great, thanks for
+			// the tip, now how 'bout you tell us WHY?!
+			if(CH[ch].load_1ms_epoch_count)
+			{
+				ch_block->channels[ch].epoch_load = 1;
+				CH[ch].load_1ms_epoch_count = 0;
+			}
 
-    	            // We expect the 1ms epoch counter to always stay sync'd until
-    	            // we lose lock. To sync the 20ms epoch counter (the upper bits)
-    	            // we wait until we get a signal from the message thread that
-    	            // we just got the TLM+HOW words; this means we're 60 bits into
-    	            // the message. Since the damn epoch counter counts to *50* (?!)
-    	            // we mod it with 60 which gives us 10 (0xA00 when shifted 8).
-    	            if(CH[ch].sync_20ms_epoch_count){
-    	            	ch_block->channels[ch].epoch_load =
-    	            		(ch_block->channels[ch].epoch_check & 0x1f) | 0x140;
-    	                CH[ch].sync_20ms_epoch_count = 0;
-    	            }
-
-
-    	        }
+			// We expect the 1ms epoch counter to always stay sync'd until
+			// we lose lock. To sync the 20ms epoch counter (the upper bits)
+			// we wait until we get a signal from the message thread that
+			// we just got the TLM+HOW words; this means we're 60 bits into
+			// the message. Since the damn epoch counter counts to *50* (?!)
+			// we mod it with 60 which gives us 10 (0xA00 when shifted 8).
+			if(CH[ch].sync_20ms_epoch_count){
+				ch_block->channels[ch].epoch_load =
+					(ch_block->channels[ch].epoch_check & 0x1f) | 0x140;
+				CH[ch].sync_20ms_epoch_count = 0;
+			}
+		}
     }
     to_allocate = 0;
 
@@ -1048,8 +1048,10 @@ void d_log_data(int ch) {
     	d_data[d_data_index].ch1_ip = CH[ch+1].i_prompt;
     	d_data[d_data_index].ch1_qp = CH[ch+1].q_prompt;
 
+
     	d_data[d_data_index].ch_phase_info = CH[ch].phase_info;
     	d_data[d_data_index].ch1_phase_info = CH[ch+1].phase_info;
+    	//d_data[d_data_index].ch2_phase_info = CH[ch+1].phase_info;
     	d_data[d_data_index].subf1 = (unsigned short)messages[ch].subframes[0].valid;
 
 		d_data[d_data_index].subf2 = (unsigned short)messages[ch].subframes[1].valid;
@@ -1066,6 +1068,12 @@ void d_log_data(int ch) {
 		d_data[d_data_index].ch_del_code_phase = CH[ch].delta_code_phase;
 		d_data[d_data_index].ch1_del_code_phase = CH[ch+1].delta_code_phase;
 		d_data[d_data_index].current_ch = CH[ch].current_ch;
+
+		d_data[d_data_index].ch2_ip = CH[ch+2].i_prompt;
+		d_data[d_data_index].ch2_qp = CH[ch+2].q_prompt;
+		d_data[d_data_index].ch2_phase_info = CH[ch+2].phase_info;
+		d_data[d_data_index].ch2_del_carr_phase = CH[ch+2].delta_carrier_phase;
+
 		d_data_index++;
     }
 
@@ -1078,21 +1086,25 @@ void d_log_data(int ch) {
 static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
 {
     unsigned short i;
-
+    CH[ch].ch_debug2 = 0;
     for (i = ch; i < ch + 3; i++) {
         //if ((abs(CH[i].i_prompt_20) < (3 * LOCK_THRESHOLD)) && (abs(CH[i].i_prompt) < LOCK_THRESHOLD))
     	if ((abs(CH[i].i_prompt_20) < (5 * LOCK_THRESHOLD)) )
             CH[i].phase_info = 0;
     }
-
+    int sgn_ch, sgn_ch1, sgn_ch2;
+    sgn_ch = sgn(CH[ch].i_prompt_20) * CH[ch].phase_info;
+    sgn_ch1 = sgn(CH[ch+1].i_prompt_20) * CH[ch+1].phase_info;
+    sgn_ch2 = sgn(CH[ch+2].i_prompt_20) * CH[ch+2].phase_info;
     /* Dual antenna data coherency mode */
     //if ((abs(CH[ch].i_prompt) > LOCK_THRESHOLD) && (abs(CH[ch+1].i_prompt) > LOCK_THRESHOLD)) {
     //if ((abs(CH[ch].i_prompt_20) > (10 * LOCK_THRESHOLD)) && (abs(CH[ch+1].i_prompt_20) > (10 * LOCK_THRESHOLD))) {
 
     if (current_ch == ch){
     	if (CH[ch].phase_info != 0){
-    		if ((CH[ch+1].phase_info != 0) && ((sgn(CH[ch].i_prompt_20)*CH[ch].phase_info) != (sgn(CH[ch+1].i_prompt_20)*CH[ch+1].phase_info))){
+    		if ((CH[ch+1].phase_info != 0) && (sgn_ch != sgn_ch1)){
 				CH[ch+1].phase_info = CH[ch].phase_info * -1;
+				CH[ch].ch_debug2 |= 0x1;
     		}
     		else if((CH[ch+1].phase_info == 0) && (abs(CH[ch+1].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
@@ -1102,8 +1114,9 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     				CH[ch+1].phase_info = CH[ch].phase_info;
     			}
     		}
-    		if ((CH[ch+2].phase_info != 0) && ((sgn(CH[ch].i_prompt_20)*CH[ch].phase_info) != (sgn(CH[ch+2].i_prompt_20)*CH[ch+2].phase_info))){
+    		if ((CH[ch+2].phase_info != 0) && (sgn_ch != sgn_ch2)){
 				CH[ch+2].phase_info = CH[ch].phase_info * -1;
+				CH[ch].ch_debug2 |= 0x2;
     		}
     		else if((CH[ch+2].phase_info == 0) && (abs(CH[ch+2].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
@@ -1151,10 +1164,11 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     	}
     }
-    else if (current_ch == ch+1){
+    else if (current_ch == (ch+1)){
     	if (CH[ch+1].phase_info != 0){
-    		if ((CH[ch].phase_info != 0) && ((sgn(CH[ch+1].i_prompt_20)*CH[ch+1].phase_info) != (sgn(CH[ch].i_prompt_20)*CH[ch].phase_info))){
+    		if ((CH[ch].phase_info != 0) && (sgn_ch1 != sgn_ch)){
 				CH[ch].phase_info = CH[ch+1].phase_info * -1;
+				CH[ch].ch_debug2 |= 0x4;
     		}
     		else if((CH[ch].phase_info == 0) && (abs(CH[ch].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
@@ -1164,8 +1178,9 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     				CH[ch].phase_info = CH[ch+1].phase_info;
     			}
     		}
-    		if ((CH[ch+2].phase_info != 0) && ((sgn(CH[ch+1].i_prompt_20)*CH[ch+1].phase_info) != (sgn(CH[ch+2].i_prompt_20)*CH[ch+2].phase_info))){
+    		if ((CH[ch+2].phase_info != 0) && (sgn_ch1 != sgn_ch2)){
 				CH[ch+2].phase_info = CH[ch+1].phase_info * -1;
+				CH[ch].ch_debug2 |= 0x8;
     		}
     		else if((CH[ch+2].phase_info == 0) && (abs(CH[ch+2].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
@@ -1215,8 +1230,9 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     }
     else{
     	if (CH[ch+2].phase_info != 0){
-    		if ((CH[ch].phase_info != 0) && ((sgn(CH[ch+2].i_prompt_20)*CH[ch+2].phase_info) != (sgn(CH[ch].i_prompt_20)*CH[ch].phase_info))){
+    		if ((CH[ch].phase_info != 0) && (sgn_ch2 != sgn_ch)){
 				CH[ch].phase_info = CH[ch+2].phase_info * -1;
+				CH[ch].ch_debug2 |= 0x10;
     		}
     		else if((CH[ch].phase_info == 0) && (abs(CH[ch].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
@@ -1226,8 +1242,9 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     				CH[ch].phase_info = CH[ch+2].phase_info;
     			}
     		}
-    		if ((CH[ch+1].phase_info != 0) && ((sgn(CH[ch+2].i_prompt_20)*CH[ch+2].phase_info) != (sgn(CH[ch+1].i_prompt_20)*CH[ch+1].phase_info))){
+    		if ((CH[ch+1].phase_info != 0) && (sgn_ch2 != sgn_ch1)){
 				CH[ch+1].phase_info = CH[ch+2].phase_info * -1;
+				CH[ch].ch_debug2 |= 0x20;
     		}
     		else if((CH[ch+1].phase_info == 0) && (abs(CH[ch+1].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
