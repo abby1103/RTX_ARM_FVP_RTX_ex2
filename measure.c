@@ -21,9 +21,11 @@
  * Globals
  ******************************************************************************/
 unsigned int    channels_ready;
+unsigned short  all_lock_num;
 measurement_t   meas[N_CHANNELS];
 gpstime_t       meas_time;
 DOP				receiver_DOP;
+carrier_t 	 meas_carrier[N_CHANNELS];
 
 /******************************************************************************
  * Grab the time in bits from the tracking loops.
@@ -157,11 +159,21 @@ void measure_thread(void const *argument)
 		     * the position thread runs, we copy over the pr's so the position
 		     * thread can use a private copy.
              */
+
+
+	        //************************test for ddcp*************************//
+	        all_lock_num = 5;
+	        //**************************************************************//
+
 		    if (pr_count > 0) {    
 		        for( ch = 0; ch < N_CHANNELS; ++ch)
 		            pr2[ch] = pr[ch];
 		        pr2_time = pr_time;
 		        satnum = 0;
+		        //************************comment for ddcp test*************************//
+		        //all_lock_num = 0;
+		        //**************************************************************//
+
 		        for (ch = 0; ch < N_CHANNELS; ++ch) {
 		            if (ephemeris[ch].valid && pr2[ch].valid) {
 		            	sat_pos_by_ch_old[ch] = sat_pos_by_ch[ch];
@@ -192,6 +204,22 @@ void measure_thread(void const *argument)
 		                m_rho_dot[satnum] = pr2[ch].delta_range;
 		                m_rho_dot_test[satnum] =pr[ch].delta_range_test;
 		                satnum++;
+
+		                // check if all ant in lock
+		                if (messages[ch + 1].data_inverted & messages[ch + 2].data_inverted){
+		                	meas_carrier[all_lock_num].ch0_phase = meas[ch].carrier_dco_phase / 1023;		// in cycle
+		                	meas_carrier[all_lock_num].ch1_phase = meas[ch + 1].carrier_dco_phase / 1023;	// in cycle
+		                	meas_carrier[all_lock_num].ch2_phase = meas[ch + 2].carrier_dco_phase / 1023;	// in cycle
+
+		                	meas_carrier[all_lock_num].ch0_doppler = CH[ch].doppler_freq;
+		                	meas_carrier[all_lock_num].ch1_doppler = CH[ch + 1].doppler_freq;
+		                	meas_carrier[all_lock_num].ch2_doppler = CH[ch + 2].doppler_freq;
+
+		                	meas_carrier[all_lock_num].ch0_data_inverted = messages[ch].data_inverted;
+		                	meas_carrier[all_lock_num].ch1_data_inverted = messages[ch + 1].data_inverted;
+		                	meas_carrier[all_lock_num].ch2_data_inverted = messages[ch + 2].data_inverted;
+		                	all_lock_num ++;
+		                }
 		            }
 		        }
 
@@ -217,6 +245,11 @@ void measure_thread(void const *argument)
 						receiver_llh = ecef_to_llh(ecef_temp);
 						receiver_DOP = CALCULATE_DOP(satnum);
 						//osSignalSet(ekf_position_thread_id,  0x0005);
+
+						// if three ants in lock (data_inverted != 0) , estimate attitude by DDCP.
+						if(all_lock_num >= 4){
+							osSignalSet(attitude_thread_id,  0x0007);
+						}
 		            }
 		        } else {
 		            positioning = 0;

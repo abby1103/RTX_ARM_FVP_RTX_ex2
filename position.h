@@ -1,4 +1,4 @@
-// poition.h: Header file for the position.c file
+// position.h: Header file for the position.c file
 // Copyright (C) 2005  Andrew Greenberg
 // Distributed under the GNU GENERAL PUBLIC LICENSE (GPL) Version 2 (June 1991).
 // See the "COPYING" file distributed with this software for more information.

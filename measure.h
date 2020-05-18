@@ -42,6 +42,21 @@ typedef struct // Raw data
 
 } measurement_t;
 
+typedef struct // Raw data
+{
+    unsigned short ch0_phase;
+    unsigned short ch1_phase;
+    unsigned short ch2_phase;
+
+    unsigned short ch0_data_inverted;
+    unsigned short ch1_data_inverted;
+    unsigned short ch2_data_inverted;
+
+    long           ch0_doppler;
+    long           ch1_doppler;
+    long           ch2_doppler;
+} carrier_t;
+
 void grab_bit_times(void);
 void measure_thread(void const *argument);
 
@@ -49,9 +64,11 @@ void measure_thread(void const *argument);
  * Externs
  ******************************************************************************/
 extern unsigned int channels_ready;
+extern unsigned short  all_lock_num;
 extern measurement_t meas[N_CHANNELS];
 extern gpstime_t     meas_time;
-extern DOP			 	receiver_DOP;
+extern DOP			 receiver_DOP;
+extern carrier_t 	 meas_carrier[N_CHANNELS];
 //extern cyg_sem_t     measure_semaphore;
 
 #endif // __MEASURE_H
