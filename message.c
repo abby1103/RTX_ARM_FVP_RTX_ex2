@@ -51,7 +51,7 @@ message_t  messages[N_CHANNELS];
 /******************************************************************************
  * Statics
  ******************************************************************************/
-
+unsigned long newist_TOW = 0;
 // None
 
 /******************************************************************************
@@ -103,6 +103,8 @@ void clear_messages (unsigned short ch)
 {
     unsigned short i;
     
+    ephemeris[ch].have_subframe = 0;
+    ephemeris[ch].valid = 0;
     messages[ch].frame_sync = 0;
     messages[ch].subframe = 0;
     messages[ch].set_epoch_flag = 0;
@@ -179,6 +181,16 @@ static void look_for_preamble( unsigned short ch)
     /* Save local copies of the wordbuf's for local checks of TLM and HOW */
     TLM = messages[ch].wordbuf1;
     HOW = messages[ch].wordbuf0;
+
+    current_subframe = messages[ch].subframe;
+   	if( messages[ch].subframes[current_subframe].valid & 3)
+   	{
+   		if ((newist_TOW - messages[ch].subframes[current_subframe].TOW)>1){
+   			clear_messages( ch);
+   			return;
+   		}
+
+   	}
 
     /* Test for inverted data. Bit 0 and 1 of HOW must be zero. */
     if( HOW & 1)        // Test for inverted data
@@ -264,6 +276,16 @@ static void look_for_preamble( unsigned short ch)
     // Maybe this should be a macro. Could be done faster if we assumed 32bits.
     messages[ch].subframes[current_subframe].TOW = (HOW >> (30 - 17)) 
                                                    & ((1 << 17) - 1);
+
+    if (messages[ch].subframes[current_subframe].TOW > newist_TOW)
+    	{
+    		newist_TOW = messages[ch].subframes[current_subframe].TOW;
+    	}
+    	if (newist_TOW == 403199)
+    	{
+    		newist_TOW = 0;
+    	}
+
 
     if( current_subframe > 0)
         previous_subframe = current_subframe - 1;
@@ -359,7 +381,18 @@ void message_thread(void const *argument) // input 'data' not used
                 if(!messages[ch].frame_sync)
                 {
                     look_for_preamble(ch);
+                    //If ch and ch+1 have the same phase_info,ch has data_invered and ch+1 also has
+                    //If ch and ch+1 have different phase_info,ch has data_invered and ch+1 hasn't
+                    //data_inverted = 2 : unlock
+                    if (CH[ch+1].phase_info != 0)
+                    	messages[ch+1].data_inverted = messages[ch].data_inverted ^ (CH[ch].phase_info != CH[ch+1].phase_info );
+                    else
+                    	messages[ch+1].data_inverted = 2;
 
+                    if (CH[ch+2].phase_info != 0)
+                    	messages[ch+2].data_inverted = messages[ch].data_inverted ^ (CH[ch].phase_info != CH[ch+2].phase_info );
+                    else
+                    	messages[ch+2].data_inverted = 2;
                     // If we just found sync, then reset the counters
                     if(messages[ch].frame_sync)
                     {

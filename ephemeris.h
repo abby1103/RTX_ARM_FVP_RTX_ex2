@@ -67,7 +67,11 @@ typedef struct
  
 void ephemeris_thread(void const *argument);
 void clear_ephemeris(unsigned short ch);
-
+void process_subframe1( unsigned short ch);
+void process_subframe2( unsigned short ch);
+void process_subframe3( unsigned short ch);
+void process_subframe4( unsigned short ch);
+void process_subframe5( unsigned short ch);
 /*******************************************************************************
  * Externs
  ******************************************************************************/

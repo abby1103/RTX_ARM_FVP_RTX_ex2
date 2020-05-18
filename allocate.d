@@ -7,3 +7,5 @@ allocate.o: constants.h
 allocate.o: namuru.h
 allocate.o: time.h
 allocate.o: tracking.h
+allocate.o: ephemeris.h
+allocate.o: message.h

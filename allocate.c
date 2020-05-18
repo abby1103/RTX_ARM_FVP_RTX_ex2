@@ -5,6 +5,8 @@
 #include "namuru.h"
 #include "time.h"
 #include "tracking.h"
+#include "ephemeris.h"
+#include "message.h"
 
 /*******************************************************************************
  * Global variables
@@ -193,7 +195,7 @@ void cold_allocate_channel(unsigned short ch)
              next_satellite = 0; // check satellites 1 to 32     
              
         already_allocated = 0;
-        for( i = 0; i < N_CHANNELS; i++)
+        for( i = 0; i < N_CHANNELS; i+=3)
         {
             if( (CH[i].prn == next_satellite) && (CH[i].state != CHANNEL_OFF))
             {
@@ -238,21 +240,21 @@ initialize_allocation( void)
 {
 
 	// outside
-/*
-    initialize_channel(  0, 1);
-    //initialize_channel(  1, 7);
-    initialize_channel(  2, 4);
-    //initialize_channel(  3,3);
-    initialize_channel(  4,23);
-    //initialize_channel(  5,22);
-    initialize_channel(  6,12);
-    //initialize_channel(  7,19);
-    initialize_channel(  8,14);
-    //initialize_channel(  9,21);
-    initialize_channel( 10,20);
-    initialize_channel( 12,28);
-*/
 
+    initialize_channel(  0, 9);
+	//initialize_channel(  1, 7);
+	initialize_channel(  3, 11);
+	//initialize_channel(  3,3);
+	initialize_channel(  6,14);
+	//initialize_channel(  5,22);
+	initialize_channel(  9,20);
+	//initialize_channel(  7,19);
+	initialize_channel(  12,23);
+	//initialize_channel(  9,21);
+	initialize_channel( 15,24);
+	initialize_channel( 18,19);
+
+/*
     //Lab249
     initialize_channel(  0, 26);
 	//initialize_channel(  1, 7);
@@ -267,7 +269,7 @@ initialize_allocation( void)
 	initialize_channel( 15,19);
 	initialize_channel( 18,22);
 
-
+*/
 
 }
 
@@ -294,7 +296,7 @@ void allocate_thread(void const *argument) // input 'data' not used
         // Current now, in seconds.       
         now = get_time_in_seconds();
         
-        for( ch = 0; ch < N_CHANNELS; ++ch)
+        for( ch = 0; ch < N_CHANNELS; ch+=3)
         {
             // If the channel is locked, then update it's last good now stamp.
             // This relies on this function being called often - but with
@@ -322,7 +324,7 @@ void allocate_thread(void const *argument) // input 'data' not used
         // At this point, we're guaranteed that all the channels with
         // possibly valid sats are allocated or reallocated. Now cold 
         // allocate the rest.
-        for( ch = 0; ch < N_CHANNELS; ++ch)
+        for( ch = 0; ch < N_CHANNELS; ch+=3)
         {
             if( CH[ch].state == CHANNEL_OFF)
                 cold_allocate_channel(ch);

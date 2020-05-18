@@ -377,7 +377,7 @@ static void pull_in (unsigned short ch)
         CH[ch].prompt_mag      = lmag( CH[ch].i_prompt, CH[ch].q_prompt);
         CH[ch].late_mag        = lmag(CH[ch].i_late, CH[ch].q_late);
         CH[ch].delta_code_phase = (CH[ch].early_mag - CH[ch].late_mag) << 14;
-        CH[ch].delta_code_phase = (CH[ch].delta_code_phase / (CH[ch].early_mag + CH[ch].late_mag)) >> 1;
+        CH[ch].delta_code_phase = (CH[ch].delta_code_phase / (CH[ch].early_mag + CH[ch].late_mag));
     }
 
     if ((CH[ch+1].i_early != 0) && (CH[ch+1].q_early != 0) && (CH[ch+1].i_late != 0) && (CH[ch+1].q_late != 0)) {
@@ -385,7 +385,7 @@ static void pull_in (unsigned short ch)
             CH[ch+1].prompt_mag      = lmag( CH[ch+1].i_prompt, CH[ch+1].q_prompt);
             CH[ch+1].late_mag        = lmag(CH[ch+1].i_late, CH[ch+1].q_late);
             CH[ch+1].delta_code_phase = (CH[ch+1].early_mag - CH[ch+1].late_mag) << 14;
-            CH[ch+1].delta_code_phase = (CH[ch+1].delta_code_phase / (CH[ch+1].early_mag + CH[ch+1].late_mag)) >> 1;
+            CH[ch+1].delta_code_phase = (CH[ch+1].delta_code_phase / (CH[ch+1].early_mag + CH[ch+1].late_mag));
     }
 
     if ((CH[ch+2].i_early != 0) && (CH[ch+2].q_early != 0) && (CH[ch+2].i_late != 0) && (CH[ch+2].q_late != 0)) {
@@ -393,20 +393,11 @@ static void pull_in (unsigned short ch)
             CH[ch+2].prompt_mag      = lmag( CH[ch+2].i_prompt, CH[ch+2].q_prompt);
             CH[ch+2].late_mag        = lmag(CH[ch+2].i_late, CH[ch+2].q_late);
             CH[ch+2].delta_code_phase = (CH[ch+2].early_mag - CH[ch+2].late_mag) << 14;
-            CH[ch+2].delta_code_phase = (CH[ch+2].delta_code_phase / (CH[ch+2].early_mag + CH[ch+2].late_mag)) >> 1;
+            CH[ch+2].delta_code_phase = (CH[ch+2].delta_code_phase / (CH[ch+2].early_mag + CH[ch+2].late_mag));
     }
 
-    if ((CH[ch].prompt_mag >= CH[ch+1].prompt_mag) && (CH[ch].prompt_mag >= CH[ch+2].prompt_mag)){
-    	current_ch = ch;
-    } else if ((CH[ch+1].prompt_mag >= CH[ch].prompt_mag) && (CH[ch+1].prompt_mag >= CH[ch+2].prompt_mag)){
-    	current_ch = ch+1;
-    } else {
-    	current_ch = ch+2;
-    }
-
-
-    CH[ch].code_freq += ((449 * (CH[current_ch].delta_code_phase - CH[current_ch].delta_code_phase_old) + 59 * CH[current_ch].delta_code_phase) >> 14);
-
+    current_ch = ch;
+    CH[ch].code_freq += ((429 * CH[ch+1].delta_code_phase - 421 * CH[ch+1].delta_code_phase_old) >> 14);
 
     ch_block->channels[ch].code_nco = CH[ch].code_freq;
 
@@ -506,7 +497,7 @@ static void pull_in (unsigned short ch)
 	}
     CH[ch+2].ch_time++;
 
-    if ((CH[ch].sign_count > 30) || (CH[ch+1].sign_count > 30) || (CH[ch+2].sign_count > 30) ) {
+    if (CH[ch].sign_count > 30) {
         CH[ch].state = CHANNEL_LOCK;
         CH[ch].ms_count = 0;
         CH[ch].bit_sync = 1;
@@ -553,6 +544,9 @@ static void lock( unsigned long ch)
 	int i;
 	double delta_freq;
     long cross, dot;
+
+    long a2=725;
+    long b2=655;
     CH[ch].ms_count++;
 
     if( CH[ch].ms_count > 19) // Efficient modulo 20
@@ -577,7 +571,7 @@ static void lock( unsigned long ch)
     /*double delta_freq = ((double)264.04465*(double)CH[ch].delta_carrier_phase-517.87888*(double)CH[ch].delta_carrier_phase_old+253.88705*(double)CH[ch].delta_carrier_phase_old_old)/16384.0;
     CH[ch].carrier_freq = 2 * CH[ch].carrier_freq_old - CH[ch].carrier_freq_old_old + ((long)delta_freq);*/
 
-    CH[ch].carrier_freq += ((273 * CH[ch].delta_carrier_phase - 263 * CH[ch].delta_carrier_phase_old) >> 14);
+    CH[ch].carrier_freq += ((a2 * CH[ch].delta_carrier_phase - b2 * CH[ch].delta_carrier_phase_old) >> 14);
     //CH[ch].carrier_freq += ((455 * CH[ch].delta_carrier_phase - 426 * CH[ch].delta_carrier_phase_old) >> 14);
     /* delta_freq = ((double)1061.435*(double)CH[ch].delta_carrier_phase-2090.55*(double)CH[ch].delta_carrier_phase_old+1030.885*(double)CH[ch].delta_carrier_phase_old_old)/16384.0;
     CH[ch].carrier_freq = CH[ch].carrier_freq_old + CH[ch].carrier_freq_old_old - CH[ch].carrier_freq_old_old_old +(long)delta_freq;
@@ -607,7 +601,7 @@ static void lock( unsigned long ch)
 		   CH[ch+1].delta_carrier_phase = fix_atan2((CH[ch+1].q_prompt * sign(CH[ch+1].i_prompt)), labs(CH[ch+1].i_prompt));
 	}
 
-	CH[ch+1].carrier_freq += ((273 * CH[ch+1].delta_carrier_phase - 263 * CH[ch+1].delta_carrier_phase_old) >> 14);
+	CH[ch+1].carrier_freq += ((a2 * CH[ch+1].delta_carrier_phase - b2 * CH[ch+1].delta_carrier_phase_old) >> 14);
 	//CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old) >> 14);
 	//    CH[ch+1].carrier_freq = CH[ch+1].carrier_freq_old + CH[ch+1].carrier_freq_old_old - CH[ch+1].carrier_freq_old_old_old +(long)delta_freq;
 
@@ -636,7 +630,7 @@ static void lock( unsigned long ch)
 		   CH[ch+2].delta_carrier_phase = fix_atan2((CH[ch+2].q_prompt * sign(CH[ch+2].i_prompt)), labs(CH[ch+2].i_prompt));
 	}
 
-	CH[ch+2].carrier_freq += ((273 * CH[ch+2].delta_carrier_phase - 263 * CH[ch+2].delta_carrier_phase_old) >> 14);
+	CH[ch+2].carrier_freq += ((a2 * CH[ch+2].delta_carrier_phase - b2 * CH[ch+2].delta_carrier_phase_old) >> 14);
 	//CH[ch+1].carrier_freq += ((455 * CH[ch+1].delta_carrier_phase - 426 * CH[ch+1].delta_carrier_phase_old) >> 14);
 	//    CH[ch+1].carrier_freq = CH[ch+1].carrier_freq_old + CH[ch+1].carrier_freq_old_old - CH[ch+1].carrier_freq_old_old_old +(long)delta_freq;
 
@@ -648,48 +642,20 @@ static void lock( unsigned long ch)
 	CH[ch+2].carrier_freq_old_old = CH[ch+2].carrier_freq_old;
 	CH[ch+2].carrier_freq_old = CH[ch+2].carrier_freq;
 
-	for (i = ch; i < ch + 3; i++) {
-		if (CH[i].phase_info == 0) {
-			CH[i].no_view++;
-		} else {
-			CH[i].no_view = 0;
-		}
-	}
-
-	if (CH[ch].no_view > 50){
-		if (CH[ch+1].no_view == 0){
-			CH[ch].carrier_freq = CH[ch+1].carrier_freq;
-		}
-		else if (CH[ch+2].no_view == 0){
-			CH[ch].carrier_freq = CH[ch+2].carrier_freq;
-		}
-	}
-	if (CH[ch+1].no_view > 50) {
-		if (CH[ch].no_view == 0){
-			CH[ch+1].carrier_freq = CH[ch].carrier_freq;
-		} else if (CH[ch+2].no_view == 0){
-			CH[ch+1].carrier_freq = CH[ch+2].carrier_freq;
-		}
-	}
-	if (CH[ch+2].no_view > 50) {
-		if (CH[ch].no_view == 0){
-			CH[ch+2].carrier_freq = CH[ch].carrier_freq;
-		} else if (CH[ch+1].no_view == 0){
-			CH[ch+2].carrier_freq = CH[ch+1].carrier_freq;
-		}
-	}
-
 	ch_block->channels[ch].carr_nco = CH[ch].carrier_freq;
 	ch_block->channels[ch+1].carr_nco = CH[ch+1].carrier_freq;
 	ch_block->channels[ch+2].carr_nco = CH[ch+2].carrier_freq;
 
-	if ((abs(CH[ch].i_prompt) >= abs(CH[ch+1].i_prompt)) && (abs(CH[ch].i_prompt) >= abs(CH[ch+2].i_prompt))) {
+	/*if ((abs(CH[ch].i_prompt) >= abs(CH[ch+1].i_prompt)) && (abs(CH[ch].i_prompt) >= abs(CH[ch+2].i_prompt))) {
 		CH[ch].doppler_freq += (CARRIER_REF - CH[ch].carrier_freq);
 	}else if (abs(CH[ch+1].i_prompt) >= abs(CH[ch+2].i_prompt)) {
 		CH[ch].doppler_freq += (CARRIER_REF - CH[ch+1].carrier_freq);
 	}else{
 		CH[ch].doppler_freq += (CARRIER_REF - CH[ch+2].carrier_freq);
-	}
+	}*/
+	CH[ch].doppler_freq += (CARRIER_REF - CH[ch].carrier_freq);
+	CH[ch + 1].doppler_freq += (CARRIER_REF - CH[ch + 1].carrier_freq);
+	CH[ch + 2].doppler_freq += (CARRIER_REF - CH[ch + 2].carrier_freq);
 
 
     if (CH[ch].ms_count == 19) {
@@ -700,7 +666,7 @@ static void lock( unsigned long ch)
 
         if (CH[ch].early_mag | CH[ch].late_mag) {
         	CH[ch].delta_code_phase = (CH[ch].early_mag - CH[ch].late_mag) << 14;
-        	CH[ch].delta_code_phase = (CH[ch].delta_code_phase / (CH[ch].early_mag + CH[ch].late_mag)) >> 1;
+        	CH[ch].delta_code_phase = (CH[ch].delta_code_phase / (CH[ch].early_mag + CH[ch].late_mag));
         }
 
         CH[ch+1].early_mag  = lmag( CH[ch+1].i_early_20, CH[ch+1].q_early_20);
@@ -709,7 +675,7 @@ static void lock( unsigned long ch)
 
 		if (CH[ch+1].early_mag | CH[ch+1].late_mag) {
 			CH[ch+1].delta_code_phase = (CH[ch+1].early_mag - CH[ch+1].late_mag) << 14;
-			CH[ch+1].delta_code_phase = (CH[ch+1].delta_code_phase / (CH[ch+1].early_mag + CH[ch+1].late_mag)) >> 1;
+			CH[ch+1].delta_code_phase = (CH[ch+1].delta_code_phase / (CH[ch+1].early_mag + CH[ch+1].late_mag));
 		}
 
         CH[ch+2].early_mag  = lmag( CH[ch+2].i_early_20, CH[ch+2].q_early_20);
@@ -718,9 +684,9 @@ static void lock( unsigned long ch)
 
 		if (CH[ch+2].early_mag | CH[ch+2].late_mag) {
 			CH[ch+2].delta_code_phase = (CH[ch+2].early_mag - CH[ch+2].late_mag) << 14;
-			CH[ch+2].delta_code_phase = (CH[ch+2].delta_code_phase / (CH[ch+2].early_mag + CH[ch+2].late_mag)) >> 1;
+			CH[ch+2].delta_code_phase = (CH[ch+2].delta_code_phase / (CH[ch+2].early_mag + CH[ch+2].late_mag));
 		}
-
+/*
 		if((abs(CH[ch].i_prompt_20) >= abs(CH[ch+1].i_prompt_20)) && (abs(CH[ch].i_prompt_20) >= abs(CH[ch+2].i_prompt_20))) {
 			current_ch = ch;
 			CH[ch].sum += CH[ch].prompt_mag;
@@ -731,15 +697,16 @@ static void lock( unsigned long ch)
 			current_ch = ch + 2;
 			CH[ch].sum += CH[ch+2].prompt_mag;
 		}
-
-		CH[ch].ch_debug=current_ch - ch+1;
-		CH[ch].current_ch = current_ch - ch+1;
+		*/
+		current_ch = ch;
+		CH[ch].ch_debug=current_ch - ch + 1;
+		CH[ch].current_ch = current_ch - ch + 1;
 		CH[ch+1].ch_debug=66;
 
+		CH[ch].sum += CH[ch].prompt_mag;
 
-        //CH[ch].code_freq += ((114 * CH[ch].delta_code_phase - 108 * CH[ch].delta_code_phase_old) >> 14);
-        //CH[ch].code_freq += ((284 * CH[current_ch].delta_code_phase - 251 * CH[current_ch].delta_code_phase_old) >> 14);
-		CH[ch].code_freq += ((406 * CH[current_ch].delta_code_phase - 290 * CH[current_ch].delta_code_phase_old) >> 14);
+        // only one DLL for ant0
+		CH[ch].code_freq += ((406 * CH[ch].delta_code_phase - 290 * CH[ch].delta_code_phase_old) >> 14);
 
         CH[ch].delta_code_phase_old = CH[ch].delta_code_phase;
         CH[ch+1].delta_code_phase_old = CH[ch+1].delta_code_phase;
@@ -748,7 +715,6 @@ static void lock( unsigned long ch)
         ch_block->channels[ch].code_nco = CH[ch].code_freq;
 
         /* Data bit */
-        //CH[ch].ch_debug2=0;
         data_bit_coherency(ch, current_ch);
 
         if ((CH[ch].phase_info != 0) || (CH[ch+1].phase_info != 0) || (CH[ch+2].phase_info != 0)){
@@ -760,13 +726,13 @@ static void lock( unsigned long ch)
         				if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
 							CH[ch].phase_info_old = CH[ch+1].phase_info;
 						else
-							CH[ch].phase_info_old = CH[ch+1].phase_info * -1;
+							CH[ch].phase_info_old = CH[ch+1].phase_info * (-1);
         			}
         			else{
         				if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+2].i_prompt_20))
 							CH[ch].phase_info_old = CH[ch+2].phase_info;
 						else
-							CH[ch].phase_info_old = CH[ch+2].phase_info * -1;
+							CH[ch].phase_info_old = CH[ch+2].phase_info * (-1);
         			}
         		}
         		else{
@@ -774,13 +740,13 @@ static void lock( unsigned long ch)
         				if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+2].i_prompt_20))
 							CH[ch].phase_info_old = CH[ch+2].phase_info;
 						else
-							CH[ch].phase_info_old = CH[ch+2].phase_info * -1;
+							CH[ch].phase_info_old = CH[ch+2].phase_info * (-1);
         			}
         			else{
         				if (sgn(CH[ch].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
 							CH[ch].phase_info_old = CH[ch+1].phase_info;
 						else
-							CH[ch].phase_info_old = CH[ch+1].phase_info * -1;
+							CH[ch].phase_info_old = CH[ch+1].phase_info * (-1);
         			}
         		}
         	}
@@ -793,13 +759,13 @@ static void lock( unsigned long ch)
         				if (sgn(CH[ch+1].i_prompt_20) == sgn(CH[ch].i_prompt_20))
 							CH[ch+1].phase_info_old = CH[ch].phase_info;
 						else
-							CH[ch+1].phase_info_old = CH[ch].phase_info * -1;
+							CH[ch+1].phase_info_old = CH[ch].phase_info * (-1);
         			}
         			else{
         				if (sgn(CH[ch+1].i_prompt_20) == sgn(CH[ch+2].i_prompt_20))
 							CH[ch+1].phase_info_old = CH[ch+2].phase_info;
 						else
-							CH[ch+1].phase_info_old = CH[ch+2].phase_info * -1;
+							CH[ch+1].phase_info_old = CH[ch+2].phase_info * (-1);
         			}
         		}
         		else{
@@ -807,13 +773,13 @@ static void lock( unsigned long ch)
         				if (sgn(CH[ch+1].i_prompt_20) == sgn(CH[ch+2].i_prompt_20))
 							CH[ch+1].phase_info_old = CH[ch+2].phase_info;
 						else
-							CH[ch+1].phase_info_old = CH[ch+2].phase_info * -1;
+							CH[ch+1].phase_info_old = CH[ch+2].phase_info * (-1);
         			}
         			else{
         				if (sgn(CH[ch+1].i_prompt_20) == sgn(CH[ch].i_prompt_20))
 							CH[ch+1].phase_info_old = CH[ch].phase_info;
 						else
-							CH[ch+1].phase_info_old = CH[ch].phase_info * -1;
+							CH[ch+1].phase_info_old = CH[ch].phase_info * (-1);
         			}
         		}
         	}
@@ -826,13 +792,13 @@ static void lock( unsigned long ch)
         				if (sgn(CH[ch+2].i_prompt_20) == sgn(CH[ch].i_prompt_20))
 							CH[ch+2].phase_info_old = CH[ch].phase_info;
 						else
-							CH[ch+2].phase_info_old = CH[ch].phase_info * -1;
+							CH[ch+2].phase_info_old = CH[ch].phase_info * (-1);
         			}
         			else{
         				if (sgn(CH[ch+2].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
 							CH[ch+2].phase_info_old = CH[ch+1].phase_info;
 						else
-							CH[ch+2].phase_info_old = CH[ch+1].phase_info * -1;
+							CH[ch+2].phase_info_old = CH[ch+1].phase_info * (-1);
         			}
         		}
         		else{
@@ -840,13 +806,13 @@ static void lock( unsigned long ch)
         				if (sgn(CH[ch+2].i_prompt_20) == sgn(CH[ch+1].i_prompt_20))
 							CH[ch+2].phase_info_old = CH[ch+1].phase_info;
 						else
-							CH[ch+2].phase_info_old = CH[ch+1].phase_info * -1;
+							CH[ch+2].phase_info_old = CH[ch+1].phase_info * (-1);
         			}
         			else{
         				if (sgn(CH[ch+2].i_prompt_20) == sgn(CH[ch].i_prompt_20))
 							CH[ch+2].phase_info_old = CH[ch].phase_info;
 						else
-							CH[ch+2].phase_info_old = CH[ch].phase_info * -1;
+							CH[ch+2].phase_info_old = CH[ch].phase_info * (-1);
         			}
         		}
         	}
@@ -858,8 +824,6 @@ static void lock( unsigned long ch)
 			//CH[ch].ch_debug2=1;
 			CH[current_ch].phase_info = CH[current_ch].phase_info_old;
         }
-
-
 
 
         /*
@@ -884,7 +848,7 @@ static void lock( unsigned long ch)
             CH[ch].avg = CH[ch].sum / 5;
             CH[ch].sum = 0;
 
-            if((CH[ch].bit_sync) && (CH[ch].avg < 2*LOCK_THRESHOLD)) {
+            if((CH[ch].bit_sync) && (CH[ch].avg < 3*LOCK_THRESHOLD)) {
                 /* Signal loss. Clear channel. */
 				clear_messages(ch);
 				CH[ch].state                   = CHANNEL_PULL_IN;
@@ -1038,7 +1002,7 @@ void d_log_data(int ch) {
         Condition for logging data is defined by ?
         This first edition will log every data for one single channel (0) w/o condition
     */
-    if(ch == 0 && d_data_index < D_DATA_STORED - 1) {
+    if(ch == 6 && d_data_index < D_DATA_STORED - 1) {
     	d_data[d_data_index].state = CH[ch].state;
     	d_data[d_data_index].debug2 = CH[ch].ch_debug2;
     	d_data[d_data_index].prn = CH[ch].prn;
@@ -1103,24 +1067,24 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     if (current_ch == ch){
     	if (CH[ch].phase_info != 0){
     		if ((CH[ch+1].phase_info != 0) && (sgn_ch != sgn_ch1)){
-				CH[ch+1].phase_info = CH[ch].phase_info * -1;
+				CH[ch+1].phase_info = CH[ch+1].phase_info * (-1);
 				CH[ch].ch_debug2 |= 0x1;
     		}
     		else if((CH[ch+1].phase_info == 0) && (abs(CH[ch+1].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
-					CH[ch+1].phase_info = CH[ch].phase_info * -1;
+					CH[ch+1].phase_info = CH[ch].phase_info * (-1);
 				}
     			else{
     				CH[ch+1].phase_info = CH[ch].phase_info;
     			}
     		}
     		if ((CH[ch+2].phase_info != 0) && (sgn_ch != sgn_ch2)){
-				CH[ch+2].phase_info = CH[ch].phase_info * -1;
+				CH[ch+2].phase_info = CH[ch+2].phase_info * (-1);
 				CH[ch].ch_debug2 |= 0x2;
     		}
     		else if((CH[ch+2].phase_info == 0) && (abs(CH[ch+2].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
-					CH[ch+2].phase_info = CH[ch].phase_info * -1;
+					CH[ch+2].phase_info = CH[ch].phase_info * (-1);
 				}
     			else{
     				CH[ch+2].phase_info = CH[ch].phase_info;
@@ -1130,7 +1094,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     	else if ((abs(CH[ch+1].i_prompt_20)>abs(CH[ch+2].i_prompt_20)) && (abs(CH[ch].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     		if (CH[ch+1].phase_info != 0){
 				if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
-					CH[ch].phase_info = CH[ch+1].phase_info * -1;
+					CH[ch].phase_info = CH[ch+1].phase_info * (-1);
 				}
 				else{
 					CH[ch].phase_info = CH[ch+1].phase_info;
@@ -1138,7 +1102,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     		else if (CH[ch+2].phase_info != 0){
     			if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
-					CH[ch].phase_info = CH[ch+2].phase_info * -1;
+					CH[ch].phase_info = CH[ch+2].phase_info * (-1);
 				}
 				else{
 					CH[ch].phase_info = CH[ch+2].phase_info;
@@ -1148,7 +1112,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     	else if ((abs(CH[ch+2].i_prompt_20)>abs(CH[ch+1].i_prompt_20)) && (abs(CH[ch].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     		if (CH[ch+2].phase_info != 0){
 				if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
-					CH[ch].phase_info = CH[ch+2].phase_info * -1;
+					CH[ch].phase_info = CH[ch+2].phase_info * (-1);
 				}
 				else{
 					CH[ch].phase_info = CH[ch+2].phase_info;
@@ -1156,7 +1120,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     		else if (CH[ch+1].phase_info != 0){
     			if (sgn(CH[ch].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
-					CH[ch].phase_info = CH[ch+1].phase_info * -1;
+					CH[ch].phase_info = CH[ch+1].phase_info * (-1);
 				}
 				else{
 					CH[ch].phase_info = CH[ch+1].phase_info;
@@ -1167,24 +1131,24 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     else if (current_ch == (ch+1)){
     	if (CH[ch+1].phase_info != 0){
     		if ((CH[ch].phase_info != 0) && (sgn_ch1 != sgn_ch)){
-				CH[ch].phase_info = CH[ch+1].phase_info * -1;
+				CH[ch].phase_info = CH[ch].phase_info * (-1);
 				CH[ch].ch_debug2 |= 0x4;
     		}
     		else if((CH[ch].phase_info == 0) && (abs(CH[ch].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
-					CH[ch].phase_info = CH[ch+1].phase_info * -1;
+					CH[ch].phase_info = CH[ch+1].phase_info * (-1);
 				}
     			else{
     				CH[ch].phase_info = CH[ch+1].phase_info;
     			}
     		}
     		if ((CH[ch+2].phase_info != 0) && (sgn_ch1 != sgn_ch2)){
-				CH[ch+2].phase_info = CH[ch+1].phase_info * -1;
+				CH[ch+2].phase_info = CH[ch+2].phase_info * (-1);
 				CH[ch].ch_debug2 |= 0x8;
     		}
     		else if((CH[ch+2].phase_info == 0) && (abs(CH[ch+2].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
-					CH[ch+2].phase_info = CH[ch+1].phase_info * -1;
+					CH[ch+2].phase_info = CH[ch+1].phase_info * (-1);
 				}
     			else{
     				CH[ch+2].phase_info = CH[ch+1].phase_info;
@@ -1194,7 +1158,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     	else if ((abs(CH[ch].i_prompt_20)>abs(CH[ch+2].i_prompt_20)) && (abs(CH[ch+1].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     		if (CH[ch].phase_info != 0){
 				if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
-					CH[ch+1].phase_info = CH[ch].phase_info * -1;
+					CH[ch+1].phase_info = CH[ch].phase_info * (-1);
 				}
 				else{
 					CH[ch+1].phase_info = CH[ch].phase_info;
@@ -1202,7 +1166,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     		else if (CH[ch+2].phase_info != 0){
     			if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
-					CH[ch+1].phase_info = CH[ch+2].phase_info * -1;
+					CH[ch+1].phase_info = CH[ch+2].phase_info * (-1);
 				}
 				else{
 					CH[ch+1].phase_info = CH[ch+2].phase_info;
@@ -1212,7 +1176,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     	else if ((abs(CH[ch+2].i_prompt_20)>abs(CH[ch].i_prompt_20)) && (abs(CH[ch+1].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     		if (CH[ch+2].phase_info != 0){
 				if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch+2].i_prompt_20)) {
-					CH[ch+1].phase_info = CH[ch+2].phase_info * -1;
+					CH[ch+1].phase_info = CH[ch+2].phase_info * (-1);
 				}
 				else{
 					CH[ch+1].phase_info = CH[ch+2].phase_info;
@@ -1220,7 +1184,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     		else if (CH[ch].phase_info != 0){
     			if (sgn(CH[ch+1].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
-					CH[ch+1].phase_info = CH[ch].phase_info * -1;
+					CH[ch+1].phase_info = CH[ch].phase_info * (-1);
 				}
 				else{
 					CH[ch+1].phase_info = CH[ch].phase_info;
@@ -1231,24 +1195,24 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     else{
     	if (CH[ch+2].phase_info != 0){
     		if ((CH[ch].phase_info != 0) && (sgn_ch2 != sgn_ch)){
-				CH[ch].phase_info = CH[ch+2].phase_info * -1;
+				CH[ch].phase_info = CH[ch].phase_info * (-1);
 				CH[ch].ch_debug2 |= 0x10;
     		}
     		else if((CH[ch].phase_info == 0) && (abs(CH[ch].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
-					CH[ch].phase_info = CH[ch+2].phase_info * -1;
+					CH[ch].phase_info = CH[ch+2].phase_info * (-1);
 				}
     			else{
     				CH[ch].phase_info = CH[ch+2].phase_info;
     			}
     		}
     		if ((CH[ch+1].phase_info != 0) && (sgn_ch2 != sgn_ch1)){
-				CH[ch+1].phase_info = CH[ch+2].phase_info * -1;
+				CH[ch+1].phase_info = CH[ch+1].phase_info * (-1);
 				CH[ch].ch_debug2 |= 0x20;
     		}
     		else if((CH[ch+1].phase_info == 0) && (abs(CH[ch+1].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     			if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
-					CH[ch+1].phase_info = CH[ch+2].phase_info * -1;
+					CH[ch+1].phase_info = CH[ch+2].phase_info * (-1);
 				}
     			else{
     				CH[ch+1].phase_info = CH[ch+2].phase_info;
@@ -1258,7 +1222,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     	else if ((abs(CH[ch].i_prompt_20)>abs(CH[ch+1].i_prompt_20)) && (abs(CH[ch+2].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     		if (CH[ch].phase_info != 0){
 				if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
-					CH[ch+2].phase_info = CH[ch].phase_info * -1;
+					CH[ch+2].phase_info = CH[ch].phase_info * (-1);
 				}
 				else{
 					CH[ch+2].phase_info = CH[ch].phase_info;
@@ -1266,7 +1230,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     		else if (CH[ch+1].phase_info != 0){
     			if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
-					CH[ch+2].phase_info = CH[ch+1].phase_info * -1;
+					CH[ch+2].phase_info = CH[ch+1].phase_info * (-1);
 				}
 				else{
 					CH[ch+2].phase_info = CH[ch+1].phase_info;
@@ -1276,7 +1240,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     	else if ((abs(CH[ch+1].i_prompt_20)>abs(CH[ch].i_prompt_20)) && (abs(CH[ch+2].i_prompt_20) > (5 * LOCK_THRESHOLD))){
     		if (CH[ch+1].phase_info != 0){
 				if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch+1].i_prompt_20)) {
-					CH[ch+2].phase_info = CH[ch+1].phase_info * -1;
+					CH[ch+2].phase_info = CH[ch+1].phase_info * (-1);
 				}
 				else{
 					CH[ch+2].phase_info = CH[ch+1].phase_info;
@@ -1284,7 +1248,7 @@ static void data_bit_coherency(unsigned short ch, unsigned short current_ch)
     		}
     		else if (CH[ch].phase_info != 0){
     			if (sgn(CH[ch+2].i_prompt_20) != sgn(CH[ch].i_prompt_20)) {
-					CH[ch+2].phase_info = CH[ch].phase_info * -1;
+					CH[ch+2].phase_info = CH[ch].phase_info * (-1);
 				}
 				else{
 					CH[ch+2].phase_info = CH[ch].phase_info;
@@ -1306,7 +1270,7 @@ static void data_bit_coherency_init(unsigned short ch)
 			if (sgn(CH[ch].i_prompt) == sgn(CH[ch+1].i_prompt))
 				CH[ch+1].phase_info = CH[ch].phase_info;
 			else
-				CH[ch+1].phase_info = CH[ch].phase_info * -1;
+				CH[ch+1].phase_info = CH[ch].phase_info * (-1);
 		}
 		else {
 			CH[ch+1].phase_info = 0;
@@ -1315,7 +1279,7 @@ static void data_bit_coherency_init(unsigned short ch)
 			if (sgn(CH[ch].i_prompt) == sgn(CH[ch+2].i_prompt))
 				CH[ch+2].phase_info = CH[ch].phase_info;
 			else
-				CH[ch+2].phase_info = CH[ch].phase_info * -1;
+				CH[ch+2].phase_info = CH[ch].phase_info * (-1);
 		}
 		else {
 			CH[ch+2].phase_info = 0;
@@ -1329,7 +1293,7 @@ static void data_bit_coherency_init(unsigned short ch)
 			if (sgn(CH[ch+1].i_prompt) == sgn(CH[ch+2].i_prompt))
 				CH[ch+2].phase_info = CH[ch+1].phase_info;
 			else
-				CH[ch+2].phase_info = CH[ch+1].phase_info * -1;
+				CH[ch+2].phase_info = CH[ch+1].phase_info * (-1);
 		}
 		else {
 			CH[ch+2].phase_info = 0;

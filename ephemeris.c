@@ -123,7 +123,9 @@ process_subframe1( unsigned short ch)
     // year is because the week is modulo 1024 which is about 20 years.
     // So we'll just guess it's past 2000 :) and before ~ 2020 which
     // means adding 1024 to the current week.
-    utemp = (sf[1-1].word[3-1] >> 14) + 1024;
+    //utemp = (sf[1-1].word[3-1] >> 14) + 1024;
+    // From 2019/04/07 needs to add 2048 for the current week;
+    utemp = (sf[1-1].word[3-1] >> 14) + 2048;
     set_time_with_weeks( (unsigned short)utemp);
     
     // Get the rest of the ephemerides         

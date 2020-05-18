@@ -13,6 +13,7 @@
 #include "measure.h"
 #include "position.h"
 #include "ekf_position.h"
+#include "ddcp_attitude.h"
 #include "uart_ARRC.h"
 
 #include "socal/socal.h"
@@ -24,13 +25,15 @@ osThreadId display_thread_id;
 osThreadId message_thread_id;
 osThreadId measure_thread_id;
 osThreadId ekf_position_thread_id;
+osThreadId attitude_thread_id;
 osThreadId uart_thread_id;
 
-osThreadDef(allocate_thread,  osPriorityNormal,      1, 0);
+osThreadDef(allocate_thread,  osPriorityAboveNormal,      1, 0);
 osThreadDef(display_thread,   osPriorityAboveNormal, 1, 0);
 osThreadDef(message_thread,   osPriorityHigh,        1, 0);
 osThreadDef(measure_thread,   osPriorityRealtime,    1, 0);
 osThreadDef(ekf_position_thread,   osPriorityAboveNormal,    1, 0);
+osThreadDef(attitude_thread,   osPriorityAboveNormal,    1, 0);
 osThreadDef(uart_thread,      osPriorityNormal, 1, 0);
 
 int main(void)
@@ -50,6 +53,7 @@ int main(void)
 	message_thread_id  = osThreadCreate(osThread(message_thread),  NULL);
 	measure_thread_id  = osThreadCreate(osThread(measure_thread),  NULL);
 	ekf_position_thread_id  = osThreadCreate(osThread(ekf_position_thread),  NULL);
+	attitude_thread_id = osThreadCreate(osThread(attitude_thread),  NULL);
 	uart_thread_id	   = osThreadCreate(osThread(uart_thread)	 , NULL);
 
   	initialize_allocation();

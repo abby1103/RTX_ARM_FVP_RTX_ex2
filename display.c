@@ -689,59 +689,93 @@ static void display_where(void)
 }
 
 
-static void display_ekfparameter(void)
+static void display_carrierphase(void)
 {
 	char string[1000];
 	static int count = 0;
 	if (count < 5000 && positioning && receiver_pvt.valid) {
-		sprintf(string, "%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r%d, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f, %.4f;\n\r",
+			sprintf(string, " %e, %e, %e, %f, %d, %f, %d, %f, %d, %e, %e, %e, %f, %d, %f, %d, %f, %d, %e, %e, %e,%f, %d, %f, %d, %f, %d, %e, %e, %e, %f, %d, %f, %d, %f, %d, %e, %e, %e, %f, %d, %f, %d, %f, %d, %e, %e, %e, %f, %d, %f, %d, %f, %d, %e, %e, %e, %f, %d, %f, %d, %f, %d, %e, %e, %e;\n\r",
 
-				sat_position[0].prn,
-				sat_position[0].x,
-				sat_position[0].y,
-				sat_position[0].z,
-				sat_position[0].vx,
-				sat_position[0].vy,
-				sat_position[0].vz,
-				m_rho[0],
-				m_rho_dot[0],
 
-				sat_position[1].prn,
-				sat_position[1].x,
-				sat_position[1].y,
-				sat_position[1].z,
-				sat_position[1].vx,
-				sat_position[1].vy,
-				sat_position[1].vz,
-				m_rho[1],
-				m_rho_dot[1],
+					sat_pos_by_ch[0].x,
+					sat_pos_by_ch[0].y,
+					sat_pos_by_ch[0].z,
+					(float)meas[0].carrier_dco_phase /1024*360,
+					messages[0].data_inverted,
+					(float)meas[1].carrier_dco_phase /1024*360,
+					messages[1].data_inverted,
+					(float)meas[2].carrier_dco_phase /1024*360,
+					messages[2].data_inverted,
 
-				sat_position[2].prn,
-				sat_position[2].x,
-				sat_position[2].y,
-				sat_position[2].z,
-				sat_position[2].vx,
-				sat_position[2].vy,
-				sat_position[2].vz,
-				m_rho[2],
-				m_rho_dot[2],
+					sat_pos_by_ch[3].x,
+					sat_pos_by_ch[3].y,
+					sat_pos_by_ch[3].z,
+					(float)meas[3].carrier_dco_phase /1024*360,
+					messages[3].data_inverted,
+					(float)meas[4].carrier_dco_phase /1024*360,
+					messages[4].data_inverted,
+					(float)meas[5].carrier_dco_phase /1024*360,
+					messages[5].data_inverted,
 
-				sat_position[3].prn,
-				sat_position[3].x,
-				sat_position[3].y,
-				sat_position[3].z,
-				sat_position[3].vx,
-				sat_position[3].vy,
-				sat_position[3].vz,
-				m_rho[3],
-				m_rho_dot[3]
+					sat_pos_by_ch[6].x,
+					sat_pos_by_ch[6].y,
+					sat_pos_by_ch[6].z,
+					(float)meas[6].carrier_dco_phase /1024*360,
+					messages[6].data_inverted,
+					(float)meas[7].carrier_dco_phase /1024*360,
+					messages[7].data_inverted,
+					(float)meas[8].carrier_dco_phase /1024*360,
+					messages[8].data_inverted,
 
-	            );
-		SER_PutString(string);
-		count++;
+					sat_pos_by_ch[9].x,
+					sat_pos_by_ch[9].y,
+					sat_pos_by_ch[9].z,
+					(float)meas[9].carrier_dco_phase /1024*360,
+					messages[9].data_inverted,
+					(float)meas[10].carrier_dco_phase /1024*360,
+					messages[10].data_inverted,
+					(float)meas[11].carrier_dco_phase /1024*360,
+					messages[11].data_inverted,
+
+					sat_pos_by_ch[12].x,
+					sat_pos_by_ch[12].y,
+					sat_pos_by_ch[12].z,
+					(float)meas[12].carrier_dco_phase /1024*360,
+					messages[12].data_inverted,
+					(float)meas[13].carrier_dco_phase /1024*360,
+					messages[13].data_inverted,
+					(float)meas[14].carrier_dco_phase /1024*360,
+					messages[14].data_inverted,
+
+					sat_pos_by_ch[15].x,
+					sat_pos_by_ch[15].y,
+					sat_pos_by_ch[15].z,
+					(float)meas[15].carrier_dco_phase /1024*360,
+					messages[15].data_inverted,
+					(float)meas[16].carrier_dco_phase /1024*360,
+					messages[16].data_inverted,
+					(float)meas[17].carrier_dco_phase /1024*360,
+					messages[17].data_inverted,
+
+					sat_pos_by_ch[18].x,
+					sat_pos_by_ch[18].y,
+					sat_pos_by_ch[18].z,
+					(float)meas[18].carrier_dco_phase /1024*360,
+					messages[18].data_inverted,
+					(float)meas[19].carrier_dco_phase /1024*360,
+					messages[19].data_inverted,
+					(float)meas[20].carrier_dco_phase /1024*360,
+					messages[20].data_inverted,
+
+					receiver_pvt.x,
+					receiver_pvt.y,
+					receiver_pvt.z
+
+			            );
+			SER_PutString(string);
+			count++;
+		}
 	}
-}
-
 
 void display_thread(void const *argument)
 {
@@ -807,6 +841,6 @@ void display_thread(void const *argument)
             display_where();
 
         else if( display_command == DISPLAY_EKFPa)
-            display_ekfparameter();
+        	display_carrierphase();
     }
 }

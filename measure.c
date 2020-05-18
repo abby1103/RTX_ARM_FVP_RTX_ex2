@@ -76,9 +76,14 @@ void measure_thread(void const *argument)
                 meas[ch].code_phase = (ch_block->channels[ch].code_meas >> 10) & 0x07FF;
                 raw_epoch = ch_block->channels[ch].epoch;
                 meas[ch].code_dco_phase = ch_block->channels[ch].code_meas & 0x3FF;
+
+                meas[ch].carrier_dco_phase = ch_block->channels[ch].carr_meas & 0x3ff;
+                meas[ch+1].carrier_dco_phase = ch_block->channels[ch+1].carr_meas & 0x3ff;
+                meas[ch+2].carrier_dco_phase = ch_block->channels[ch+2].carr_meas & 0x3ff;
                 /* NOTE: Carrier phase measurements are not supported. */
                 meas[ch].carrier_cycles = ch_block->channels[ch].carr_meas >> 10;
-
+                meas[ch+1].carrier_cycles = ch_block->channels[ch+1].carr_meas >> 10;
+                meas[ch+2].carrier_cycles = ch_block->channels[ch+2].carr_meas >> 10;
                 /*
                  * If a TIC hits right before a dump, it's possible for the
                  * code phase to latch 2046. In this case the epoch counter
