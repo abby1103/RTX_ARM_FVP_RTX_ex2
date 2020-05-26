@@ -5,6 +5,23 @@
 #define length 1				// meter
 #define ideal_delta_l 1.4142	// meter
 
+#define L1_WL 0.1903			// L1 WAVELENGTH
+
+typedef struct{
+
+	double x;
+	double y;
+	double z;
+
+} ECEF_pos;
+
+typedef struct{
+
+	double lat;
+	double lon;
+	double hgt;
+
+} llh_pos;
 
 typedef struct{
 
@@ -53,7 +70,7 @@ void quick_sort_struct(meau_model arr[], int first_index, int last_index);
 void quick_sort_cands(double costfun[], double cand_angle[], int first_index, int last_index, int cand_cols);
 void cov_matrix1(double QY[], double sdstd, int n);
 double* kron( double A[], int sizeA, double B[], int sizeB );
-void ddcp_model(meau_model ant_ptr[], meau_model ant2_ptr[], double sdcp[], double sdstd, int n );
+void ddcp_model(meau_model ant_ptr[], meau_model ant2_ptr[], ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, int n );
 void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_an[], double small_an[]);
 int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv, int ratio,
 	double* Smat, double* pinvSmat, double* pinvSmat_tran, double* pinvSmat_tem, int index_b);

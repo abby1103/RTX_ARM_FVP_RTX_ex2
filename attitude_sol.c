@@ -5,6 +5,7 @@
 #include "position.h"
 #include "measure.h"
 #include "constants.h"
+#include "serial.h"
 
 /*static void output_arr(double arr[], int n) {
 	for (int i = 0; i < n; ++i) { printf("%f ", arr[i]); }
@@ -22,7 +23,7 @@ static void output_matrix(double arr[], int n, int m) {
 //extern double ddcp_noise[];
 //extern int epoch;
 
-int attitude_sol(int n, double sdcp[], double sdstd, double old_an[], double small_an[], double angle[]) {
+int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, double old_an[], double small_an[], double angle[]) {
 
 	int i, j, k;
 	meau_model ant1_ptr[7];
@@ -58,7 +59,7 @@ int attitude_sol(int n, double sdcp[], double sdstd, double old_an[], double sma
 
 	// setting ddcp measument model
 	n--;
-	ddcp_model(ant1_ptr, ant2_ptr, sdcp, sdstd, n);
+	ddcp_model(ant1_ptr, ant2_ptr, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, n);
 
 	// ¼ÒÀÀ¥Î
 	double ddcp_noise[8] = {-0.319249, -0.312203, -0.011918, 0.256023, 0.168796, 0.353649, 1.562073, 1.047918};
@@ -67,7 +68,6 @@ int attitude_sol(int n, double sdcp[], double sdstd, double old_an[], double sma
 		ant2_ptr[i].ddcp = ddcp_noise[i];
 	}
 	// the end of setting ddcp measument model
-
 
 	// setting covariance matrix of measument
 	cov_matrix1(QY_nsv, sdstd, n);

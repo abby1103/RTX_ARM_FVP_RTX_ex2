@@ -28,7 +28,10 @@ SDRAM 0x00000000 0x40000000
     TTB     +0 EMPTY 0x4000
     { }                           ; Level-1 Translation Table for MMU
     
-    ARM_LIB_HEAP +0 EMPTY 0x50000 ; Application heap
+    ARM_LIB_STACK +0 EMPTY 0x02000000 ; Application heap
+    { }
+    
+    ARM_LIB_HEAP +0 EMPTY 0x01000000 ; Application heap
     { }
 
 }

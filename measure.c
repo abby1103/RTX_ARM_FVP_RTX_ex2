@@ -206,7 +206,8 @@ void measure_thread(void const *argument)
 		                satnum++;
 
 		                // check if all ant in lock
-		                if (messages[ch + 1].data_inverted & messages[ch + 2].data_inverted){
+		                // data_inverted = 2 , if unlock
+		                if (messages[ch + 1].data_inverted != 2 && messages[ch + 2].data_inverted != 2){
 		                	meas_carrier[all_lock_num].ch0_phase = meas[ch].carrier_dco_phase / 1023;		// in cycle
 		                	meas_carrier[all_lock_num].ch1_phase = meas[ch + 1].carrier_dco_phase / 1023;	// in cycle
 		                	meas_carrier[all_lock_num].ch2_phase = meas[ch + 2].carrier_dco_phase / 1023;	// in cycle

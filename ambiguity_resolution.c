@@ -6,7 +6,7 @@
 #include "position.h"
 #include "measure.h"
 #include "constants.h"
-
+#include "serial.h"
 
 /*static void output_matrix(double arr[], int n, int m) {
 	for (int i = 0; i < n; ++i) {
@@ -252,35 +252,32 @@ double* kron(double A[], int sizeA, double B[], int sizeB) {
 	return M;
 }
 
-void ddcp_model(meau_model ant1_ptr[], meau_model ant2_ptr[], double sdcp[], double sdstd, int n )
+void ddcp_model(meau_model ant1_ptr[], meau_model ant2_ptr[], ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, int n )
 {
 	double LOS[21] = { 0 };	// 7 * 3
 	double enu2ecef[3][3];
 	int i;
-	double lat, lon;
 
 	// setting S matrix
 		// setting light of sight matrix from SVi to ant0
 	for (i = 0; i < n; i++) {
-		LOS[i * 3 + 0] = (receiver_pvt.x - sat_position[i + 1].x ) / m_rho[i + 1] - (receiver_pvt.x - sat_position[0].x ) / m_rho[0];
-		LOS[i * 3 + 1] = (receiver_pvt.y - sat_position[i + 1].y ) / m_rho[i + 1] - (receiver_pvt.y - sat_position[0].y ) / m_rho[0];
-		LOS[i * 3 + 2] = (receiver_pvt.z - sat_position[i + 1].z ) / m_rho[i + 1] - (receiver_pvt.z - sat_position[0].z ) / m_rho[0];
+		LOS[i * 3 + 0] = (P_ant0.x - P_sat[i + 1].x ) / pseudo_range[i + 1] - (P_ant0.x - P_sat[0].x ) / pseudo_range[0];
+		LOS[i * 3 + 1] = (P_ant0.y - P_sat[i + 1].y ) / pseudo_range[i + 1] - (P_ant0.y - P_sat[0].y ) / pseudo_range[0];
+		LOS[i * 3 + 2] = (P_ant0.z - P_sat[i + 1].z ) / pseudo_range[i + 1] - (P_ant0.z - P_sat[0].z ) / pseudo_range[0];
 	}
 		// the end of setting light of sight matrix from SVi to ant0
 
 		// setting coversion matrix of enu to ecef
-	lat = receiver_llh.lat; // in rad
-	lon = receiver_llh.lon; // in rad
 
-	enu2ecef[0][0] = -sin(lon);
-	enu2ecef[1][0] = cos(lon);
+	enu2ecef[0][0] = -sin(ant0_llh.lon);
+	enu2ecef[1][0] = cos(ant0_llh.lon);
 	enu2ecef[2][0] = 0;
-	enu2ecef[0][1] = -cos(lon) * sin(lat);
-	enu2ecef[1][1] = -sin(lon) * sin(lat);
-	enu2ecef[2][1] = cos(lat);
-	enu2ecef[0][2] = cos(lon) * cos(lat);
-	enu2ecef[1][2] = sin(lon) * cos(lat);
-	enu2ecef[2][2] = sin(lat);
+	enu2ecef[0][1] = -cos(ant0_llh.lon) * sin(ant0_llh.lat);
+	enu2ecef[1][1] = -sin(ant0_llh.lon) * sin(ant0_llh.lat);
+	enu2ecef[2][1] = cos(ant0_llh.lat);
+	enu2ecef[0][2] = cos(ant0_llh.lon) * cos(ant0_llh.lat);
+	enu2ecef[1][2] = sin(ant0_llh.lon) * cos(ant0_llh.lat);
+	enu2ecef[2][2] = sin(ant0_llh.lat);
 		// the end of setting coversion matrix of enu to ecef
 
 	for (i = 0; i < n; i++) {
@@ -309,12 +306,12 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 
 	double S_norm[7] = { 0 };
 	int up_tem, low_tem;
-	int i;
+	int i,pp;
 
 	for (i = 0; i < n; i++) {
 		S_norm[i] = sqrt(ant1_ptr[i].S[0] * ant1_ptr[i].S[0] + ant1_ptr[i].S[1] * ant1_ptr[i].S[1] + ant1_ptr[i].S[2] * ant1_ptr[i].S[2]);	// 因 ant1_ptr[i].S = ant2_ptr[i].S[0] , 只要算一次即可
-		up_tem = (int)floor(S_norm[i] * length / L1) + 1;
-		low_tem = (int)ceil(- S_norm[i] * length / L1) - 1;
+		up_tem = (int)floor(S_norm[i] * length / L1_WL) + 1;
+		low_tem = (int)ceil(- S_norm[i] * length / L1_WL) - 1;
 		ant1_ptr[i].up = up_tem;
 		ant2_ptr[i].up = up_tem;
 		ant1_ptr[i].low = low_tem;
@@ -344,14 +341,13 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 			cri_piont_pitch = old_an[1] + delta_pitch;
 			// the end of finding out critical point of yaw
 
-
 			// caculate bound of N
 			if (fabs(delta_pitch) <= small_an[1] && fabs(delta_yaw) <= small_an[2]) {
 				index = 5;
 				b1_tem[0] = cos(cri_piont_yaw) * cos(cri_piont_pitch);
 				b1_tem[1] = sin(cri_piont_yaw) * cos(cri_piont_pitch);
 				b1_tem[2] = -sin(cri_piont_pitch);
-				N_tem[4] = (int) round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1 - ant1_ptr[i].ddcp);
+				N_tem[4] = (int) round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
 			}
 			else {
 				index = 4;
@@ -364,22 +360,22 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 			b1_tem[0] = cos(upbound_yaw) * cos(upbound_pitch);
 			b1_tem[1] = sin(upbound_yaw) * cos(upbound_pitch);
 			b1_tem[2] = -sin(upbound_pitch);
-			N_tem[0] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1 - ant1_ptr[i].ddcp);
+			N_tem[0] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
 
 			b1_tem[0] = cos(upbound_yaw) * cos(lowbound_pitch);
 			b1_tem[1] = sin(upbound_yaw) * cos(lowbound_pitch);
 			b1_tem[2] = -sin(lowbound_pitch);
-			N_tem[1] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1 - ant1_ptr[i].ddcp);
+			N_tem[1] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
 
 			b1_tem[0] = cos(lowbound_yaw) * cos(upbound_pitch);
 			b1_tem[1] = sin(lowbound_yaw) * cos(upbound_pitch);
 			b1_tem[2] = -sin(upbound_pitch);
-			N_tem[2] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1 - ant1_ptr[i].ddcp);
+			N_tem[2] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
 
 			b1_tem[0] = cos(lowbound_yaw) * cos(lowbound_pitch);
 			b1_tem[1] = sin(lowbound_yaw) * cos(lowbound_pitch);
 			b1_tem[2] = -sin(lowbound_pitch);
-			N_tem[3] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1 - ant1_ptr[i].ddcp);
+			N_tem[3] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
 
 			max_N = maxv(N_tem, index);
 			min_N = minv(N_tem, index);
@@ -390,6 +386,8 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 				ant1_ptr[i].low = min_N;
 			ant1_ptr[i].range = ant1_ptr[i].up - ant1_ptr[i].low;
 			// the end of caculate bound of N
+			if (i == 3)
+				pp = 1;
 		
 		}
 	}
@@ -434,11 +432,11 @@ int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv
 	}
 	if (index_b == 1) {
 		ant_std->var_b1_4sv = s_tem;
-		ant_std->sigma_b1_4sv = ratio * sqrt(L1 * L1 * s_tem);
+		ant_std->sigma_b1_4sv = ratio * sqrt(L1_WL * L1_WL * s_tem);
 	}
 	else {
 		ant_std->var_b2_4sv = s_tem;
-		ant_std->sigma_b2_4sv = ratio * sqrt(L1 * L1 * s_tem);
+		ant_std->sigma_b2_4sv = ratio * sqrt(L1_WL * L1_WL * s_tem);
 	}
 	// the end of caculate the std of the error of baseline for 4SV
 	//--------------------------------------------------------------//
@@ -461,11 +459,11 @@ int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv
 		}
 		if (index_b == 1) {
 			ant_std->var_b1_nsv = s_tem;
-			ant_std->sigma_b1_nsv = ratio * sqrt(L1 * L1 * s_tem);
+			ant_std->sigma_b1_nsv = ratio * sqrt(L1_WL * L1_WL * s_tem);
 		}
 		else {
 			ant_std->var_b2_nsv = s_tem;
-			ant_std->sigma_b2_nsv = ratio * sqrt(L1 * L1 * s_tem);
+			ant_std->sigma_b2_nsv = ratio * sqrt(L1_WL * L1_WL * s_tem);
 		}
 		// the end of caculate the std of the error of baseline for nSV
 		//--------------------------------------------------------------//
@@ -490,7 +488,7 @@ void std_b1b2(meau_model ant2_ptr[], error_std* ant_std, int n, int ratio,
 		}
 	}
 
-	ant_std->sigma_b1b2_4sv = ratio * sqrt(ant_std->var_b2_4sv - 2 * s_tem + ant_std->var_b1_nsv) * L1;
+	ant_std->sigma_b1b2_4sv = ratio * sqrt(ant_std->var_b2_4sv - 2 * s_tem + ant_std->var_b1_nsv) * L1_WL;
 
 	if (n > 3) {
 
@@ -502,7 +500,7 @@ void std_b1b2(meau_model ant2_ptr[], error_std* ant_std, int n, int ratio,
 			}
 		}
 
-		ant_std->sigma_b1b2_nsv = ratio * sqrt(ant_std->var_b2_nsv - 2 * s_tem + ant_std->var_b1_nsv) * L1;
+		ant_std->sigma_b1b2_nsv = ratio * sqrt(ant_std->var_b2_nsv - 2 * s_tem + ant_std->var_b1_nsv) * L1_WL;
 	}
 
 }
@@ -566,11 +564,11 @@ int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]) {
 
 	// search n
 	num = -1;
-	c2_bar = ant_ptr[2].ddcp * L1 - a[7] * ant_ptr[1].ddcp * L1 - a[1] * ant_ptr[0].ddcp * L1;
+	c2_bar = ant_ptr[2].ddcp * L1_WL - a[7] * ant_ptr[1].ddcp * L1_WL - a[1] * ant_ptr[0].ddcp * L1_WL;
 	for (n0 = ant_ptr[0].low; n0 <= ant_ptr[0].up; n0++) {
 		for (n1 = ant_ptr[1].low; n1 <= ant_ptr[1].up; n1++) {
-			c0 = (ant_ptr[0].ddcp + n0) * L1;
-			c1 = (ant_ptr[1].ddcp + n1) * L1 - a[3] * c0;
+			c0 = (ant_ptr[0].ddcp + n0) * L1_WL;
+			c1 = (ant_ptr[1].ddcp + n1) * L1_WL - a[3] * c0;
 
 			c2_square_low = a[8] * ((length - sigma_b) * (length - sigma_b) - c0 * c0 / a[0] - c1 * c1 / a[4]);
 			c2_square_up = a[8] * ((length + sigma_b) * (length + sigma_b) - c0 * c0 / a[0] - c1 * c1 / a[4]);
@@ -580,23 +578,22 @@ int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]) {
 			if (c2_square_up < 0) c2_up = 0;
 			else c2_up = sqrt(c2_square_up);
 
-			temp1 = -c2_bar / L1 + a[7] * n1 + a[1] * n0;
-			n2_tem[0] = (int)round(-c2_up / L1 + temp1);
-			n2_tem[1] = (int)round(-c2_low / L1 + temp1);
-			n2_tem[2] = (int)round(c2_low / L1 + temp1);
-			n2_tem[3] = (int)round(c2_up / L1 + temp1);
+			temp1 = -c2_bar / L1_WL + a[7] * n1 + a[1] * n0;
+			n2_tem[0] = (int)round(-c2_up / L1_WL + temp1);
+			n2_tem[1] = (int)round(-c2_low / L1_WL + temp1);
+			n2_tem[2] = (int)round(c2_low / L1_WL + temp1);
+			n2_tem[3] = (int)round(c2_up / L1_WL + temp1);
 
 			for (i = 0; i < 4; i++) {
 				if (n2_tem[i] < ant_ptr[2].low) n2_tem[i] = ant_ptr[2].low;
 				if (n2_tem[i] > ant_ptr[2].up) n2_tem[i] = ant_ptr[2].up;
 			}
 
-			temp2 =(ant_ptr[2].ddcp - a[7] * (ant_ptr[1].ddcp + n1) - a[1] * (ant_ptr[0].ddcp + n0)) * L1;
+			temp2 =(ant_ptr[2].ddcp - a[7] * (ant_ptr[1].ddcp + n1) - a[1] * (ant_ptr[0].ddcp + n0)) * L1_WL;
 			for (n2 = n2_tem[0]; n2 <= n2_tem[1]; n2++) {
-				c2 = n2 * L1 + temp2;
+				c2 = n2 * L1_WL + temp2;
 				error = fabs(sqrt(c0 * c0 / a[0] + c1 * c1 / a[4] + c2 * c2 / a[8]) - length);
 				if (error <= sigma_b) {
-
 					num++;
 					if ((num + 1) > maxnum) {
 						// 每次增加10組候選人位子
@@ -631,7 +628,7 @@ int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]) {
 			if (n2_tem[2] == n2_tem[1]) n2_tem[2]++;
 
 			for (n2 = n2_tem[2]; n2 <= n2_tem[3]; n2++) {
-				c2 = n2 * L1 + temp2;
+				c2 = n2 * L1_WL + temp2;
 				error = fabs(sqrt(c0 * c0 / a[0] + c1 * c1 / a[4] + c2 * c2 / a[8]) - length);
 				if (error <= sigma_b) {
 
@@ -667,6 +664,7 @@ int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]) {
 			}
 		}
 	}
+
 	if ((num + 1) < maxnum && num >= 0) {
 		// 去除多餘的候選人位子
 		prt_tem0 = (int*)realloc(cand_b[0].Ncands, 3 * (num + 1) * sizeof(int));	//因為先針對前4個衛星,每組有'3'個N
@@ -743,7 +741,7 @@ int search_moreN(meau_model ant_ptr[], double sigma_b, cand_list cand_b_pre, can
 	for (i = 0; i < cand_b_pre.numofcand; i++) {
 		for (j = 0; j < (index - 1); j++) {
 			temp1[j] = ant_ptr[j].ddcp + cand_b_pre.Ncands[i * (index - 1) + j];
-			temp2[j] = temp1[j] * L1;
+			temp2[j] = temp1[j] * L1_WL;
 		}
 		mulmat(alpha, temp1, &temp3, 1, index - 1, 1);
 		n4_low = (int)round(temp3 - ant_ptr[index - 1].ddcp - sigma_n4);
@@ -752,7 +750,7 @@ int search_moreN(meau_model ant_ptr[], double sigma_b, cand_list cand_b_pre, can
 		if (n4_up > ant_ptr[index - 1].up) n4_up = ant_ptr[index - 1].up;
 
 		for (n4 = n4_low; n4 <= n4_up; n4++) {
-			temp2[index - 1] = (ant_ptr[index - 1].ddcp + n4) * L1;
+			temp2[index - 1] = (ant_ptr[index - 1].ddcp + n4) * L1_WL;
 			mulmat(ISmat_tem1, temp2, b_tem, 3, index, 1);
 			l_est = sqrt(b_tem[0] * b_tem[0] + b_tem[1] * b_tem[1] + b_tem[2] * b_tem[2]);
 			error_l = fabs(l_est - length);
@@ -774,7 +772,6 @@ int search_moreN(meau_model ant_ptr[], double sigma_b, cand_list cand_b_pre, can
 
 					}
 				}
-
 				cand_b_new->bcands[num * 3 + 0] = b_tem[0];
 				cand_b_new->bcands[num * 3 + 1] = b_tem[1];
 				cand_b_new->bcands[num * 3 + 2] = b_tem[2];
@@ -799,10 +796,10 @@ int search_moreN(meau_model ant_ptr[], double sigma_b, cand_list cand_b_pre, can
 			return 1;
 		}
 		else {
+
 			cand_b_new->Ncands = prt_tem0;
 			cand_b_new->bcands = prt_tem1;
 			cand_b_new->goodness = prt_tem2;
-
 		}
 	}
 
@@ -835,7 +832,7 @@ int b2_NRrange(meau_model ant2_ptr[], meau_model ant2_ptr_tem[], int n, double o
 			norm_sv = sqrt(ant2_ptr_tem[i].S[0] * ant2_ptr_tem[i].S[0] + ant2_ptr_tem[i].S[1] * ant2_ptr_tem[i].S[1] + ant2_ptr_tem[i].S[2] * ant2_ptr_tem[i].S[2]);
 			norm_b1 = sqrt(b1[0] * b1[0] + b1[1] * b1[1] + b1[2] * b1[2]);
 			angle_sv_plane = PI / 2 - acos(dot_sv_b1 / (norm_b1 * norm_sv));
-			length_on_sv = floor(fabs(norm_sv * length * cos(angle_sv_plane) / L1));
+			length_on_sv = floor(fabs(norm_sv * length * cos(angle_sv_plane) / L1_WL));
 
 			up_tem = (int)length_on_sv + 1;
 			low_tem = -(int)length_on_sv - 1;
@@ -929,9 +926,9 @@ int b2_NRrange(meau_model ant2_ptr[], meau_model ant2_ptr_tem[], int n, double o
 
 			// finding the boundary value of N[i]
 			N_tem[0] = (int)round((ant2_ptr_tem[i].S[0] * b2_bound1[0] + ant2_ptr_tem[i].S[1] * b2_bound1[1]
-				+ ant2_ptr_tem[i].S[2] * b2_bound1[2]) / L1 - ant2_ptr_tem[i].ddcp);
+				+ ant2_ptr_tem[i].S[2] * b2_bound1[2]) / L1_WL - ant2_ptr_tem[i].ddcp);
 			N_tem[1] = (int)round((ant2_ptr_tem[i].S[0] * b2_bound2[0] + ant2_ptr_tem[i].S[1] * b2_bound2[1]
-				+ ant2_ptr_tem[i].S[2] * b2_bound2[2]) / L1 - ant2_ptr_tem[i].ddcp);
+				+ ant2_ptr_tem[i].S[2] * b2_bound2[2]) / L1_WL - ant2_ptr_tem[i].ddcp);
 			// the end of finding the boundary value of N[i]
 
 			// finding the relative extremum of N[i] 
@@ -950,7 +947,7 @@ int b2_NRrange(meau_model ant2_ptr[], meau_model ant2_ptr_tem[], int n, double o
 			check_an = acos(p_sv[0] * b2_old[0] + p_sv[1] * b2_old[1] + p_sv[2] * b2_old[2]);
 			if (check_an <= 0.4134) {
 				N_tem[2] = (int)round((ant2_ptr_tem[i].S[0] * p_sv[0] + ant2_ptr_tem[i].S[1] * p_sv[1]
-					+ ant2_ptr_tem[i].S[2] * p_sv[2]) / L1 - ant2_ptr_tem[i].ddcp);
+					+ ant2_ptr_tem[i].S[2] * p_sv[2]) / L1_WL - ant2_ptr_tem[i].ddcp);
 				index = 3;
 			}
 			else {
@@ -967,7 +964,7 @@ int b2_NRrange(meau_model ant2_ptr[], meau_model ant2_ptr_tem[], int n, double o
 				check_an = acos(p_sv[0] * b2_old[0] + p_sv[1] * b2_old[1] + p_sv[2] * b2_old[2]);
 				if (check_an <= 0.4134) {
 					N_tem[2] = (int)round((ant2_ptr_tem[i].S[0] * p_sv[0] + ant2_ptr_tem[i].S[1] * p_sv[1]
-						+ ant2_ptr_tem[i].S[2] * p_sv[2]) / L1 - ant2_ptr_tem[i].ddcp);
+						+ ant2_ptr_tem[i].S[2] * p_sv[2]) / L1_WL - ant2_ptr_tem[i].ddcp);
 					index = 3;
 				}
 				else
@@ -1134,10 +1131,10 @@ void cost_fun(meau_model ant1_ptr[], meau_model ant2_ptr_tem[], double S1[], dou
 
 	// || Y - SRb_body + N ||QY
 	for (i = 0; i < n; i++) {
-		Y_vec[i] = ant1_ptr[i].ddcp * L1;
-		Y_vec[n + i] = ant2_ptr_tem[i].ddcp * L1;
-		N_vec[i] = (double)N[i] *  L1;
-		N_vec[n + i] = (double)N[n + i] * L1;
+		Y_vec[i] = ant1_ptr[i].ddcp * L1_WL;
+		Y_vec[n + i] = ant2_ptr_tem[i].ddcp * L1_WL;
+		N_vec[i] = (double)N[i] *  L1_WL;
+		N_vec[n + i] = (double)N[n + i] * L1_WL;
 	}
 
 	temp[0] = R[0];

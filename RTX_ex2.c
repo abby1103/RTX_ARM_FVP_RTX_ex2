@@ -33,7 +33,7 @@ osThreadDef(display_thread,   osPriorityAboveNormal, 1, 0);
 osThreadDef(message_thread,   osPriorityHigh,        1, 0);
 osThreadDef(measure_thread,   osPriorityRealtime,    1, 0);
 osThreadDef(ekf_position_thread,   osPriorityAboveNormal,    1, 0);
-osThreadDef(attitude_thread,   osPriorityAboveNormal,    1, 0);
+osThreadDef(attitude_thread,   osPriorityHigh,    1, 0);
 osThreadDef(uart_thread,      osPriorityNormal, 1, 0);
 
 int main(void)

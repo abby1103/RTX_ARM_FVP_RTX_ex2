@@ -40,33 +40,54 @@ void attitude_thread(void const *argument)
 	    	double sdstd = 0.05;	// 0.5 cm
 	    	double small_an[3] = { 0.2618 , 0.2618 , 0.2618 };
 	    	double angle[3], old_an[3] = {1.884956, -0.191986, 0.750492};
-	    	int i;
 
-	    	sat_position[0].x = -26397410;
-	    	sat_position[0].y = 2759056;
-	    	sat_position[0].z = -2513184;
-	    	sat_position[1].x = -16091230;
-	    	sat_position[1].y = -745167.4;
-	    	sat_position[1].z = 21017630;
-	    	sat_position[2].x = -10599240;
-	    	sat_position[2].y = 11992170;
-	    	sat_position[2].z = 20883060;
-	    	sat_position[3].x = 2131617;
-	    	sat_position[3].y = 21763920;
-	    	sat_position[3].z = 15990030;
-	    	sat_position[4].x = -14498430;
-	    	sat_position[4].y = 21499260;
-	    	sat_position[4].z = 4677167;
-	    	receiver_pvt.x = -2983991;
-	    	receiver_pvt.y = 4966682;
-	    	receiver_pvt.z = 2657618;
-	    	m_rho[0] = 23517709.5612178;
-	    	m_rho[1] = 23270474.3916308;
-	    	m_rho[2] = 20964642.4979180;
-	    	m_rho[3] = 22046992.0709391;
-	    	m_rho[4] = 20248136.1851951;
-	    	receiver_llh.lat = 24.7857955626183 * PI / 180;
-	    	receiver_llh.lon = 120.997519699485 * PI / 180;
+	    	ECEF_pos P_ant0;
+	    	llh_pos ant0_llh;
+	    	ECEF_pos P_sat[7];
+	    	double pseudo_range[7];
+	    	int i,breakpoint;
+
+	    	/*
+	    	P_ant0.x = receiver_pvt.x;
+	    	P_ant0.y = receiver_pvt.y;
+	    	P_ant0.z = receiver_pvt.z;
+	    	ant0_llh.lat = receiver_llh.lat;
+	    	ant0_llh.lon = receiver_llh.lon;
+
+	    	for (i = 0; i < all_lock_num; i++){
+	    		P_sat[i].x = sat_position[i].x;
+				P_sat[i].y = sat_position[i].y;
+				P_sat[i].z = sat_position[i].z;
+				pseudo_range[i] = m_rho[i];
+	    	}
+	    	*/
+
+	    	P_ant0.x = -2983991;
+	    	P_ant0.y = 4966682;
+	    	P_ant0.z = 2657618;
+	    	ant0_llh.lat = 24.7857955626183 * PI / 180;
+	    	ant0_llh.lon = 120.997519699485 * PI / 180;
+	    	P_sat[0].x = -26397410;
+	    	P_sat[0].y = 2759056;
+	    	P_sat[0].z = 2513184;
+	    	P_sat[1].x = -16091230;
+	    	P_sat[1].y = -745167.4;
+	    	P_sat[1].z = 21017630;
+	    	P_sat[2].x = -10599240;
+	    	P_sat[2].y = 11992170;
+	    	P_sat[2].z = 20883060;
+	    	P_sat[3].x = 2131617;
+	    	P_sat[3].y = 21763920;
+	    	P_sat[3].z = 15990030;
+	    	P_sat[4].x = -14498430;
+	    	P_sat[4].y = 21499260;
+	    	P_sat[4].z = 4677167;
+	    	pseudo_range[0] = 23517709.5612178;
+	    	pseudo_range[1] = 23270474.3916308;
+	    	pseudo_range[2] = 20964642.4979180;
+	    	pseudo_range[3] = 22046992.0709391;
+	    	pseudo_range[4] = 20248136.1851951;
+
 
 	        for(i = 0; i < all_lock_num; i++){
 
@@ -81,7 +102,8 @@ void attitude_thread(void const *argument)
 	        		sdcp[i + all_lock_num] += 0.5;
 	        	}
 	        }
-	        ddcp_debug = attitude_sol(all_lock_num, sdcp, sdstd, old_an, small_an, angle);
+	        ddcp_debug = attitude_sol(all_lock_num, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, old_an, small_an, angle);
+	        breakpoint=1;
 
 	}
 

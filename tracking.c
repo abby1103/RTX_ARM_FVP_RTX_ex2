@@ -397,7 +397,7 @@ static void pull_in (unsigned short ch)
     }
 
     current_ch = ch;
-    CH[ch].code_freq += ((429 * CH[ch+1].delta_code_phase - 421 * CH[ch+1].delta_code_phase_old) >> 14);
+    CH[ch].code_freq += ((429 * CH[ch].delta_code_phase - 421 * CH[ch].delta_code_phase_old) >> 14);
 
     ch_block->channels[ch].code_nco = CH[ch].code_freq;
 
@@ -992,7 +992,7 @@ void tracking(void)
     if(status & 0x01) {
     	osSignalSet(measure_thread_id,  0x0003);
     	osSignalSet(display_thread_id,  0x0004);
-    	osSignalSet(uart_thread_id	 ,  0x0006);
+    	//osSignalSet(uart_thread_id	 ,  0x0006);
     }
 
 }

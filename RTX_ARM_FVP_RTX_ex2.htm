@@ -1,11 +1,11 @@
 <!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html><head>
-<title>Static Call Graph - [E:\correlation_de1_yao\triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf]</title></head>
+<title>Static Call Graph - [E:\correlation_de1_yao\de0_triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf]</title></head>
 <body><HR>
-<H1>Static Call Graph for image E:\correlation_de1_yao\triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf</H1><HR>
-<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050041: Last Updated: Mon May 18 14:20:23 2020
+<H1>Static Call Graph for image E:\correlation_de1_yao\de0_triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\RTX_ARM_FVP_RTX_ex2\RTX_ARM_FVP_RTX_ex2.axf</H1><HR>
+<BR><P>#&#060CALLGRAPH&#062# ARM Linker, 5050041: Last Updated: Tue May 26 12:50:32 2020
 <BR><P>
-<H3>Maximum Stack Usage =      11760 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
+<H3>Maximum Stack Usage =      12080 bytes + Unknown(Functions without stacksize, Cycles, Untraceable Function Pointers)</H3><H3>
 Call chain for Maximum Stack Depth:</H3>
 attitude_thread &rArr; attitude_sol &rArr; std_baseline &rArr; inverse_nXn
 <P>
@@ -71,7 +71,7 @@ Global Symbols
 
 <P><STRONG><a name="[26]"></a>__main</STRONG> (ARM, 0 bytes, Stack size unknown bytes, entry.o(.ARM.Collect$$$$00000000))
 
-<P><STRONG><a name="[14c]"></a>_main_stk</STRONG> (ARM, 0 bytes, Stack size unknown bytes, entry2.o(.ARM.Collect$$$$00000001))
+<P><STRONG><a name="[14c]"></a>_main_stk</STRONG> (ARM, 0 bytes, Stack size unknown bytes, entry4.o(.ARM.Collect$$$$00000003))
 
 <P><STRONG><a name="[27]"></a>_main_scatterload</STRONG> (ARM, 0 bytes, Stack size unknown bytes, entry5.o(.ARM.Collect$$$$00000004))
 <BR><BR>[Calls]<UL><LI><a href="#[28]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__scatterload (via BLX)
@@ -352,8 +352,8 @@ Global Symbols
 <BR><BR>[Calls]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
 </UL>
 
-<P><STRONG><a name="[50]"></a>ddcp_model</STRONG> (Thumb, 894 bytes, Stack size 296 bytes, ambiguity_resolution.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 480<LI>Call Chain = ddcp_model &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; fabs
+<P><STRONG><a name="[50]"></a>ddcp_model</STRONG> (Thumb, 910 bytes, Stack size 360 bytes, ambiguity_resolution.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 544<LI>Call Chain = ddcp_model &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; fabs
 </UL>
 <BR>[Calls]<UL><LI><a href="#[3c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memclr4
 <LI><a href="#[38]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sin
@@ -362,8 +362,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 </UL>
 
-<P><STRONG><a name="[51]"></a>b1_NRange</STRONG> (Thumb, 1668 bytes, Stack size 240 bytes, ambiguity_resolution.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 424<LI>Call Chain = b1_NRange &rArr; __hardfp_tan &rArr; __ieee754_rem_pio2 &rArr; fabs
+<P><STRONG><a name="[51]"></a>b1_NRange</STRONG> (Thumb, 1656 bytes, Stack size 248 bytes, ambiguity_resolution.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 432<LI>Call Chain = b1_NRange &rArr; __hardfp_tan &rArr; __ieee754_rem_pio2 &rArr; fabs
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;quick_sort_struct
 <LI><a href="#[58]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;minv
@@ -394,7 +394,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 </UL>
 
-<P><STRONG><a name="[5d]"></a>std_b1b2</STRONG> (Thumb, 372 bytes, Stack size 520 bytes, ambiguity_resolution.o(.text))
+<P><STRONG><a name="[5d]"></a>std_b1b2</STRONG> (Thumb, 354 bytes, Stack size 520 bytes, ambiguity_resolution.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 544<LI>Call Chain = std_b1b2 &rArr; __hardfp_sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[5b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;mulmat
@@ -405,7 +405,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 </UL>
 
-<P><STRONG><a name="[5e]"></a>GSO</STRONG> (Thumb, 2238 bytes, Stack size 320 bytes, ambiguity_resolution.o(.text))
+<P><STRONG><a name="[5e]"></a>GSO</STRONG> (Thumb, 2244 bytes, Stack size 320 bytes, ambiguity_resolution.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 408<LI>Call Chain = GSO &rArr; realloc &rArr; malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[39]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_sqrt
@@ -416,7 +416,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 </UL>
 
-<P><STRONG><a name="[60]"></a>search_moreN</STRONG> (Thumb, 1090 bytes, Stack size 376 bytes, ambiguity_resolution.o(.text))
+<P><STRONG><a name="[60]"></a>search_moreN</STRONG> (Thumb, 1102 bytes, Stack size 376 bytes, ambiguity_resolution.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 736<LI>Call Chain = search_moreN &rArr; pinv_indexX3 &rArr; Singular_Value_Decomposition &rArr; Givens_Reduction_to_Diagonal_Form &rArr; __hardfp_sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[5c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pinv_indexX3
@@ -430,7 +430,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 </UL>
 
-<P><STRONG><a name="[61]"></a>b2_NRrange</STRONG> (Thumb, 2762 bytes, Stack size 456 bytes, ambiguity_resolution.o(.text))
+<P><STRONG><a name="[61]"></a>b2_NRrange</STRONG> (Thumb, 2758 bytes, Stack size 456 bytes, ambiguity_resolution.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 640<LI>Call Chain = b2_NRrange &rArr; __hardfp_sin &rArr; __ieee754_rem_pio2 &rArr; fabs
 </UL>
 <BR>[Calls]<UL><LI><a href="#[4d]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;quick_sort_struct
@@ -488,8 +488,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 </UL>
 
-<P><STRONG><a name="[6c]"></a>attitude_sol</STRONG> (Thumb, 4812 bytes, Stack size 7776 bytes, attitude_sol.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 11552<LI>Call Chain = attitude_sol &rArr; std_baseline &rArr; inverse_nXn
+<P><STRONG><a name="[6c]"></a>attitude_sol</STRONG> (Thumb, 4832 bytes, Stack size 7824 bytes, attitude_sol.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 11600<LI>Call Chain = attitude_sol &rArr; std_baseline &rArr; inverse_nXn
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;cost_fun
 <LI><a href="#[68]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude
@@ -514,8 +514,8 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[23]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_thread
 </UL>
 
-<P><STRONG><a name="[23]"></a>attitude_thread</STRONG> (Thumb, 544 bytes, Stack size 208 bytes, ddcp_attitude.o(.text))
-<BR><BR>[Stack]<UL><LI>Max Depth = 11760<LI>Call Chain = attitude_thread &rArr; attitude_sol &rArr; std_baseline &rArr; inverse_nXn
+<P><STRONG><a name="[23]"></a>attitude_thread</STRONG> (Thumb, 570 bytes, Stack size 480 bytes, ddcp_attitude.o(.text))
+<BR><BR>[Stack]<UL><LI>Max Depth = 12080<LI>Call Chain = attitude_thread &rArr; attitude_sol &rArr; std_baseline &rArr; inverse_nXn
 </UL>
 <BR>[Calls]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
 <LI><a href="#[4b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;osSignalWait
@@ -732,7 +732,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[21]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;measure_thread
 </UL>
 
-<P><STRONG><a name="[21]"></a>measure_thread</STRONG> (Thumb, 1932 bytes, Stack size 152 bytes, measure.o(.text))
+<P><STRONG><a name="[21]"></a>measure_thread</STRONG> (Thumb, 1922 bytes, Stack size 152 bytes, measure.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 2616<LI>Call Chain = measure_thread &rArr; CALCULATE_DOP &rArr; __hardfp_pow &rArr; sqrt
 </UL>
 <BR>[Calls]<UL><LI><a href="#[71]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;get_time
@@ -1070,7 +1070,7 @@ Global Symbols
 <BR><BR>[Called By]<UL><LI><a href="#[10]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;tracking
 </UL>
 
-<P><STRONG><a name="[10]"></a>tracking</STRONG> (Thumb, 548 bytes, Stack size 24 bytes, tracking.o(.text))
+<P><STRONG><a name="[10]"></a>tracking</STRONG> (Thumb, 538 bytes, Stack size 24 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 108<LI>Call Chain = tracking &rArr; lock &rArr; fix_atan2 &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[e6]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;d_log_data
@@ -1390,7 +1390,7 @@ Global Symbols
 <LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_sin
 </UL>
 
-<P><STRONG><a name="[3f]"></a>free</STRONG> (Thumb, 88 bytes, Stack size 12 bytes, mallocr.o(i.__free$realloc))
+<P><STRONG><a name="[3f]"></a>free</STRONG> (Thumb, 88 bytes, Stack size 12 bytes, mallocr2.o(i.__free$realloc$2region))
 <BR><BR>[Stack]<UL><LI>Max Depth = 12<LI>Call Chain = free
 </UL>
 <BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
@@ -1620,7 +1620,7 @@ Global Symbols
 <BR>[Called By]<UL><LI><a href="#[54]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_tan
 </UL>
 
-<P><STRONG><a name="[3b]"></a>malloc</STRONG> (Thumb, 64 bytes, Stack size 32 bytes, mallocr.o(i.__malloc$realloc))
+<P><STRONG><a name="[3b]"></a>malloc</STRONG> (Thumb, 64 bytes, Stack size 32 bytes, mallocr2.o(i.__malloc$realloc$2region))
 <BR><BR>[Stack]<UL><LI>Max Depth = 56<LI>Call Chain = malloc &rArr; internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;internal_alloc
@@ -1669,6 +1669,19 @@ Global Symbols
 <LI><a href="#[6a]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__hardfp_asin
 <LI><a href="#[111]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_tan
 <LI><a href="#[10c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__kernel_sin
+</UL>
+
+<P><STRONG><a name="[5f]"></a>realloc</STRONG> (Thumb, 102 bytes, Stack size 32 bytes, mallocr2.o(i.__realloc$2region))
+<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = realloc &rArr; malloc &rArr; internal_alloc
+</UL>
+<BR>[Calls]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
+<LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
+<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;internal_alloc
+</UL>
+<BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
+<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pairing
+<LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;search_moreN
+<LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GSO
 </UL>
 
 <P><STRONG><a name="[183]"></a>__scatterload_copy</STRONG> (Thumb, 14 bytes, Stack size unknown bytes, handlers.o(i.__scatterload_copy), UNUSED)
@@ -1794,19 +1807,6 @@ Global Symbols
 <P><STRONG><a name="[1d]"></a>osThreadExit</STRONG> (Thumb, 22 bytes, Stack size 0 bytes, rt_CMSIS.o(i.osThreadExit))
 <BR>[Address Reference Count : 1]<UL><LI> rt_CMSIS.o(i.svcThreadCreate)
 </UL>
-<P><STRONG><a name="[5f]"></a>realloc</STRONG> (Thumb, 102 bytes, Stack size 32 bytes, mallocr.o(i.realloc))
-<BR><BR>[Stack]<UL><LI>Max Depth = 88<LI>Call Chain = realloc &rArr; malloc &rArr; internal_alloc
-</UL>
-<BR>[Calls]<UL><LI><a href="#[3b]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;malloc
-<LI><a href="#[3f]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;free
-<LI><a href="#[112]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;internal_alloc
-</UL>
-<BR>[Called By]<UL><LI><a href="#[6c]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;attitude_sol
-<LI><a href="#[64]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pairing
-<LI><a href="#[60]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;search_moreN
-<LI><a href="#[5e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;GSO
-</UL>
-
 <P><STRONG><a name="[9]"></a>rt_alloc_box</STRONG> (Thumb, 30 bytes, Stack size 0 bytes, rt_MemBox.o(i.rt_alloc_box))
 <BR><BR>[Called By]<UL><LI><a href="#[12e]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_init_context
 <LI><a href="#[130]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;rt_mbx_psh
@@ -2706,7 +2706,7 @@ Local Symbols
 <BR>[Called By]<UL><LI><a href="#[e1]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;pull_in
 </UL>
 
-<P><STRONG><a name="[e1]"></a>pull_in</STRONG> (Thumb, 4062 bytes, Stack size 24 bytes, tracking.o(.text))
+<P><STRONG><a name="[e1]"></a>pull_in</STRONG> (Thumb, 4058 bytes, Stack size 24 bytes, tracking.o(.text))
 <BR><BR>[Stack]<UL><LI>Max Depth = 76<LI>Call Chain = pull_in &rArr; fix_atan2 &rArr; __aeabi_idivmod &rArr; __aeabi_uidivmod
 </UL>
 <BR>[Calls]<UL><LI><a href="#[df]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;data_bit_coherency_init
@@ -2849,7 +2849,7 @@ Local Symbols
 </UL>
 <BR>[Address Reference Count : 1]<UL><LI> printfa.o(i.__0sprintf)
 </UL>
-<P><STRONG><a name="[112]"></a>internal_alloc</STRONG> (Thumb, 76 bytes, Stack size 24 bytes, mallocr.o(i.internal_alloc))
+<P><STRONG><a name="[112]"></a>internal_alloc</STRONG> (Thumb, 76 bytes, Stack size 24 bytes, mallocr2.o(i.internal_alloc))
 <BR><BR>[Stack]<UL><LI>Max Depth = 24<LI>Call Chain = internal_alloc
 </UL>
 <BR>[Calls]<UL><LI><a href="#[117]">&gt;&gt;</a>&nbsp;&nbsp;&nbsp;__aeabi_memcpy

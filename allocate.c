@@ -239,7 +239,7 @@ void
 initialize_allocation( void)
 {
 
-	// outside
+/*	// outside
 
     initialize_channel(  0, 9);
 	//initialize_channel(  1, 7);
@@ -253,8 +253,8 @@ initialize_allocation( void)
 	//initialize_channel(  9,21);
 	initialize_channel( 15,24);
 	initialize_channel( 18,19);
+*/
 
-/*
     //Lab249
     initialize_channel(  0, 26);
 	//initialize_channel(  1, 7);
@@ -269,7 +269,7 @@ initialize_allocation( void)
 	initialize_channel( 15,19);
 	initialize_channel( 18,22);
 
-*/
+
 
 }
 

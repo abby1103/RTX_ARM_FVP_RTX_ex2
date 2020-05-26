@@ -25,7 +25,8 @@
 #define CODE_FREQ_RES (SAMPLE_CLOCK / (1 << 29)) // 0.074505805 [Hz] (Carrier NCO is 29 bits)                    
 
 //#define CODE_REF      21968758//(unsigned int)(0.5 + 2 * CHIP_RATE / CODE_FREQ_RES)
-#define CODE_REF      21969724//(unsigned int)(0.5 + 2 * CHIP_RATE / CODE_FREQ_RES)(YYL)
+//#define CODE_REF      21969724//(unsigned int)(0.5 + 2 * CHIP_RATE / CODE_FREQ_RES)(YYL)
+#define CODE_REF    21969233//(abby ee249)
 
 #define CARRIER_REF   87875031//(unsigned int)(0.5 + IF_FREQ / CARR_FREQ_RES)
 
