@@ -3,8 +3,6 @@
 #include <stdio.h>
 #include "ambiguity_resolution.h"
 #include "singular_value_decomposition.h"
-#include "position.h"
-#include "measure.h"
 #include "constants.h"
 #include "serial.h"
 
@@ -306,16 +304,16 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 
 	double S_norm[7] = { 0 };
 	int up_tem, low_tem;
-	int i,pp;
+	int iofN;
 
-	for (i = 0; i < n; i++) {
-		S_norm[i] = sqrt(ant1_ptr[i].S[0] * ant1_ptr[i].S[0] + ant1_ptr[i].S[1] * ant1_ptr[i].S[1] + ant1_ptr[i].S[2] * ant1_ptr[i].S[2]);	// 因 ant1_ptr[i].S = ant2_ptr[i].S[0] , 只要算一次即可
-		up_tem = (int)floor(S_norm[i] * length / L1_WL) + 1;
-		low_tem = (int)ceil(- S_norm[i] * length / L1_WL) - 1;
-		ant1_ptr[i].up = up_tem;
-		ant2_ptr[i].up = up_tem;
-		ant1_ptr[i].low = low_tem;
-		ant2_ptr[i].low = low_tem;
+	for (iofN = 0; iofN < n; iofN++) {
+		S_norm[iofN] = sqrt(ant1_ptr[iofN].S[0] * ant1_ptr[iofN].S[0] + ant1_ptr[iofN].S[1] * ant1_ptr[iofN].S[1] + ant1_ptr[iofN].S[2] * ant1_ptr[iofN].S[2]);	// 因 ant1_ptr[i].S = ant2_ptr[i].S[0] , 只要算一次即可
+		up_tem = (int)floor(S_norm[iofN] * length / L1_WL) + 1;
+		low_tem = (int)ceil(- S_norm[iofN] * length / L1_WL) - 1;
+		ant1_ptr[iofN].up = up_tem;
+		ant2_ptr[iofN].up = up_tem;
+		ant1_ptr[iofN].low = low_tem;
+		ant2_ptr[iofN].low = low_tem;
 	}
 
 	if (old_an != NULL) {
@@ -325,17 +323,17 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 		double b1_tem[3];
 		int N_tem[5], index, max_N, min_N;
 
-		for (i = 0; i < n; i++) {
+		for (iofN = 0; iofN < n; iofN++) {
 
 			// finding out critical point of yaw
-			a = ant1_ptr[i].S[1] / ant1_ptr[i].S[0];
+			a = ant1_ptr[iofN].S[1] / ant1_ptr[iofN].S[0];
 			b = tan(old_an[2]);
 			delta_yaw = atan((a - b) / (a * b + 1));
 			cri_piont_yaw = old_an[2] + delta_yaw;
 			// the end of finding out critical point of yaw
 
 			// finding out critical point of pitch
-			a = - ant1_ptr[i].S[2] / (ant1_ptr[i].S[0] * cos(cri_piont_yaw) + ant1_ptr[i].S[1] * sin(cri_piont_yaw));
+			a = - ant1_ptr[iofN].S[2] / (ant1_ptr[iofN].S[0] * cos(cri_piont_yaw) + ant1_ptr[iofN].S[1] * sin(cri_piont_yaw));
 			b = tan(old_an[1]);
 			delta_pitch = atan((a - b) / (a * b + 1));
 			cri_piont_pitch = old_an[1] + delta_pitch;
@@ -347,7 +345,7 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 				b1_tem[0] = cos(cri_piont_yaw) * cos(cri_piont_pitch);
 				b1_tem[1] = sin(cri_piont_yaw) * cos(cri_piont_pitch);
 				b1_tem[2] = -sin(cri_piont_pitch);
-				N_tem[4] = (int) round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
+				N_tem[4] = (int) round((ant1_ptr[iofN].S[0] * b1_tem[0] + ant1_ptr[iofN].S[1] * b1_tem[1] + ant1_ptr[iofN].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[iofN].ddcp);
 			}
 			else {
 				index = 4;
@@ -360,35 +358,32 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 			b1_tem[0] = cos(upbound_yaw) * cos(upbound_pitch);
 			b1_tem[1] = sin(upbound_yaw) * cos(upbound_pitch);
 			b1_tem[2] = -sin(upbound_pitch);
-			N_tem[0] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
+			N_tem[0] = (int)round((ant1_ptr[iofN].S[0] * b1_tem[0] + ant1_ptr[iofN].S[1] * b1_tem[1] + ant1_ptr[iofN].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[iofN].ddcp);
 
 			b1_tem[0] = cos(upbound_yaw) * cos(lowbound_pitch);
 			b1_tem[1] = sin(upbound_yaw) * cos(lowbound_pitch);
 			b1_tem[2] = -sin(lowbound_pitch);
-			N_tem[1] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
+			N_tem[1] = (int)round((ant1_ptr[iofN].S[0] * b1_tem[0] + ant1_ptr[iofN].S[1] * b1_tem[1] + ant1_ptr[iofN].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[iofN].ddcp);
 
 			b1_tem[0] = cos(lowbound_yaw) * cos(upbound_pitch);
 			b1_tem[1] = sin(lowbound_yaw) * cos(upbound_pitch);
 			b1_tem[2] = -sin(upbound_pitch);
-			N_tem[2] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
+			N_tem[2] = (int)round((ant1_ptr[iofN].S[0] * b1_tem[0] + ant1_ptr[iofN].S[1] * b1_tem[1] + ant1_ptr[iofN].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[iofN].ddcp);
 
 			b1_tem[0] = cos(lowbound_yaw) * cos(lowbound_pitch);
 			b1_tem[1] = sin(lowbound_yaw) * cos(lowbound_pitch);
 			b1_tem[2] = -sin(lowbound_pitch);
-			N_tem[3] = (int)round((ant1_ptr[i].S[0] * b1_tem[0] + ant1_ptr[i].S[1] * b1_tem[1] + ant1_ptr[i].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[i].ddcp);
+			N_tem[3] = (int)round((ant1_ptr[iofN].S[0] * b1_tem[0] + ant1_ptr[iofN].S[1] * b1_tem[1] + ant1_ptr[iofN].S[2] * b1_tem[2]) / L1_WL - ant1_ptr[iofN].ddcp);
 
 			max_N = maxv(N_tem, index);
 			min_N = minv(N_tem, index);
 
-			if (ant1_ptr[i].up > max_N && max_N >= ant1_ptr[i].low)
-				ant1_ptr[i].up = max_N;
-			if (ant1_ptr[i].up >= min_N && min_N > ant1_ptr[i].low)
-				ant1_ptr[i].low = min_N;
-			ant1_ptr[i].range = ant1_ptr[i].up - ant1_ptr[i].low;
+			if (ant1_ptr[iofN].up > max_N && max_N >= ant1_ptr[iofN].low)
+				ant1_ptr[iofN].up = max_N;
+			if (ant1_ptr[iofN].up >= min_N && min_N > ant1_ptr[iofN].low)
+				ant1_ptr[iofN].low = min_N;
+			ant1_ptr[iofN].range = ant1_ptr[iofN].up - ant1_ptr[iofN].low;
 			// the end of caculate bound of N
-			if (i == 3)
-				pp = 1;
-		
 		}
 	}
 	quick_sort_struct(ant1_ptr, 0, n - 1);
@@ -506,7 +501,7 @@ void std_b1b2(meau_model ant2_ptr[], error_std* ant_std, int n, int ratio,
 }
 
 
-int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]) {
+int GSO(meau_model ant_ptr[], double sigma_b, int n,volatile cand_list cand_b[]) {
 
 	double v[9], a[9];
 	double c2_bar;
@@ -687,7 +682,7 @@ int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]) {
 }
 
 
-int search_moreN(meau_model ant_ptr[], double sigma_b, cand_list cand_b_pre, cand_list* cand_b_new,
+int search_moreN(meau_model ant_ptr[], double sigma_b,volatile cand_list cand_b_pre,volatile cand_list* cand_b_new,
 		double* Smat, double* ISmat, double* ISmat_tem1, double* QY1_nsv, int n,int index, int ratio) {
 
 	double s_index[3] = { Smat[(index - 1) * 3 + 0], Smat[(index - 1) * 3 + 1],  Smat[(index - 1) * 3 + 2] };
@@ -1001,7 +996,7 @@ int b2_NRrange(meau_model ant2_ptr[], meau_model ant2_ptr_tem[], int n, double o
 	return 0;
 }
 
-int pairing(cand_list cand_b2, cand_list cand_b2_paired[], double b1[], double sigma_b1b2_4sv, int index) {
+int pairing(volatile cand_list cand_b2, volatile cand_list cand_b2_paired[], double b1[], double sigma_b1b2_4sv, int index) {
 	// Pairing b1 and b2
 	double delta_length, delta_b[3], error_delta_length;
 	int* prt_tem0;

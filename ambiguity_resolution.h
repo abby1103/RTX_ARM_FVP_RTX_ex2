@@ -76,11 +76,11 @@ int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv
 	double* Smat, double* pinvSmat, double* pinvSmat_tran, double* pinvSmat_tem, int index_b);
 void std_b1b2(meau_model ant_ptr[], error_std* ant_std, int n, int ratio,
 	double* pinvS1mat, double* pinvS2mat_tran, double* pinvS2mat_tem);
-int GSO(meau_model ant_ptr[], double sigma_b, int n, cand_list cand_b[]);
-int search_moreN(meau_model ant_ptr[], double sigma_b, cand_list cand_b_pre, cand_list* cand_b_new,
+int GSO(meau_model ant_ptr[], double sigma_b, int n,volatile cand_list cand_b[]);
+int search_moreN(meau_model ant_ptr[], double sigma_b,volatile cand_list cand_b_pre,volatile cand_list* cand_b_new,
 	double* Smat, double* ISmat, double* ISmat_tem1, double* QY1_nsv, int n, int index, int ratio);
 int b2_NRrange(meau_model ant2_ptr[], meau_model ant2_ptr_tem[], int n, double old_an[], double b1[]);
-int pairing(cand_list cand_b2, cand_list cand_b2_paired[], double b1[], double sigma_b1b2_4sv, int index);
+int pairing(volatile cand_list cand_b2,volatile cand_list cand_b2_paired[], double b1[], double sigma_b1b2_4sv, int index);
 int rotation_matrix(double b1[], double b2[], double R[]);
 void attitude(double R[], double angle[]);
 void cost_fun(meau_model ant1_ptr[], meau_model ant2_ptr_tem[], double S1[], double S2_tem[],

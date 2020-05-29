@@ -146,7 +146,7 @@ void channel_power_control(unsigned short ch, unsigned short on);
  ******************************************************************************/
 extern unsigned int channels_with_bits;
 extern chan_t CH[N_CHANNELS];
-
+extern unsigned int accum_int_count;
 
 #endif // __TRACKING_H
 

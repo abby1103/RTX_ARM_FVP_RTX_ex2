@@ -791,23 +791,26 @@ int pinv_indexX3(double* Smat, double* ISmat_tem2, int index) {
 	int err;
 	double* U = (double*)malloc(index * 3 * sizeof(double));
 	if (U == NULL) {
-		printf(" No memory available for SVD in std_baseline\n"); return 1;
+		//printf(" No memory available for SVD in std_baseline\n");
+		return 1;
 	}
 
 	dummy_array = (double*)malloc(3 * sizeof(double));
 	if (dummy_array == NULL) {
-		printf(" No memory available for dummy_arrayin std_baseline\n"); return 1;
+		//printf(" No memory available for dummy_arrayin std_baseline\n");
+		return 1;
 	}
 
 	err = Singular_Value_Decomposition(Smat, index, 3, U, singular_values, (double*)V, dummy_array);
 
 	free(dummy_array);
 
-	if (err < 0) printf(" Failed to converge\n");
+	if (err < 0) {
+		//printf(" Failed to converge\n");
+		return 1;
+	}
 	else {
 		Singular_Value_Decomposition_Inverse(U, singular_values, (double*)V, 0, index, 3, ISmat_tem2);
-		//printf(" The PINV of Smat is \n");
-		//output_matrix(pinvSmat, 3, n);
 	}
 	free(U);
 	// the end of doing pinv of S(0:(index-1),3)

@@ -2,8 +2,6 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ambiguity_resolution.h"
-#include "position.h"
-#include "measure.h"
 #include "constants.h"
 #include "serial.h"
 
@@ -26,8 +24,8 @@ static void output_matrix(double arr[], int n, int m) {
 int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, double old_an[], double small_an[], double angle[]) {
 
 	int i, j, k;
-	meau_model ant1_ptr[7];
-	meau_model ant2_ptr[7];
+	meau_model ant1_ptr[7] =  { 0 };
+	meau_model ant2_ptr[7] =  { 0 };
 
 	double QY_nsv[49] = { 0 }, QY_tem[49] = { 0 }, QY_tem2[49] = { 0 };	// 7 * 7 (# of measument for one baseline)
 	double QY[196] = { 0 }, invQY[196] = { 0 };	// 14 * 14 (# of measument for two baseline)
@@ -36,9 +34,9 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 
 	double S1mat[21] = { 0 }, pinvS1mat[21] = { 0 }, pinvS1mat_tran[21] = { 0 };	// 7(# of measument for one baseline) * 3(Sx,Sy,Sz)
 	double pinvS1mat_tem[21] = { 0 };
-	error_std ant_std;
+	//error_std ant_std = { 0 };
 
-	cand_list cand_b1[7 - 3];	// 安砞程Μ7聋矫琍,㏕﹚ cand_list cand_b1[7-3]
+	volatile cand_list cand_b1[7 - 3] =  { 0 };	// 安砞程Μ7聋矫琍,㏕﹚ cand_list cand_b1[7-3]
 
 	int index;
 
@@ -50,17 +48,20 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 	double S2mat[21] = { 0 }, pinvS2mat[21] = { 0 }, pinvS2mat_tran[21] = { 0 };	// 7(# of measument for one baseline) * 3(Sx,Sy,Sz)
 	double pinvS2mat_tem[21] = { 0 };
 
-	cand_list cand_b2[7 - 3], cand_b2_paired[1];
-	cand_list cand_b1b2[1];
+	volatile cand_list cand_b2[7 - 3];
+	volatile cand_list cand_b2_paired[1];
+	volatile cand_list cand_b1b2[1];
 	double R[9], costfunction;
 	double* cand_angle;
 
 	int pass;
-
+	char string[120];
 	// setting ddcp measument model
 	n--;
 	ddcp_model(ant1_ptr, ant2_ptr, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, n);
-
+	sprintf( string,
+	             "ant1_ptr[0].S = %f, adr = %x\n\r ",ant1_ptr[0].S[0], ant1_ptr[0].S);
+	SER_PutString( string);
 	// 家览ノ
 	double ddcp_noise[8] = {-0.319249, -0.312203, -0.011918, 0.256023, 0.168796, 0.353649, 1.562073, 1.047918};
 	for (i = 0; i < 4; i++) {
@@ -68,7 +69,7 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 		ant2_ptr[i].ddcp = ddcp_noise[i];
 	}
 	// the end of setting ddcp measument model
-
+/*
 	// setting covariance matrix of measument
 	cov_matrix1(QY_nsv, sdstd, n);
 
@@ -308,6 +309,11 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 	free(cand_b1b2[0].bcands);
 	free(cand_b1b2[0].goodness);
 	free(cand_angle);
+*/
+
+	angle[0] = 180 / PI;
+	angle[1] = 180 / PI;
+	angle[2] = 180 / PI;
 
 	return 0;
 }

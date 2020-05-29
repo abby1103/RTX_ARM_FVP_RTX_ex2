@@ -247,11 +247,11 @@ void measure_thread(void const *argument)
 						receiver_DOP = CALCULATE_DOP(satnum);
 						//osSignalSet(ekf_position_thread_id,  0x0005);
 
-						// if three ants in lock (data_inverted != 0) , estimate attitude by DDCP.
-						if(all_lock_num >= 4){
-							osSignalSet(attitude_thread_id,  0x0007);
-						}
 		            }
+					// if three ants in lock (data_inverted != 0) , estimate attitude by DDCP.
+					if(all_lock_num >= 4){
+						osSignalSet(attitude_thread_id,  0x0007);
+					}
 		        } else {
 		            positioning = 0;
 		        }       

@@ -31,8 +31,9 @@
  ******************************************************************************/
 chan_t CH[N_CHANNELS];
 unsigned int channels_with_bits;
-
 unsigned int d_pull_in_monitor[32];
+
+unsigned int accum_int_count = 0; // count how many 0.5 ms
 
 // debug global variables
 typedef struct {
@@ -914,7 +915,7 @@ void tracking(void)
 
 	status     = status_block->status;
 	new_data   = status_block->new_data;
-    
+
     for (ch = 0; ch < N_CHANNELS; ch++) {
     	if((new_data & (1 << ch)) || (new_data & (1 << (ch-1))) || (new_data & (1 << (ch-2))))
 		{
@@ -994,6 +995,8 @@ void tracking(void)
     	osSignalSet(display_thread_id,  0x0004);
     	//osSignalSet(uart_thread_id	 ,  0x0006);
     }
+
+    accum_int_count ++; // plus each 0.5ms
 
 }
 

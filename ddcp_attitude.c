@@ -6,6 +6,7 @@
  */
 #include "cmsis_os.h"
 
+#include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
 #include "ddcp_attitude.h"
@@ -14,15 +15,33 @@
 #include "ambiguity_resolution.h"
 #include "attitude_sol.h"
 #include "threads.h"
-
-
+#include "serial.h"
+#include "namuru.h"
+#include "tracking.h"
 
 void attitude_thread(void const *argument)
 {
+	double sdcp[14]=  { 0 };
+	double sdstd = 0.05;	// 0.5 cm
+	double small_an[3] = { 0.2618 , 0.2618 , 0.2618 }, old_an[3];
+	double angle[3] =  { 0 };
+	char string[120];
+
+	ECEF_pos P_ant0;
+	llh_pos ant0_llh;
+	ECEF_pos P_sat[7];
+	double pseudo_range[7];
+	int i = 0, breakpoint;
+	int ddcp_debug = 0;
+
+	unsigned int   accum_count;
+	double start_time, end_time, delta_t;
+
 	while (1) {
 	        osSignalWait(0x0007, osWaitForever);
 
-	        int ddcp_debug = 0;
+	        accum_count = 24999 - status_block->accum_count;
+	        start_time = ((double)accum_int_count + (double)(accum_count)/24999) * 0.5; // unit : ms
 	        // ddcp_debug table-------------------------------------------------//
 	        // 0 : success														//
 	        // 1 : false to find any Ncands										//
@@ -35,17 +54,6 @@ void attitude_thread(void const *argument)
 	        // 8 : error from cand_b2_paired
 	        // 9 : Failed to converge in rotation_matrix
 	        //------------------------------------------------------------------//
-
-	    	double sdcp[14];
-	    	double sdstd = 0.05;	// 0.5 cm
-	    	double small_an[3] = { 0.2618 , 0.2618 , 0.2618 };
-	    	double angle[3], old_an[3] = {1.884956, -0.191986, 0.750492};
-
-	    	ECEF_pos P_ant0;
-	    	llh_pos ant0_llh;
-	    	ECEF_pos P_sat[7];
-	    	double pseudo_range[7];
-	    	int i,breakpoint;
 
 	    	/*
 	    	P_ant0.x = receiver_pvt.x;
@@ -61,7 +69,9 @@ void attitude_thread(void const *argument)
 				pseudo_range[i] = m_rho[i];
 	    	}
 	    	*/
-
+	        old_an[0] = 1.884956;
+	        old_an[1] = -0.191986;
+	        old_an[2] = 0.750492;
 	    	P_ant0.x = -2983991;
 	    	P_ant0.y = 4966682;
 	    	P_ant0.z = 2657618;
@@ -90,10 +100,10 @@ void attitude_thread(void const *argument)
 
 
 	        for(i = 0; i < all_lock_num; i++){
-
 	        	// single difference carrier phase
 	        	sdcp[i] = meas_carrier[all_lock_num].ch1_phase - meas_carrier[all_lock_num].ch0_phase;
 	        	sdcp[i + all_lock_num] = meas_carrier[all_lock_num].ch2_phase - meas_carrier[all_lock_num].ch0_phase;
+
 	        	// if ch1 or ch2 have difference invert state with ch0, add 0.5 cycle
 	        	if(meas_carrier[all_lock_num].ch0_data_inverted != meas_carrier[all_lock_num].ch1_data_inverted){
 	        		sdcp[i] += 0.5;
@@ -102,9 +112,18 @@ void attitude_thread(void const *argument)
 	        		sdcp[i + all_lock_num] += 0.5;
 	        	}
 	        }
-	        ddcp_debug = attitude_sol(all_lock_num, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, old_an, small_an, angle);
-	        breakpoint=1;
+	        //ddcp_debug = attitude_sol(all_lock_num, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, old_an, small_an, angle);
+	        ddcp_debug = attitude_sol(5, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, old_an, small_an, angle);
 
+	        accum_count = 24999 - status_block->accum_count;
+	        end_time = ((double)accum_int_count + (double)(accum_count)/24999) * 0.5;  // unit : ms
+	        delta_t = end_time - start_time;
+
+	    	sprintf( string,
+	    	             "angle = %f, %f, %f\n\r delta_t = %f - %f = %f ms \n\r",
+	    	             angle[0], angle[1], angle[2], end_time, start_time, delta_t);
+	    	SER_PutString( string);
+	    	breakpoint=1;
 	}
 
 }
