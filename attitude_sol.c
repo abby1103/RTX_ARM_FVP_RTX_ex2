@@ -2,21 +2,8 @@
 #include <stdlib.h>
 #include <stdio.h>
 #include "ambiguity_resolution.h"
+#include "singular_value_decomposition.h"
 #include "constants.h"
-#include "serial.h"
-
-/*static void output_arr(double arr[], int n) {
-	for (int i = 0; i < n; ++i) { printf("%f ", arr[i]); }
-	printf("\n");
-}
-
-static void output_matrix(double arr[], int n, int m) {
-	for (int i = 0; i < n; ++i) {
-		for (int j = 0; j < m; ++j) printf("%10f ", arr[j + m * i]);
-		printf("\n");
-	}
-	printf("\n");
-}*/
 
 //extern double ddcp_noise[];
 //extern int epoch;
@@ -24,17 +11,17 @@ static void output_matrix(double arr[], int n, int m) {
 int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, double old_an[], double small_an[], double angle[]) {
 
 	int i, j, k;
-	meau_model ant1_ptr[7] =  { 0 };
-	meau_model ant2_ptr[7] =  { 0 };
+	meau_model ant1_ptr[7];
+	meau_model ant2_ptr[7];
 
-	double QY_nsv[49] = { 0 }, QY_tem[49] = { 0 }, QY_tem2[49] = { 0 };	// 7 * 7 (# of measument for one baseline)
-	double QY[196] = { 0 }, invQY[196] = { 0 };	// 14 * 14 (# of measument for two baseline)
+	double QY_nsv[49], QY_tem[49], QY_tem2[49];	// 7 * 7 (# of measument for one baseline)
+	double QY[196], invQY[196];	// 14 * 14 (# of measument for two baseline)
 
 	int err;
 
-	double S1mat[21] = { 0 }, pinvS1mat[21] = { 0 }, pinvS1mat_tran[21] = { 0 };	// 7(# of measument for one baseline) * 3(Sx,Sy,Sz)
-	double pinvS1mat_tem[21] = { 0 };
-	//error_std ant_std = { 0 };
+	double S1mat[21], pinvS1mat[21], pinvS1mat_tran[21];	// 7(# of measument for one baseline) * 3(Sx,Sy,Sz)
+	double pinvS1mat_tem[21];
+	err_std ant_std;
 
 	volatile cand_list cand_b1[7 - 3] =  { 0 };	// 假設最多收到7顆衛星,因此固定 cand_list cand_b1[7-3]
 
@@ -45,8 +32,8 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 	int numOFb1b2 = 0, current_index = 0;
 	int* prt_tem0;
 	double* prt_tem1, * prt_tem2, * prt_tem3;
-	double S2mat[21] = { 0 }, pinvS2mat[21] = { 0 }, pinvS2mat_tran[21] = { 0 };	// 7(# of measument for one baseline) * 3(Sx,Sy,Sz)
-	double pinvS2mat_tem[21] = { 0 };
+	double S2mat[21], pinvS2mat[21], pinvS2mat_tran[21];	// 7(# of measument for one baseline) * 3(Sx,Sy,Sz)
+	double pinvS2mat_tem[21];
 
 	volatile cand_list cand_b2[7 - 3];
 	volatile cand_list cand_b2_paired[1];
@@ -54,14 +41,11 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 	double R[9], costfunction;
 	double* cand_angle;
 
-	int pass;
-	char string[120];
+	int pass, best_i;
+
 	// setting ddcp measument model
 	n--;
 	ddcp_model(ant1_ptr, ant2_ptr, P_ant0, ant0_llh, P_sat, pseudo_range, sdcp, sdstd, n);
-	sprintf( string,
-	             "ant1_ptr[0].S = %f, adr = %x\n\r ",ant1_ptr[0].S[0], ant1_ptr[0].S);
-	SER_PutString( string);
 	// 模擬用
 	double ddcp_noise[8] = {-0.319249, -0.312203, -0.011918, 0.256023, 0.168796, 0.353649, 1.562073, 1.047918};
 	for (i = 0; i < 4; i++) {
@@ -69,7 +53,7 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 		ant2_ptr[i].ddcp = ddcp_noise[i];
 	}
 	// the end of setting ddcp measument model
-/*
+
 	// setting covariance matrix of measument
 	cov_matrix1(QY_nsv, sdstd, n);
 
@@ -112,6 +96,7 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 
 	// GSO
 	err = GSO(ant1_ptr, ant_std.sigma_b1_4sv, n, cand_b1);
+	//err = GSO(ant1_ptr, 0.484, n, cand_b1);
 	if (err != 0) return 6;
 	// the end of GSO
 
@@ -122,9 +107,6 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 			if (err != 0) return 7;
 		}
 		else {
-			free(cand_b1[index - 4].Ncands);
-			free(cand_b1[index - 4].bcands);
-			free(cand_b1[index - 4].goodness);
 			//printf("false to find any Ncands\n");
 			return 1;
 		}
@@ -175,13 +157,16 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 		err = b2_NRrange(ant2_ptr, ant2_ptr_tem, n, old_an, b1);
 
 		if (err == 0) {
+
 			for (i = 0; i < n; i++) {
 				for (k = 0; k < n; k++) {
 					QY[(i * 2 * n) + (k + n)] = *(ant2_ptr_tem[k].QY_pnt + i); // QY(0:n-1,n:2n-1)
 					QY[((i + n) * 2 * n) + k] = *(ant2_ptr_tem[i].QY_pnt + k); // QY(n:2n-1,0:n-1)
 				}
 			}
+
 			inverse_nXn(QY, invQY, 2 * n);
+			//pinv_indexX3(QY, invQY, 2 * n);
 			// the end of caculate n range of b2 , sort and inverse QY
 
 			// caculate error of std for the length of b2 and the delta length between b1 and b2
@@ -254,6 +239,7 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 				// the end of caculating the rotation_matrix
 				cost_fun(ant1_ptr, ant2_ptr_tem, S1mat, S2mat, &(cand_b1b2[0].Ncands[(i + current_index) * (2 * n) + 0]), &(cand_b1b2[0].bcands[(i + current_index) * 6 + 0]), invQY, R, &costfunction, n);
 				cand_b1b2[0].goodness[(i + current_index)] += costfunction;
+
 			}
 
 			if (cand_b2_paired[0].numofcand != 0) {
@@ -263,7 +249,9 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 			}
 
 			current_index = numOFb1b2;
+
 		}
+
 	}
 
 
@@ -273,16 +261,16 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 
 	if (cand_b1b2[0].numofcand != 0) {
 
-		quick_sort_cands(cand_b1b2[0].goodness, cand_angle, 0, cand_b1b2[0].numofcand - 1, 3);
-
 		if (old_an == NULL) {
-			angle[0] = cand_angle[0] * 180 / PI;
-			angle[1] = cand_angle[1] * 180 / PI;
-			angle[2] = cand_angle[2] * 180 / PI;
+			best_i = minindex(cand_b1b2[0].goodness, cand_b1b2[0].numofcand);
+			angle[0] = cand_angle[best_i * 3 + 0] * 180 / PI;
+			angle[1] = cand_angle[best_i * 3 + 1] * 180 / PI;
+			angle[2] = cand_angle[best_i * 3 + 2] * 180 / PI;
 			//output_arr(angle, 3);
 		}
 		else
 		{
+			quick_sort_cands(cand_b1b2[0].goodness, cand_angle, 0, cand_b1b2[0].numofcand - 1, 3);
 			for (i = 0; i < cand_b1b2[0].numofcand; i++) {
 				pass = fabs(cand_angle[i * 3 + 0] - old_an[0]) <= 0.3491 && fabs(cand_angle[i * 3 + 1] - old_an[1]) <= 0.3491 && fabs(cand_angle[i * 3 + 2] - old_an[2]) <= 0.3491;
 				if (pass) {
@@ -309,11 +297,6 @@ int attitude_sol(int n, ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], dou
 	free(cand_b1b2[0].bcands);
 	free(cand_b1b2[0].goodness);
 	free(cand_angle);
-*/
-
-	angle[0] = 180 / PI;
-	angle[1] = 180 / PI;
-	angle[2] = 180 / PI;
 
 	return 0;
 }

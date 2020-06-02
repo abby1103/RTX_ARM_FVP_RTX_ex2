@@ -4,7 +4,6 @@
 #include "ambiguity_resolution.h"
 #include "singular_value_decomposition.h"
 #include "constants.h"
-#include "serial.h"
 
 /*static void output_matrix(double arr[], int n, int m) {
 	for (int i = 0; i < n; ++i) {
@@ -43,7 +42,7 @@ void inverse_nXn(double* a_prt, double* ia_prt, int n) {
 	// a[n][2*n]
 
 	int i, j, k;
-	double a[14][28] = { 0 };
+	double a[14][28] = {0};
 	double  m;
 
 	for (i = 0; i < n; i++) {
@@ -113,6 +112,18 @@ int maxv(int v[], int n) {
 	return max;
 }
 
+int maxindex(double v[], int n) {
+	double max = v[0];
+	int i, max_i = 0;
+	for (i = 1; i < n; i++) {
+		if (max < v[i]){
+			max = v[i];
+			max_i = i;
+		}
+	}
+	return max_i;
+}
+
 int minv(int v[], int n) {
 	int min = v[0], i;
 	for (i = 1; i < n; i++) {
@@ -121,6 +132,17 @@ int minv(int v[], int n) {
 	return min;
 }
 
+int minindex(double v[], int n) {
+	double min = v[0];
+	int i, min_i = 0;
+	for (i = 1; i < n; i++) {
+		if (min > v[i]) {
+			min = v[i];
+			min_i = i;
+		}
+	}
+	return min_i;
+}
 /* 快速排序法 */
 void quick_sort_struct(meau_model arr[], int first_index, int last_index) {
 	// 宣告索引變數
@@ -252,7 +274,7 @@ double* kron(double A[], int sizeA, double B[], int sizeB) {
 
 void ddcp_model(meau_model ant1_ptr[], meau_model ant2_ptr[], ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, int n )
 {
-	double LOS[21] = { 0 };	// 7 * 3
+	double LOS[21];	// 7 * 3
 	double enu2ecef[3][3];
 	int i;
 
@@ -302,7 +324,7 @@ void ddcp_model(meau_model ant1_ptr[], meau_model ant2_ptr[], ECEF_pos P_ant0, l
 
 void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_an[], double small_an[]){
 
-	double S_norm[7] = { 0 };
+	double S_norm[7];
 	int up_tem, low_tem;
 	int iofN;
 
@@ -389,12 +411,12 @@ void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_a
 	quick_sort_struct(ant1_ptr, 0, n - 1);
 }
 
-int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv, int ratio,
+int std_baseline(meau_model ant_ptr[], err_std* ant_std, int n, double* QY_nsv, int ratio,
 			double* Smat, double* pinvSmat, double* pinvSmat_tran, double* pinvSmat_tem, int index_b) {
 
 	double ISmat3X3_tran[9];
 	double Smat3X3[9];
-	double M[49] = { 0 }; // 7 * 7
+	double M[49]; // 7 * 7
 	double s_tem;
 	int err;
 	int i, j;
@@ -415,7 +437,8 @@ int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv
 	}
 
 	// doing inverse of S(1:3,1:3)
-	inverse_nXn(Smat3X3, pinvSmat_tem, 3);
+	pinv_indexX3(Smat3X3, pinvSmat_tem, 3);
+	//inverse_nXn(Smat3X3, pinvSmat_tem, 3);
 	transpose(pinvSmat_tem, ISmat3X3_tran, 3, 3);
 	mulmat(ISmat3X3_tran, pinvSmat_tem, M, 3, 3, 3);
 
@@ -467,10 +490,10 @@ int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv
 	return 0;
 }
 
-void std_b1b2(meau_model ant2_ptr[], error_std* ant_std, int n, int ratio,
+void std_b1b2(meau_model ant2_ptr[], err_std* ant_std, int n, int ratio,
 	double* pinvS1mat, double* pinvS2mat_tran, double* pinvS2mat_tem) {
 
-	double M[49] = { 0 };	//7 * 7
+	double M[49];	//7 * 7
 	double IS2mat3X3_tran[9];
 	double s_tem = 0;
 	int i, j;
@@ -699,8 +722,8 @@ int search_moreN(meau_model ant_ptr[], double sigma_b,volatile cand_list cand_b_
 	int* prt_tem0;
 	double* prt_tem1, * prt_tem2;
 
-	double alpha[6] = { 0 };	// 7 - 1
-	double temp1[7] = { 0 }, temp2[7] = { 0 };	// 7
+	double alpha[6];	// 7 - 1
+	double temp1[7], temp2[7];	// 7
 	
 	// alpha = Sindex * pinv(S(0:(index-1),:))
 	mulmat(s_index, ISmat_tem1, alpha, 1, 3, index - 1);
@@ -1009,6 +1032,9 @@ int pairing(volatile cand_list cand_b2, volatile cand_list cand_b2_paired[], dou
 	cand_b2_paired[0].goodness = (double*)malloc(cand_b2.numofcand * sizeof(double));
 	if (cand_b2_paired[0].Ncands == NULL || cand_b2_paired[0].bcands == NULL || cand_b2_paired[0].goodness == NULL) {
 		//printf(" No memory available for cand_b2_paired\n");
+		free(cand_b2.Ncands);
+		free(cand_b2.bcands);
+		free(cand_b2.goodness);
 		return 1;
 	}
 	cand_b2_paired[0].numofcand = 0;
@@ -1048,6 +1074,9 @@ int pairing(volatile cand_list cand_b2, volatile cand_list cand_b2_paired[], dou
 		prt_tem2 = (double*)realloc(cand_b2_paired[0].goodness, numPair_b1b2_4sv * sizeof(double));
 		if (prt_tem0 == NULL || prt_tem1 == NULL || prt_tem2 == NULL) {
 			//printf(" No memory available for cand_list in cand_b2_paired\n");
+			free(cand_b2.Ncands);
+			free(cand_b2.bcands);
+			free(cand_b2.goodness);
 			return 1;
 		}
 		else {
@@ -1066,7 +1095,7 @@ int pairing(volatile cand_list cand_b2, volatile cand_list cand_b2_paired[], dou
 
 int rotation_matrix(double b1[], double b2[], double R[]) {
 
-	double B[9] = {0}, det_U, det_V, d;
+	double B[9], det_U, det_V, d;
 	int i, j;
 
 	double V[3][3], V_arr[9];
@@ -1079,6 +1108,7 @@ int rotation_matrix(double b1[], double b2[], double R[]) {
 	for (i = 0; i < 3; i++) {
 		B[i * 3 + 0] = b1[i] / 2;
 		B[i * 3 + 1] = b2[i] / 2;
+		B[i * 3 + 2] = 0;
 	}
 
 	// SVD

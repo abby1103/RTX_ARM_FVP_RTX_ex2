@@ -34,7 +34,6 @@
 
 #include "cmsis_os.h"
 
-
 /*----------------------------------------------------------------------------
  *      RTX User configuration part BEGIN
  *---------------------------------------------------------------------------*/
@@ -55,14 +54,14 @@
 //   <i> Defines default stack size for threads with osThreadDef stacksz = 0
 //   <i> Default: 200
 #ifndef OS_STKSIZE
- #define OS_STKSIZE     2048
+ #define OS_STKSIZE     4096 // It was originally 2048
 #endif
 
 //   <o>Main Thread stack size [bytes] <64-32768:8><#/4>
 //   <i> Defines stack size for main thread.
 //   <i> Default: 200
 #ifndef OS_MAINSTKSIZE
- #define OS_MAINSTKSIZE 200
+ #define OS_MAINSTKSIZE 32768
 #endif
 
 //   <o>Number of threads with user-provided stack size <0-250>

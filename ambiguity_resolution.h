@@ -50,7 +50,7 @@ typedef struct {
 	double sigma_b1b2_4sv;
 	double sigma_b1b2_nsv;
 
-} error_std;
+} err_std;
 
 typedef struct {
 
@@ -65,16 +65,18 @@ void inverse_nXn(double* a_prt, double* ia_prt, int n);
 int inverse2X2(double* A, double* IA);
 double det_3X3(double A[]);
 int maxv(int[], int N);
+int maxindex(double v[], int n);
 int minv(int[], int N);
+int minindex(double v[], int n);
 void quick_sort_struct(meau_model arr[], int first_index, int last_index);
 void quick_sort_cands(double costfun[], double cand_angle[], int first_index, int last_index, int cand_cols);
 void cov_matrix1(double QY[], double sdstd, int n);
 double* kron( double A[], int sizeA, double B[], int sizeB );
 void ddcp_model(meau_model ant_ptr[], meau_model ant2_ptr[], ECEF_pos P_ant0, llh_pos ant0_llh, ECEF_pos P_sat[], double pseudo_range[], double sdcp[], double sdstd, int n );
 void b1_NRange(meau_model ant1_ptr[], meau_model ant2_ptr[], int n, double old_an[], double small_an[]);
-int std_baseline(meau_model ant_ptr[], error_std* ant_std, int n, double* QY_nsv, int ratio,
+int std_baseline(meau_model ant_ptr[], err_std* ant_std, int n, double* QY_nsv, int ratio,
 	double* Smat, double* pinvSmat, double* pinvSmat_tran, double* pinvSmat_tem, int index_b);
-void std_b1b2(meau_model ant_ptr[], error_std* ant_std, int n, int ratio,
+void std_b1b2(meau_model ant_ptr[], err_std* ant_std, int n, int ratio,
 	double* pinvS1mat, double* pinvS2mat_tran, double* pinvS2mat_tem);
 int GSO(meau_model ant_ptr[], double sigma_b, int n,volatile cand_list cand_b[]);
 int search_moreN(meau_model ant_ptr[], double sigma_b,volatile cand_list cand_b_pre,volatile cand_list* cand_b_new,

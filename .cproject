@@ -35,10 +35,10 @@
 									<listOptionValue builtIn="false" value="&quot;C:\altera\14.1\ip\altera\sopc_builder_ip\altera_avalon_uart\inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\altera\14.1\ip\altera\sopc_builder_ip\altera_mp32\HAL\inc&quot;"/>
 									<listOptionValue builtIn="false" value="&quot;C:\intelFPGA\18.0\embedded\ip\altera\hps\altera_hps\hwlib\include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\dual_attena\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\Include&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\dual_attena\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\RTOS\RTX\SRC&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\dual_attena\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\RTOS\RTX\Boards\ARM\VE_A9_MP\INC&quot;"/>
-									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\dual_attena\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\RTOS\RTX\INC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\de0_triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\Include&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\de0_triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\RTOS\RTX\SRC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\de0_triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\RTOS\RTX\Boards\ARM\VE_A9_MP\INC&quot;"/>
+									<listOptionValue builtIn="false" value="&quot;E:\correlation_de1_yao\de0_triple_DDCP_20191204\de0_dual_antenna\GPS_C_code_xdwahaha\CMSIS_RTOS_RTX\RTOS\RTX\INC&quot;"/>
 								</option>
 								<option id="com.arm.tool.c.compiler.option.targetcpu.2014543524" name="Target CPU (--cpu)" superClass="com.arm.tool.c.compiler.option.targetcpu" useByScannerDiscovery="true" value="Cortex-A9" valueType="string"/>
 								<option id="com.arm.tool.c.compiler.option.inst.1157070884" name="Instruction set" superClass="com.arm.tool.c.compiler.option.inst" useByScannerDiscovery="true" value="com.arm.tool.c.compiler.option.inst.thumb" valueType="enumerated"/>
@@ -237,4 +237,5 @@
 			<autodiscovery enabled="true" problemReportingEnabled="true" selectedProfileId="com.arm.eclipse.builder.armcc.ARMCompilerDiscoveryProfile"/>
 		</scannerConfigBuildInfo>
 	</storageModule>
+	<storageModule moduleId="org.eclipse.cdt.internal.ui.text.commentOwnerProjectMappings"/>
 </cproject>
